@@ -109,40 +109,41 @@ const dummyVideos = [
 
 function VideoCard({ video }: { video: any }) {
   return (
-    <Card className="group hover:shadow-lg transition-all duration-300 overflow-hidden">
-      <div className="relative overflow-hidden">
+    <Link href={`/videos/${video.id}`}>
+      <Card className="group hover:shadow-2xl hover:shadow-red-500/10 transition-all duration-500 overflow-hidden cursor-pointer border-0 bg-gradient-to-br from-white to-gray-50/50 dark:from-gray-900 dark:to-gray-800/50 hover:-translate-y-2">
+      <div className="relative aspect-video overflow-hidden bg-black">
         <Image
           src={video.thumbnailUrl || "/placeholder.svg"}
           alt={video.title}
-          width={320}
-          height={180}
-          className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+          width={400}
+          height={225}
+          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
         />
 
         {/* Play Button Overlay */}
-        <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300 flex items-center justify-center">
-          <div className="bg-red-600 hover:bg-red-700 text-white rounded-full p-3 group-hover:scale-110 transition-transform duration-300">
-            <Play className="h-6 w-6 ml-1" />
+        <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-300 flex items-center justify-center">
+          <div className="bg-gradient-to-r from-red-600 to-red-700 text-white rounded-full p-4 group-hover:scale-125 transition-transform duration-300 shadow-2xl">
+            <Play className="h-8 w-8 ml-1" />
           </div>
         </div>
 
         {/* Duration Badge */}
         <div className="absolute bottom-3 right-3">
-          <Badge className="bg-black/80 text-white">{video.duration}</Badge>
+          <Badge className="bg-black/80 text-white backdrop-blur-sm shadow-lg">{video.duration}</Badge>
         </div>
 
         {video.featured && (
-          <Badge className="absolute top-3 left-3 bg-red-600 text-white">
+          <Badge className="absolute top-3 left-3 bg-gradient-to-r from-red-600 to-red-700 text-white shadow-lg">
             <Star className="h-3 w-3 mr-1" />
             Featured
           </Badge>
         )}
       </div>
 
-      <CardContent className="p-4">
-        <div className="space-y-3">
+      <CardContent className="p-0">
+        <div className="p-4 space-y-4">
           <div>
-            <h3 className="font-semibold line-clamp-2 group-hover:text-red-600 transition-colors">{video.title}</h3>
+            <h3 className="font-semibold line-clamp-2 group-hover:text-red-600 transition-colors text-lg">{video.title}</h3>
 
             <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground">
               <User className="h-4 w-4" />
@@ -153,7 +154,7 @@ function VideoCard({ video }: { video: any }) {
           <p className="text-sm text-muted-foreground line-clamp-2">{video.description}</p>
 
           <div className="flex items-center justify-between">
-            <Badge variant="outline">{video.category}</Badge>
+            <Badge variant="outline" className="border-red-500/20 text-red-600 bg-red-500/5">{video.category}</Badge>
           </div>
 
           <div className="flex items-center gap-4 text-sm text-muted-foreground">
@@ -167,7 +168,7 @@ function VideoCard({ video }: { video: any }) {
             </div>
           </div>
 
-          <Button asChild className="w-full mt-4">
+          <Button asChild className="w-full mt-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800">
             <Link href={`/videos/${video.id}`}>
               <Play className="h-4 w-4 mr-2" />
               Watch Now
@@ -176,6 +177,7 @@ function VideoCard({ video }: { video: any }) {
         </div>
       </CardContent>
     </Card>
+    </Link>
   )
 }
 

@@ -123,32 +123,33 @@ export default async function ArticlesPage() {
         {/* Articles Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {(articles || dummyArticles).map((article) => (
-            <Card key={article.id} className="group hover:shadow-lg transition-all duration-300 overflow-hidden">
+            <Card key={article.id} className="group hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500 overflow-hidden border-0 bg-gradient-to-br from-white to-gray-50/50 dark:from-gray-900 dark:to-gray-800/50 hover:-translate-y-2">
               <div className="relative overflow-hidden">
                 <Image
                   src={article.featuredImage || "/placeholder.svg"}
                   alt={article.title}
                   width={400}
                   height={200}
-                  className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                  className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 {article.featured && (
-                  <Badge className="absolute top-3 left-3 bg-primary text-primary-foreground">
+                  <Badge className="absolute top-3 left-3 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground shadow-lg">
                     <Star className="h-3 w-3 mr-1" />
                     Featured
                   </Badge>
                 )}
                 <div className="absolute top-3 right-3">
-                  <Badge variant="secondary" className="bg-black/50 text-white">
+                  <Badge variant="secondary" className="bg-black/70 text-white backdrop-blur-sm">
                     {article.readTime}
                   </Badge>
                 </div>
               </div>
 
-              <CardContent className="p-6">
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Badge variant="outline">{article.category}</Badge>
+              <CardContent className="p-0">
+                <div className="p-6 space-y-4">
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline" className="border-primary/20 text-primary bg-primary/5">{article.category}</Badge>
                   </div>
 
                   <h3 className="text-xl font-semibold line-clamp-2 group-hover:text-primary transition-colors">

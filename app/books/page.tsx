@@ -135,19 +135,19 @@ export default async function BooksPage() {
         {/* Books Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {(books || dummyBooks).map((book) => (
-            <Card key={book.id} className="group hover:shadow-xl transition-all duration-300 overflow-hidden">
+            <Card key={book.id} className="group hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-500 overflow-hidden border-0 bg-gradient-to-br from-white to-gray-50/50 dark:from-gray-900 dark:to-gray-800/50 hover:-translate-y-2">
               <div className="relative">
                 <div className="aspect-[3/4] relative overflow-hidden bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950 dark:to-amber-900">
                   <Image
                     src={book.coverImage || "/placeholder.svg"}
                     alt={book.title}
                     fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="object-cover group-hover:scale-110 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
 
                   {book.featured && (
-                    <Badge className="absolute top-3 left-3 bg-blue-600 text-white">
+                    <Badge className="absolute top-3 left-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg">
                       <Star className="h-3 w-3 mr-1" />
                       Featured
                     </Badge>
@@ -155,10 +155,10 @@ export default async function BooksPage() {
 
                   <div className="absolute bottom-3 left-3 right-3">
                     <div className="flex items-center gap-2 text-white text-sm">
-                      <Badge variant="secondary" className="bg-black/50 text-white">
+                      <Badge variant="secondary" className="bg-black/70 text-white backdrop-blur-sm">
                         {book.pages} pages
                       </Badge>
-                      <Badge variant="secondary" className="bg-black/50 text-white">
+                      <Badge variant="secondary" className="bg-black/70 text-white backdrop-blur-sm">
                         {book.language}
                       </Badge>
                     </div>
@@ -166,8 +166,8 @@ export default async function BooksPage() {
                 </div>
               </div>
 
-              <CardContent className="p-6">
-                <div className="space-y-4">
+              <CardContent className="p-0">
+                <div className="p-6 space-y-4">
                   <div>
                     <h3 className="text-xl font-semibold line-clamp-2 group-hover:text-blue-600 transition-colors">
                       {book.title}
@@ -182,7 +182,7 @@ export default async function BooksPage() {
                   <p className="text-muted-foreground line-clamp-3 text-sm leading-relaxed">{book.description}</p>
 
                   <div className="flex items-center justify-between">
-                    <Badge variant="outline">{book.category}</Badge>
+                    <Badge variant="outline" className="border-blue-500/20 text-blue-600 bg-blue-500/5">{book.category}</Badge>
                     <div className="flex items-center gap-1 text-sm text-muted-foreground">
                       <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                       <span>{book.rating}</span>
@@ -203,7 +203,7 @@ export default async function BooksPage() {
                   </div>
 
                   <div className="flex gap-2">
-                    <Button asChild className="flex-1">
+                    <Button asChild className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800">
                       <Link href={`/books/${book.id}`}>Read Online</Link>
                     </Button>
                     <Button variant="outline" size="icon">

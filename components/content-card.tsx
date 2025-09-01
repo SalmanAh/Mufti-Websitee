@@ -110,7 +110,7 @@ export function ContentCard({
         </div>
       )}
 
-      <CardContent className="p-6 space-y-4">
+      <CardContent className="px-6 pb-6 pt-0 space-y-4">
         {/* Header */}
         <div className="flex items-center justify-between">
           <Badge variant="outline" className={getTypeColor()}>

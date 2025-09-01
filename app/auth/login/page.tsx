@@ -80,11 +80,19 @@ export default function LoginPage() {
                       {isLoading ? "Signing in..." : "Sign In"}
                     </Button>
                   </div>
-                  <div className="mt-4 text-center text-sm">
-                    Don&apos;t have an account?{" "}
-                    <Link href="/auth/sign-up" className="underline underline-offset-4">
-                      Sign up
-                    </Link>
+                  <div className="mt-4 text-center text-sm space-y-2">
+                    <div>
+                      Don&apos;t have an account?{" "}
+                      <Link href="/auth/sign-up" className="underline underline-offset-4">
+                        Sign up
+                      </Link>
+                    </div>
+                    <div>
+                      Are you admin?{" "}
+                      <Link href="/auth/admin-login" className="underline underline-offset-4 text-blue-600">
+                        Sign Here
+                      </Link>
+                    </div>
                   </div>
                 </form>
               </CardContent>
