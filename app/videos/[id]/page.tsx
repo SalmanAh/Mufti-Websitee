@@ -2,8 +2,9 @@ export const dynamic = 'force-dynamic'
 
 import { Navigation } from "@/components/navigation"
 import { ContentViewer } from "@/components/content-viewer"
-import { createClient } from "@/lib/supabase/server"
-import { notFound } from "next/navigation"
+// COMMENTED OUT: Server-side Supabase implementation using placeholder environment variables
+// import { createClient } from "@/lib/supabase/server"
+// import { notFound } from "next/navigation"
 
 interface VideoPageProps {
   params: Promise<{ id: string }>
@@ -11,28 +12,42 @@ interface VideoPageProps {
 
 export default async function VideoPage({ params }: VideoPageProps) {
   const { id } = await params
-  const supabase = await createClient()
+  // COMMENTED OUT: Server-side data fetching and view count increment
+  // const supabase = await createClient()
 
-  const { data: video } = await supabase
-    .from("videos")
-    .select(`
-      *,
-      author:profiles(full_name),
-      category:categories(name)
-    `)
-    .eq("id", id)
-    .eq("published", true)
-    .single()
+  // const { data: video } = await supabase
+  //   .from("videos")
+  //   .select(`
+  //     *,
+  //     author:profiles(full_name),
+  //     category:categories(name)
+  //   `)
+  //   .eq("id", id)
+  //   .eq("published", true)
+  //   .single()
 
-  if (!video) {
-    notFound()
+  // if (!video) {
+  //   notFound()
+  // }
+
+  // // Increment view count
+  // await supabase
+  //   .from("videos")
+  //   .update({ views: video.views + 1 })
+  //   .eq("id", id)
+
+  // Temporary placeholder data for development
+  const video = {
+    id: id,
+    title: "The Beautiful Names of Allah - Complete Series",
+    description: "A comprehensive exploration of the 99 beautiful names of Allah and their meanings in our daily lives.",
+    author: { full_name: "Sheikh Muhammad Al-Shareef" },
+    category: { name: "Theology" },
+    views: 45672,
+    created_at: "2024-01-20T00:00:00Z",
+    thumbnail_url: "/islamic-calligraphy-allah-names-golden.png",
+    duration: "2:45:30"
   }
-
-  // Increment view count
-  await supabase
-    .from("videos")
-    .update({ views: video.views + 1 })
-    .eq("id", id)
 
   return (
     <div className="min-h-screen bg-background">

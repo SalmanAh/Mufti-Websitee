@@ -1,7 +1,8 @@
 export const dynamic = 'force-dynamic'
 
 import { Navigation } from "@/components/navigation"
-import { createClient } from "@/lib/supabase/server"
+// COMMENTED OUT: Server-side Supabase implementation using placeholder environment variables
+// import { createClient } from "@/lib/supabase/server"
 import { Video, Star, Calendar, User, Eye, Play } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -184,16 +185,18 @@ function VideoCard({ video }: { video: any }) {
 }
 
 export default async function VideosPage() {
-  const supabase = await createClient()
+  // COMMENTED OUT: Server-side data fetching
+  // const supabase = await createClient()
 
-  // Fetch videos from database
-  const { data: videos } = await supabase
-    .from("videos")
-    .select(`*,author:profiles(full_name),category:categories(name)`)
-    .eq("published", true)
-    .order("created_at", { ascending: false })
+  // // Fetch videos from database
+  // const { data: videos } = await supabase
+  //   .from("videos")
+  //   .select(`*,author:profiles(full_name),category:categories(name)`)
+  //   .eq("published", true)
+  //   .order("created_at", { ascending: false })
 
-  const displayVideos = videos && videos.length > 0 ? videos : dummyVideos
+  // Temporary placeholder data for development
+  const displayVideos = dummyVideos
 
   return (
     <div className="min-h-screen bg-background">

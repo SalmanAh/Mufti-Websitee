@@ -1,7 +1,8 @@
 export const dynamic = 'force-dynamic'
 
 import { Navigation } from "@/components/navigation"
-import { createClient } from "@/lib/supabase/server"
+// COMMENTED OUT: Server-side Supabase implementation using placeholder environment variables
+// import { createClient } from "@/lib/supabase/server"
 import { BookOpen, Download, Star, Calendar, User } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -98,23 +99,26 @@ const dummyBooks = [
 ]
 
 export default async function BooksPage() {
-  const supabase = await createClient()
+  // COMMENTED OUT: Server-side data fetching
+  // const supabase = await createClient()
 
-  // Fetch books with author and category info
-  const { data: books } = await supabase
-    .from("books")
-    .select(`
-      *,
-      author:profiles(full_name),
-      category:categories(name)
-    `)
-    .eq("published", true)
-    .order("created_at", { ascending: false })
+  // // Fetch books with author and category info
+  // const { data: books } = await supabase
+  //   .from("books")
+  //   .select(`
+  //     *,
+  //     author:profiles(full_name),
+  //     category:categories(name)
+  //   `)
+  //   .eq("published", true)
+  //   .order("created_at", { ascending: false })
 
-  // Fetch categories
-  const { data: categories } = await supabase.from("categories").select("name").order("name")
+  // // Fetch categories
+  // const { data: categories } = await supabase.from("categories").select("name").order("name")
 
-  const categoryNames = categories?.map((c) => c.name) || []
+  // Temporary placeholder data for development
+  const books = dummyBooks
+  const categoryNames = ["Biography", "Tafsir", "Dua & Dhikr", "Theology", "Social Issues", "Finance"]
 
   return (
     <div className="min-h-screen bg-background">

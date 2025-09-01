@@ -1,8 +1,10 @@
 export const dynamic = 'force-dynamic'
 
-import { redirect } from "next/navigation"
+// COMMENTED OUT: Server-side redirect for authentication
+// import { redirect } from "next/navigation"
 import { Navigation } from "@/components/navigation"
-import { createClient } from "@/lib/supabase/server"
+// COMMENTED OUT: Server-side Supabase implementation using placeholder environment variables
+// import { createClient } from "@/lib/supabase/server"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -10,20 +12,35 @@ import { BookOpen, Video, FileText, Mic, Settings, Shield } from "lucide-react"
 import Link from "next/link"
 
 export default async function DashboardPage() {
-  const supabase = await createClient()
+  // COMMENTED OUT: Server-side authentication and data fetching
+  // const supabase = await createClient()
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  // const {
+  //   data: { user },
+  // } = await supabase.auth.getUser()
 
-  if (!user) {
-    redirect("/auth/login")
+  // if (!user) {
+  //   redirect("/auth/login")
+  // }
+
+  // const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single()
+
+  // if (!profile) {
+  //   redirect("/auth/login")
+  // }
+
+  // Temporary placeholder data for development
+  const user = {
+    id: '1',
+    email: 'guest@example.com'
   }
 
-  const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single()
-
-  if (!profile) {
-    redirect("/auth/login")
+  const profile = {
+    id: '1',
+    full_name: 'Guest User',
+    role: 'student',
+    bio: 'A dedicated student of Islamic knowledge',
+    created_at: '2024-01-01T00:00:00Z'
   }
 
   const isAdmin = ["admin", "scholar"].includes(profile.role)

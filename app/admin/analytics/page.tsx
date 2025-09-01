@@ -1,19 +1,45 @@
 export const dynamic = 'force-dynamic'
 
-import { createClient } from "@/lib/supabase/server"
+// COMMENTED OUT: Server-side Supabase implementation using placeholder environment variables
+// import { createClient } from "@/lib/supabase/server"
 import { StatsCard } from "@/components/admin/stats-card"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { FileText, Video, Mic, Eye, Download, Users, TrendingUp } from "lucide-react"
 
 export default async function AdminAnalyticsPage() {
-  const supabase = await createClient()
+  // COMMENTED OUT: Server-side authentication and data fetching
+  // const supabase = await createClient()
 
-  // Fetch detailed analytics
-  const { data: articles } = await supabase.from("articles").select("views, created_at")
-  const { data: videos } = await supabase.from("videos").select("views, created_at")
-  const { data: books } = await supabase.from("books").select("downloads, created_at")
-  const { data: lectures } = await supabase.from("lectures").select("views, created_at")
-  const { data: users } = await supabase.from("profiles").select("created_at")
+  // // Fetch detailed analytics
+  // const { data: articles } = await supabase.from("articles").select("views, created_at")
+  // const { data: videos } = await supabase.from("videos").select("views, created_at")
+  // const { data: books } = await supabase.from("books").select("downloads, created_at")
+  // const { data: lectures } = await supabase.from("lectures").select("views, created_at")
+  // const { data: users } = await supabase.from("profiles").select("created_at")
+
+  // Temporary placeholder data for development
+  const articles = [
+    { views: 1250, created_at: '2024-01-15' },
+    { views: 980, created_at: '2024-01-20' },
+    { views: 750, created_at: '2024-01-25' }
+  ]
+  const videos = [
+    { views: 2100, created_at: '2024-01-10' },
+    { views: 1800, created_at: '2024-01-18' }
+  ]
+  const books = [
+    { downloads: 450, created_at: '2024-01-12' },
+    { downloads: 320, created_at: '2024-01-22' }
+  ]
+  const lectures = [
+    { views: 890, created_at: '2024-01-14' },
+    { views: 670, created_at: '2024-01-24' }
+  ]
+  const users = [
+    { created_at: '2024-01-01' },
+    { created_at: '2024-01-15' },
+    { created_at: '2024-01-20' }
+  ]
 
   // Calculate totals
   const totalArticleViews = articles?.reduce((sum, item) => sum + (item.views || 0), 0) || 0

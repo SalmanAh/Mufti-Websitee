@@ -1,51 +1,70 @@
 export const dynamic = 'force-dynamic'
 
-import { redirect } from "next/navigation"
+// COMMENTED OUT: Server-side redirect for authentication
+// import { redirect } from "next/navigation"
 import { Navigation } from "@/components/navigation"
-import { createClient } from "@/lib/supabase/server"
+// COMMENTED OUT: Server-side Supabase implementation using placeholder environment variables
+// import { createClient } from "@/lib/supabase/server"
 import { ChatInterface } from "./chat-interface"
 
 export default async function ChatPage() {
-  const supabase = await createClient()
+  // COMMENTED OUT: Server-side authentication and data fetching
+  // const supabase = await createClient()
 
-  // Check if user is authenticated
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  // // Check if user is authenticated
+  // const {
+  //   data: { user },
+  // } = await supabase.auth.getUser()
 
-  if (!user) {
-    redirect("/auth/login")
+  // if (!user) {
+  //   redirect("/auth/login")
+  // }
+
+  // // Get user profile
+  // const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single()
+
+  // if (!profile) {
+  //   redirect("/auth/login")
+  // }
+
+  // // Get default chat room
+  // const { data: defaultRoom } = await supabase
+  //   .from("chat_rooms")
+  //   .select("*")
+  //   .eq("is_public", true)
+  //   .order("created_at", { ascending: true })
+  //   .limit(1)
+  //   .single()
+
+  // Temporary placeholder data for development
+  const defaultRoom = {
+    id: '1',
+    name: 'General Discussion',
+    description: 'A place for general Islamic discussions',
+    is_public: true,
+    created_at: '2024-01-01T00:00:00Z'
   }
 
-  // Get user profile
-  const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single()
-
-  if (!profile) {
-    redirect("/auth/login")
+  const profile = {
+    id: '1',
+    full_name: 'Guest User',
+    role: 'student',
+    created_at: '2024-01-01T00:00:00Z'
   }
 
-  // Get default chat room
-  const { data: defaultRoom } = await supabase
-    .from("chat_rooms")
-    .select("*")
-    .eq("is_public", true)
-    .order("created_at", { ascending: true })
-    .limit(1)
-    .single()
-
-  if (!defaultRoom) {
-    return (
-      <div className="min-h-screen bg-background">
-        <Navigation />
-        <main className="container mx-auto px-4 py-8">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold mb-4">No Chat Rooms Available</h1>
-            <p className="text-muted-foreground">Please contact an administrator to set up chat rooms.</p>
-          </div>
-        </main>
-      </div>
-    )
-  }
+  // if (!defaultRoom) {
+  //   return (
+  //     <div className="min-h-screen bg-background">
+  //       <Navigation />
+  //       <main className="container mx-auto px-4 py-8">
+  //         <div className="text-center">
+  //           <h1 className="text-2xl font-bold mb-4">No Chat Rooms Available</h1>
+  //           <p className="text-muted-foreground">Please contact an administrator to set up chat rooms.</p>
+  //         </div>
+  //       </main>
+  //     </div>
+  //   )
+  // }
 
   return (
     <div className="min-h-screen bg-background">

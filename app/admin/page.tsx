@@ -1,52 +1,75 @@
 export const dynamic = 'force-dynamic'
 
-import { createClient } from "@/lib/supabase/server"
+// COMMENTED OUT: Server-side Supabase implementation using placeholder environment variables
+// import { createClient } from "@/lib/supabase/server"
 import { StatsCard } from "@/components/admin/stats-card"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { FileText, Video, BookOpen, Mic, Users, Eye, TrendingUp, MessageCircle } from "lucide-react"
 
 export default async function AdminDashboard() {
-  const supabase = await createClient()
+  // COMMENTED OUT: Server-side authentication and data fetching
+  // const supabase = await createClient()
 
-  // Fetch statistics
-  const [
-    { count: articlesCount },
-    { count: videosCount },
-    { count: booksCount },
-    { count: lecturesCount },
-    { count: usersCount },
-    { count: chatRoomsCount },
-  ] = await Promise.all([
-    supabase.from("articles").select("*", { count: "exact", head: true }),
-    supabase.from("videos").select("*", { count: "exact", head: true }),
-    supabase.from("books").select("*", { count: "exact", head: true }),
-    supabase.from("lectures").select("*", { count: "exact", head: true }),
-    supabase.from("profiles").select("*", { count: "exact", head: true }),
-    supabase.from("chat_rooms").select("*", { count: "exact", head: true }),
-  ])
+  // // Fetch statistics
+  // const [
+  //   { count: articlesCount },
+  //   { count: videosCount },
+  //   { count: booksCount },
+  //   { count: lecturesCount },
+  //   { count: usersCount },
+  //   { count: chatRoomsCount },
+  // ] = await Promise.all([
+  //   supabase.from("articles").select("*", { count: "exact", head: true }),
+  //   supabase.from("videos").select("*", { count: "exact", head: true }),
+  //   supabase.from("books").select("*", { count: "exact", head: true }),
+  //   supabase.from("lectures").select("*", { count: "exact", head: true }),
+  //   supabase.from("profiles").select("*", { count: "exact", head: true }),
+  //   supabase.from("chat_rooms").select("*", { count: "exact", head: true }),
+  // ])
 
-  // Fetch total views
-  const { data: articlesViews } = await supabase.from("articles").select("views")
-  const { data: videosViews } = await supabase.from("videos").select("views")
-  const { data: lecturesViews } = await supabase.from("lectures").select("views")
+  // // Fetch total views
+  // const { data: articlesViews } = await supabase.from("articles").select("views")
+  // const { data: videosViews } = await supabase.from("videos").select("views")
+  // const { data: lecturesViews } = await supabase.from("lectures").select("views")
 
-  const totalViews =
-    (articlesViews?.reduce((sum, item) => sum + (item.views || 0), 0) || 0) +
-    (videosViews?.reduce((sum, item) => sum + (item.views || 0), 0) || 0) +
-    (lecturesViews?.reduce((sum, item) => sum + (item.views || 0), 0) || 0)
+  // const totalViews =
+  //   (articlesViews?.reduce((sum, item) => sum + (item.views || 0), 0) || 0) +
+  //   (videosViews?.reduce((sum, item) => sum + (item.views || 0), 0) || 0) +
+  //   (lecturesViews?.reduce((sum, item) => sum + (item.views || 0), 0) || 0)
 
-  // Fetch recent content
-  const { data: recentArticles } = await supabase
-    .from("articles")
-    .select("id, title, created_at, author:profiles(full_name)")
-    .order("created_at", { ascending: false })
-    .limit(5)
+  // // Fetch recent content
+  // const { data: recentArticles } = await supabase
+  //   .from("articles")
+  //   .select("id, title, created_at, author:profiles(full_name)")
+  //   .order("created_at", { ascending: false })
+  //   .limit(5)
 
-  const { data: recentUsers } = await supabase
-    .from("profiles")
-    .select("id, full_name, created_at, role")
-    .order("created_at", { ascending: false })
-    .limit(5)
+  // const { data: recentUsers } = await supabase
+  //   .from("profiles")
+  //   .select("id, full_name, created_at, role")
+  //   .order("created_at", { ascending: false })
+  //   .limit(5)
+
+  // Temporary placeholder data for development
+  const articlesCount = 25
+  const videosCount = 18
+  const booksCount = 12
+  const lecturesCount = 35
+  const usersCount = 150
+  const chatRoomsCount = 8
+  const totalViews = 12450
+
+  const recentArticles = [
+    { id: '1', title: 'Understanding Islamic Jurisprudence', created_at: '2024-01-20', author: { full_name: 'Dr. Ahmad Hassan' } },
+    { id: '2', title: 'The Pillars of Faith', created_at: '2024-01-18', author: { full_name: 'Sheikh Omar Ali' } },
+    { id: '3', title: 'Islamic Ethics in Modern Times', created_at: '2024-01-15', author: { full_name: 'Dr. Fatima Khan' } }
+  ]
+
+  const recentUsers = [
+    { id: '1', full_name: 'Abdullah Rahman', created_at: '2024-01-22', role: 'student' },
+    { id: '2', full_name: 'Aisha Mohamed', created_at: '2024-01-21', role: 'student' },
+    { id: '3', full_name: 'Hassan Ali', created_at: '2024-01-20', role: 'scholar' }
+  ]
 
   return (
     <div className="space-y-8">
