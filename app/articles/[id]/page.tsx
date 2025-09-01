@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { Navigation } from "@/components/navigation"
 import { ContentViewer } from "@/components/content-viewer"
 import { createClient } from "@/lib/supabase/server"

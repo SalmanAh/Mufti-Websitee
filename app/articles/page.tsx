@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { Navigation } from "@/components/navigation"
 import { createClient } from "@/lib/supabase/server"
 import { FileText, Star, Calendar, User, Eye } from "lucide-react"
