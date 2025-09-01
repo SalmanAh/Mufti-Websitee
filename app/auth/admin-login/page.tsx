@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { createClient } from "@/lib/supabase/client"
+// Supabase client removed
 
 // Force dynamic rendering to prevent prerendering issues
 export const dynamic = 'force-dynamic'
@@ -25,45 +25,18 @@ export default function AdminLoginPage() {
 
   const handleAdminLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    const supabase = createClient()
     setIsLoading(true)
     setError(null)
 
+    // Placeholder admin login - authentication removed
     try {
-      // First, authenticate the user
-      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      })
+      // Simulate loading
+      await new Promise(resolve => setTimeout(resolve, 1000))
       
-      if (authError) throw authError
-      
-      if (!authData.user) {
-        throw new Error("Authentication failed")
-      }
-
-      // Check if user has admin role
-      const { data: profile, error: profileError } = await supabase
-        .from("profiles")
-        .select("role")
-        .eq("id", authData.user.id)
-        .single()
-
-      if (profileError) {
-        throw new Error("Failed to verify admin privileges")
-      }
-
-      if (!profile || !["admin", "scholar"].includes(profile.role)) {
-        // Sign out the user if they don't have admin privileges
-        await supabase.auth.signOut()
-        throw new Error("Access denied. Admin privileges required.")
-      }
-
-      // Redirect to admin dashboard
+      // For demo purposes, redirect to admin dashboard
       router.push("/admin")
-      router.refresh()
     } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "An error occurred")
+      setError("Admin login functionality temporarily disabled")
     } finally {
       setIsLoading(false)
     }

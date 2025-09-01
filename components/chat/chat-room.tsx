@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { Users, MessageCircle } from "lucide-react"
-import { createClient } from "@/lib/supabase/client"
+// Supabase client removed
 import { toast } from "sonner"
 
 interface ChatRoomProps {
@@ -42,100 +42,33 @@ export function ChatRoom({ room, currentUser }: ChatRoomProps) {
   const [onlineUsers, setOnlineUsers] = useState<number>(0)
   const [isLoading, setIsLoading] = useState(true)
   const messagesEndRef = useRef<HTMLDivElement>(null)
-  const supabase = createClient()
+  // Supabase client removed - using placeholder data
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }
 
   useEffect(() => {
-    // Fetch initial messages
-    const fetchMessages = async () => {
-      try {
-        const { data, error } = await supabase
-          .from("chat_messages")
-          .select(`
-            id,
-            message,
-            created_at,
-            user:profiles(id, full_name, avatar_url, role)
-          `)
-          .eq("room_id", room.id)
-          .order("created_at", { ascending: true })
-          .limit(100)
-
-        if (error) throw error
-
-        setMessages(data || [])
-      } catch (error) {
-        console.error("Error fetching messages:", error)
-        toast.error("Failed to load messages")
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    fetchMessages()
-
-    // Subscribe to new messages
-    const messagesSubscription = supabase
-      .channel(`chat_messages:${room.id}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "chat_messages",
-          filter: `room_id=eq.${room.id}`,
-        },
-        async (payload) => {
-          // Fetch the complete message with user data
-          const { data } = await supabase
-            .from("chat_messages")
-            .select(`
-              id,
-              message,
-              created_at,
-              user:profiles(id, full_name, avatar_url, role)
-            `)
-            .eq("id", payload.new.id)
-            .single()
-
-          if (data) {
-            setMessages((prev) => [...prev, data])
-          }
-        },
-      )
-      .subscribe()
-
-    // Subscribe to presence for online users count
-    const presenceSubscription = supabase
-      .channel(`room:${room.id}`)
-      .on("presence", { event: "sync" }, () => {
-        const state = supabase.getChannels()[0].presenceState()
-        setOnlineUsers(Object.keys(state).length)
-      })
-      .on("presence", { event: "join" }, ({ key, newPresences }) => {
-        console.log("User joined:", key, newPresences)
-      })
-      .on("presence", { event: "leave" }, ({ key, leftPresences }) => {
-        console.log("User left:", key, leftPresences)
-      })
-      .subscribe(async (status) => {
-        if (status === "SUBSCRIBED") {
-          await supabase.channel(`room:${room.id}`).track({
-            user_id: currentUser.id,
-            full_name: currentUser.full_name,
-            online_at: new Date().toISOString(),
-          })
+    // Placeholder messages - real-time chat functionality removed
+    const placeholderMessages: Message[] = [
+      {
+        id: "1",
+        message: "Welcome to the chat room!",
+        created_at: new Date().toISOString(),
+        user: {
+          id: "system",
+          full_name: "System",
+          role: "admin"
         }
-      })
+      }
+    ]
+    
+    setMessages(placeholderMessages)
+    setOnlineUsers(1)
+    setIsLoading(false)
 
-    return () => {
-      messagesSubscription.unsubscribe()
-      presenceSubscription.unsubscribe()
-    }
-  }, [room.id, currentUser.id, currentUser.full_name, supabase])
+    // Real-time subscriptions removed
+  }, [room.id])
 
   useEffect(() => {
     scrollToBottom()

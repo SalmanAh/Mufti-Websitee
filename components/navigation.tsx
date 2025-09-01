@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Menu, Moon, Sun, BookOpen, Video, FileText, MessageCircle, User, UserCircle } from "lucide-react"
-import { createClient } from "@/lib/supabase/client"
+// Supabase client removed
 
 const navigation = [
   { name: "Home", href: "/", icon: BookOpen },
@@ -20,33 +20,15 @@ const navigation = [
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
   const [isDark, setIsDark] = useState(false)
-  const [user, setUser] = useState(null)
+  // Temporary placeholder for user state - always null (no authentication)
+  const user = null
   const pathname = usePathname()
-  const supabase = createClient()
 
   useEffect(() => {
     // Check for dark mode preference
     const isDarkMode = document.documentElement.classList.contains("dark")
     setIsDark(isDarkMode)
-
-    // Get user session
-    const getUser = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-      setUser(user)
-    }
-    getUser()
-
-    // Listen for auth changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user ?? null)
-    })
-
-    return () => subscription.unsubscribe()
-  }, [supabase.auth])
+  }, [])
 
   const toggleDarkMode = () => {
     document.documentElement.classList.toggle("dark")
@@ -54,7 +36,7 @@ export function Navigation() {
   }
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut()
+    // Sign out functionality removed
   }
 
   return (

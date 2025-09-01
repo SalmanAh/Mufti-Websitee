@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { MessageCircle, Users, Plus } from "lucide-react"
-import { createClient } from "@/lib/supabase/client"
+// Supabase client removed
 
 interface ChatSidebarProps {
   currentRoomId: string
@@ -34,21 +34,28 @@ interface OnlineUser {
 export function ChatSidebar({ currentRoomId, onRoomChange, currentUser }: ChatSidebarProps) {
   const [rooms, setRooms] = useState<ChatRoom[]>([])
   const [onlineUsers, setOnlineUsers] = useState<OnlineUser[]>([])
-  const supabase = createClient()
-
   useEffect(() => {
-    // Fetch chat rooms
-    const fetchRooms = async () => {
-      const { data } = await supabase
-        .from("chat_rooms")
-        .select("*")
-        .eq("is_public", true)
-        .order("created_at", { ascending: true })
-
-      setRooms(data || [])
-    }
-
-    fetchRooms()
+    // Placeholder chat rooms - real-time functionality removed
+    const placeholderRooms: ChatRoom[] = [
+      {
+        id: "1",
+        name: "General Discussion",
+        description: "General chat for all members",
+        is_public: true,
+        created_by: "system",
+        created_at: new Date().toISOString()
+      },
+      {
+        id: "2",
+        name: "Islamic Studies",
+        description: "Discuss Islamic topics and studies",
+        is_public: true,
+        created_by: "system",
+        created_at: new Date().toISOString()
+      }
+    ]
+    
+    setRooms(placeholderRooms)
 
     // Mock online users for demo
     setOnlineUsers([

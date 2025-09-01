@@ -6,7 +6,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Send, Loader2 } from "lucide-react"
-import { createClient } from "@/lib/supabase/client"
+// Supabase client removed
 import { toast } from "sonner"
 
 interface ChatInputProps {
@@ -18,25 +18,20 @@ interface ChatInputProps {
 export function ChatInput({ roomId, userId, onMessageSent }: ChatInputProps) {
   const [message, setMessage] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  const supabase = createClient()
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!message.trim() || isLoading) return
 
     setIsLoading(true)
 
+    // Placeholder message sending - real-time chat functionality removed
     try {
-      const { error } = await supabase.from("chat_messages").insert({
-        room_id: roomId,
-        user_id: userId,
-        message: message.trim(),
-      })
-
-      if (error) throw error
-
+      // Simulate sending delay
+      await new Promise(resolve => setTimeout(resolve, 500))
+      
       setMessage("")
       onMessageSent?.()
+      toast.success("Message functionality temporarily disabled")
     } catch (error) {
       console.error("Error sending message:", error)
       toast.error("Failed to send message. Please try again.")

@@ -22,7 +22,7 @@ import {
   Menu,
   X,
 } from "lucide-react"
-import { createClient } from "@/lib/supabase/client"
+// Supabase client removed
 import { useRouter } from "next/navigation"
 
 const navigation = [
@@ -49,10 +49,8 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false)
   const pathname = usePathname()
   const router = useRouter()
-  const supabase = createClient()
-
   const handleSignOut = async () => {
-    await supabase.auth.signOut()
+    // Sign out functionality removed
     router.push("/")
   }
 

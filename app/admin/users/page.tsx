@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Search } from "lucide-react"
-import { createClient } from "@/lib/supabase/client"
+// Supabase client removed
 import { toast } from "sonner"
 
 export default function AdminUsersPage() {
@@ -17,37 +17,49 @@ export default function AdminUsersPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [roleFilter, setRoleFilter] = useState("all")
   const [isLoading, setIsLoading] = useState(true)
-  const supabase = createClient()
-
   useEffect(() => {
-    fetchUsers()
+    // Placeholder users data - database functionality removed
+    const placeholderUsers = [
+      {
+        id: "1",
+        full_name: "Dr. Ahmad Ghamidi",
+        email: "ahmad@example.com",
+        role: "scholar",
+        bio: "Islamic scholar and teacher",
+        created_at: new Date().toISOString(),
+        avatar_url: null
+      },
+      {
+        id: "2",
+        full_name: "Ali Hassan",
+        email: "ali@example.com",
+        role: "student",
+        bio: "Student of Islamic studies",
+        created_at: new Date().toISOString(),
+        avatar_url: null
+      },
+      {
+        id: "3",
+        full_name: "Admin User",
+        email: "admin@example.com",
+        role: "admin",
+        bio: "System administrator",
+        created_at: new Date().toISOString(),
+        avatar_url: null
+      }
+    ]
+    
+    setUsers(placeholderUsers)
+    setIsLoading(false)
   }, [])
 
-  const fetchUsers = async () => {
-    try {
-      const { data, error } = await supabase.from("profiles").select("*").order("created_at", { ascending: false })
-
-      if (error) throw error
-      setUsers(data || [])
-    } catch (error) {
-      console.error("Error fetching users:", error)
-      toast.error("Failed to load users")
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
   const handleRoleChange = async (userId: string, newRole: string) => {
-    try {
-      const { error } = await supabase.from("profiles").update({ role: newRole }).eq("id", userId)
-      if (error) throw error
-
-      toast.success("User role updated successfully")
-      fetchUsers()
-    } catch (error) {
-      console.error("Error updating user role:", error)
-      toast.error("Failed to update user role")
-    }
+    // Placeholder role change - database functionality removed
+    const updatedUsers = users.map(user => 
+      user.id === userId ? { ...user, role: newRole } : user
+    )
+    setUsers(updatedUsers)
+    toast.success("Role updated (placeholder functionality)")
   }
 
   const filteredUsers = users.filter((user) => {

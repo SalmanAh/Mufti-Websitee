@@ -4,38 +4,38 @@ export const dynamic = 'force-dynamic'
 
 import { useState, useEffect } from "react"
 import { ContentTable } from "@/components/admin/content-table"
-import { createClient } from "@/lib/supabase/client"
+// Supabase client removed
 import { toast } from "sonner"
 
 export default function AdminArticlesPage() {
   const [articles, setArticles] = useState([])
   const [isLoading, setIsLoading] = useState(true)
-  const supabase = createClient()
-
   useEffect(() => {
-    fetchArticles()
+    // Placeholder articles data - database functionality removed
+    const placeholderArticles = [
+      {
+        id: "1",
+        title: "Understanding Islamic Principles",
+        content: "Sample article content...",
+        author: { full_name: "Dr. Ahmad" },
+        category: { name: "Islamic Studies" },
+        created_at: new Date().toISOString(),
+        status: "published"
+      },
+      {
+        id: "2",
+        title: "The Importance of Prayer",
+        content: "Sample article content...",
+        author: { full_name: "Scholar Ali" },
+        category: { name: "Worship" },
+        created_at: new Date().toISOString(),
+        status: "published"
+      }
+    ]
+    
+    setArticles(placeholderArticles)
+    setIsLoading(false)
   }, [])
-
-  const fetchArticles = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("articles")
-        .select(`
-          *,
-          author:profiles(full_name),
-          category:categories(name)
-        `)
-        .order("created_at", { ascending: false })
-
-      if (error) throw error
-      setArticles(data || [])
-    } catch (error) {
-      console.error("Error fetching articles:", error)
-      toast.error("Failed to load articles")
-    } finally {
-      setIsLoading(false)
-    }
-  }
 
   const handleEdit = (id: string) => {
     // Navigate to edit page
