@@ -26,7 +26,7 @@ export default function AdminArticlesPage() {
         id: "2",
         title: "The Importance of Prayer",
         content: "Sample article content...",
-        author: { full_name: "Scholar Ali" },
+        author: { full_name: "Admin Ali" },
         category: { name: "Worship" },
         created_at: new Date().toISOString(),
         status: "published"

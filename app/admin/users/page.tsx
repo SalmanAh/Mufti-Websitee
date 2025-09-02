@@ -24,7 +24,7 @@ export default function AdminUsersPage() {
         id: "1",
         full_name: "Dr. Ahmad Ghamidi",
         email: "ahmad@example.com",
-        role: "scholar",
+        role: "admin",
         bio: "Islamic scholar and teacher",
         created_at: new Date().toISOString(),
         avatar_url: null
@@ -33,8 +33,8 @@ export default function AdminUsersPage() {
         id: "2",
         full_name: "Ali Hassan",
         email: "ali@example.com",
-        role: "student",
-        bio: "Student of Islamic studies",
+        role: "user",
+        bio: "User of Islamic studies",
         created_at: new Date().toISOString(),
         avatar_url: null
       },
@@ -72,8 +72,8 @@ export default function AdminUsersPage() {
     switch (role) {
       case "admin":
         return "bg-red-500/10 text-red-700 dark:text-red-300"
-      case "scholar":
-        return "bg-purple-500/10 text-purple-700 dark:text-purple-300"
+      case "user":
+        return "bg-green-500/10 text-green-700 dark:text-green-300"
       default:
         return "bg-blue-500/10 text-blue-700 dark:text-blue-300"
     }
@@ -124,7 +124,7 @@ export default function AdminUsersPage() {
           <SelectContent>
             <SelectItem value="all">All Roles</SelectItem>
             <SelectItem value="user">User</SelectItem>
-            <SelectItem value="scholar">Scholar</SelectItem>
+
             <SelectItem value="admin">Admin</SelectItem>
           </SelectContent>
         </Select>
@@ -185,7 +185,7 @@ export default function AdminUsersPage() {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="user">User</SelectItem>
-                          <SelectItem value="scholar">Scholar</SelectItem>
+
                           <SelectItem value="admin">Admin</SelectItem>
                         </SelectContent>
                       </Select>

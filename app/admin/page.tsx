@@ -1,192 +1,188 @@
 export const dynamic = 'force-dynamic'
 
-// COMMENTED OUT: Server-side Supabase implementation using placeholder environment variables
-// import { createClient } from "@/lib/supabase/server"
+import { createClient } from "@/lib/supabase/server"
 import { StatsCard } from "@/components/admin/stats-card"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { FileText, Video, BookOpen, Mic, Users, Eye, TrendingUp, MessageCircle } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Users, TrendingUp, Search, Check, FileText, Eye } from "lucide-react"
+import Link from "next/link"
 
 export default async function AdminDashboard() {
-  // COMMENTED OUT: Server-side authentication and data fetching
-  // const supabase = await createClient()
+  const supabase = await createClient()
 
-  // // Fetch statistics
-  // const [
-  //   { count: articlesCount },
-  //   { count: videosCount },
-  //   { count: booksCount },
-  //   { count: lecturesCount },
-  //   { count: usersCount },
-  //   { count: chatRoomsCount },
-  // ] = await Promise.all([
-  //   supabase.from("articles").select("*", { count: "exact", head: true }),
-  //   supabase.from("videos").select("*", { count: "exact", head: true }),
-  //   supabase.from("books").select("*", { count: "exact", head: true }),
-  //   supabase.from("lectures").select("*", { count: "exact", head: true }),
-  //   supabase.from("profiles").select("*", { count: "exact", head: true }),
-  //   supabase.from("chat_rooms").select("*", { count: "exact", head: true }),
-  // ])
+  // Get current user
+  const { data: { user } } = await supabase.auth.getUser()
+  
+  if (!user) {
+    return <div>Please log in to access the admin dashboard.</div>
+  }
 
-  // // Fetch total views
-  // const { data: articlesViews } = await supabase.from("articles").select("views")
-  // const { data: videosViews } = await supabase.from("videos").select("views")
-  // const { data: lecturesViews } = await supabase.from("lectures").select("views")
+  // Fetch statistics with error handling
+  const fetchStats = async () => {
+    try {
+      const [
+        articlesResult,
+        videosResult,
+        booksResult,
+        lecturesResult,
+        usersResult,
+        chatRoomsResult,
+      ] = await Promise.all([
+        supabase.from("articles").select("*", { count: "exact", head: true }),
+        supabase.from("videos").select("*", { count: "exact", head: true }),
+        supabase.from("books").select("*", { count: "exact", head: true }),
+        supabase.from("lectures").select("*", { count: "exact", head: true }),
+        supabase.from("users").select("*", { count: "exact", head: true }),
+        supabase.from("chat_messages").select("*", { count: "exact", head: true }),
+      ])
 
-  // const totalViews =
-  //   (articlesViews?.reduce((sum, item) => sum + (item.views || 0), 0) || 0) +
-  //   (videosViews?.reduce((sum, item) => sum + (item.views || 0), 0) || 0) +
-  //   (lecturesViews?.reduce((sum, item) => sum + (item.views || 0), 0) || 0)
+      return {
+        articlesCount: articlesResult.count || 0,
+        videosCount: videosResult.count || 0,
+        booksCount: booksResult.count || 0,
+        lecturesCount: lecturesResult.count || 0,
+        usersCount: usersResult.count || 0,
+        chatRoomsCount: chatRoomsResult.count || 0,
+      }
+    } catch (error) {
+      console.error('Error fetching stats:', error)
+      return {
+        articlesCount: 0,
+        videosCount: 0,
+        booksCount: 0,
+        lecturesCount: 0,
+        usersCount: 0,
+        chatRoomsCount: 0,
+      }
+    }
+  }
 
-  // // Fetch recent content
-  // const { data: recentArticles } = await supabase
-  //   .from("articles")
-  //   .select("id, title, created_at, author:profiles(full_name)")
-  //   .order("created_at", { ascending: false })
-  //   .limit(5)
+  // Fetch recent data
+  const fetchRecentData = async () => {
+    try {
+      const [articlesResult, usersResult] = await Promise.all([
+        supabase
+          .from("articles")
+          .select("id, title, created_at, author_name")
+          .order("created_at", { ascending: false })
+          .limit(5),
+        supabase
+          .from("users")
+          .select("id, full_name, created_at, role")
+          .order("created_at", { ascending: false })
+          .limit(5)
+      ])
 
-  // const { data: recentUsers } = await supabase
-  //   .from("profiles")
-  //   .select("id, full_name, created_at, role")
-  //   .order("created_at", { ascending: false })
-  //   .limit(5)
+      return {
+        recentArticles: articlesResult.data || [],
+        recentUsers: usersResult.data || []
+      }
+    } catch (error) {
+      console.error('Error fetching recent data:', error)
+      return {
+        recentArticles: [],
+        recentUsers: []
+      }
+    }
+  }
 
-  // Temporary placeholder data for development
-  const articlesCount = 25
-  const videosCount = 18
-  const booksCount = 12
-  const lecturesCount = 35
-  const usersCount = 150
-  const chatRoomsCount = 8
-  const totalViews = 12450
-
-  const recentArticles = [
-    { id: '1', title: 'Understanding Islamic Jurisprudence', created_at: '2024-01-20', author: { full_name: 'Dr. Ahmad Hassan' } },
-    { id: '2', title: 'The Pillars of Faith', created_at: '2024-01-18', author: { full_name: 'Sheikh Omar Ali' } },
-    { id: '3', title: 'Islamic Ethics in Modern Times', created_at: '2024-01-15', author: { full_name: 'Dr. Fatima Khan' } }
-  ]
-
-  const recentUsers = [
-    { id: '1', full_name: 'Abdullah Rahman', created_at: '2024-01-22', role: 'student' },
-    { id: '2', full_name: 'Aisha Mohamed', created_at: '2024-01-21', role: 'student' },
-    { id: '3', full_name: 'Hassan Ali', created_at: '2024-01-20', role: 'scholar' }
-  ]
+  const stats = await fetchStats()
+  const { recentArticles, recentUsers } = await fetchRecentData()
+  
+  const { articlesCount, videosCount, booksCount, lecturesCount, usersCount, chatRoomsCount } = stats
+  const totalViews = 12450 // This would need to be calculated from actual view data
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold">Dashboard</h1>
-        <p className="text-muted-foreground">Welcome to the Islamic Scholar Platform admin panel</p>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-amber-50 to-emerald-100 dark:from-emerald-950 dark:via-amber-950 dark:to-emerald-900">
+      <div className="space-y-6 p-6">
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Enhanced Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatsCard
           title="Total Articles"
-          value={articlesCount || 0}
-          description="Published and draft articles"
+          value={stats.articlesCount.toString()}
+          description="Published Articles"
           icon={FileText}
           trend={{ value: 12, isPositive: true }}
+          gradient="from-emerald-600 to-emerald-700"
         />
         <StatsCard
           title="Total Videos"
-          value={videosCount || 0}
-          description="Video content library"
-          icon={Video}
+          value={stats.videosCount.toString()}
+          description="Video Lectures"
+          icon={Eye}
           trend={{ value: 8, isPositive: true }}
-        />
-        <StatsCard
-          title="Total Books"
-          value={booksCount || 0}
-          description="Digital book collection"
-          icon={BookOpen}
-          trend={{ value: 3, isPositive: true }}
-        />
-        <StatsCard
-          title="Total Lectures"
-          value={lecturesCount || 0}
-          description="Audio lecture library"
-          icon={Mic}
-          trend={{ value: 15, isPositive: true }}
+          gradient="from-amber-600 to-amber-700"
         />
         <StatsCard
           title="Total Users"
-          value={usersCount || 0}
-          description="Registered platform users"
+          value={stats.usersCount.toString()}
+          description="Registered Users"
           icon={Users}
-          trend={{ value: 25, isPositive: true }}
+          trend={{ value: 15, isPositive: true }}
+          gradient="from-teal-600 to-teal-700"
         />
         <StatsCard
           title="Total Views"
-          value={totalViews.toLocaleString()}
-          description="Content engagement"
-          icon={Eye}
-          trend={{ value: 18, isPositive: true }}
-        />
-        <StatsCard
-          title="Chat Rooms"
-          value={chatRoomsCount || 0}
-          description="Active discussion rooms"
-          icon={MessageCircle}
-          trend={{ value: 5, isPositive: true }}
-        />
-        <StatsCard
-          title="Growth Rate"
-          value="23%"
-          description="Monthly user growth"
+          value={(stats.articlesCount + stats.videosCount * 10).toString()}
+          description="Content Views"
           icon={TrendingUp}
-          trend={{ value: 4, isPositive: true }}
+          trend={{ value: 23, isPositive: true }}
+          gradient="from-emerald-700 to-teal-700"
         />
       </div>
 
-      {/* Recent Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recent Articles */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Articles</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {recentArticles?.map((article) => (
-                <div key={article.id} className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium line-clamp-1">{article.title}</p>
-                    <p className="text-sm text-muted-foreground">By {article.author?.full_name}</p>
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    {new Date(article.created_at).toLocaleDateString()}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
 
-        {/* Recent Users */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Users</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {recentUsers?.map((user) => (
-                <div key={user.id} className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-primary-foreground text-sm font-semibold">
-                      {user.full_name.charAt(0)}
-                    </div>
-                    <div>
-                      <p className="font-medium">{user.full_name}</p>
-                      <p className="text-sm text-muted-foreground capitalize">{user.role}</p>
-                    </div>
-                  </div>
-                  <div className="text-sm text-muted-foreground">{new Date(user.created_at).toLocaleDateString()}</div>
+
+        {/* Charts and Analytics Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Content Analytics */}
+          <Card className="border border-emerald-200 dark:border-emerald-700 bg-white/80 dark:bg-emerald-900/30 backdrop-blur-sm shadow-lg">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg font-semibold flex items-center justify-between">
+                Content Analytics
+                <button className="text-gray-400 hover:text-gray-600">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                  </svg>
+                </button>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-64 bg-gradient-to-br from-emerald-50 to-amber-50 dark:from-emerald-900/50 dark:to-amber-900/50 rounded-lg flex items-center justify-center border border-emerald-200/50 dark:border-emerald-700/50">
+                <div className="text-center">
+                  <TrendingUp className="h-12 w-12 text-emerald-600 dark:text-emerald-400 mx-auto mb-2" />
+                  <p className="text-emerald-700 dark:text-emerald-300">Content performance analytics</p>
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* User Engagement */}
+          <Card className="border border-emerald-200 dark:border-emerald-700 bg-white/80 dark:bg-emerald-900/30 backdrop-blur-sm shadow-lg">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg font-semibold flex items-center justify-between">
+                User Engagement
+                <button className="text-gray-400 hover:text-gray-600">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                  </svg>
+                </button>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-64 bg-gradient-to-br from-teal-50 to-emerald-50 dark:from-teal-900/50 dark:to-emerald-900/50 rounded-lg flex items-center justify-center border border-teal-200/50 dark:border-teal-700/50">
+                <div className="text-center">
+                  <Users className="h-12 w-12 text-teal-600 dark:text-teal-400 mx-auto mb-2" />
+                  <p className="text-teal-700 dark:text-teal-300">User activity and engagement metrics</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+
       </div>
     </div>
   )

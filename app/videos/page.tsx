@@ -171,12 +171,10 @@ function VideoCard({ video }: { video: any }) {
             </div>
           </div>
 
-          <Button asChild className="w-full mt-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800">
-            <Link href={`/videos/${video.id}`}>
-              <Play className="h-4 w-4 mr-2" />
-              Watch Now
-            </Link>
-          </Button>
+          <div className="w-full mt-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 text-white">
+            <Play className="h-4 w-4 mr-2" />
+            Watch Now
+          </div>
         </div>
       </CardContent>
     </Card>

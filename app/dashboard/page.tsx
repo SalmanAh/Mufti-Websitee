@@ -1,10 +1,8 @@
 export const dynamic = 'force-dynamic'
 
-// COMMENTED OUT: Server-side redirect for authentication
-// import { redirect } from "next/navigation"
+import { redirect } from "next/navigation"
 import { Navigation } from "@/components/navigation"
-// COMMENTED OUT: Server-side Supabase implementation using placeholder environment variables
-// import { createClient } from "@/lib/supabase/server"
+import { createClient } from "@/lib/supabase/server"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -12,38 +10,28 @@ import { BookOpen, Video, FileText, Mic, Settings, Shield } from "lucide-react"
 import Link from "next/link"
 
 export default async function DashboardPage() {
-  // COMMENTED OUT: Server-side authentication and data fetching
-  // const supabase = await createClient()
+  const supabase = await createClient()
 
-  // const {
-  //   data: { user },
-  // } = await supabase.auth.getUser()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
 
-  // if (!user) {
-  //   redirect("/auth/login")
-  // }
-
-  // const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single()
-
-  // if (!profile) {
-  //   redirect("/auth/login")
-  // }
-
-  // Temporary placeholder data for development
-  const user = {
-    id: '1',
-    email: 'guest@example.com'
+  if (!user) {
+    redirect("/auth/login")
   }
 
-  const profile = {
-    id: '1',
-    full_name: 'Guest User',
-    role: 'student',
-    bio: 'A dedicated student of Islamic knowledge',
-    created_at: '2024-01-01T00:00:00Z'
+  const { data: profile } = await supabase.from("users").select("*").eq("id", user.id).single()
+
+  if (!profile) {
+    redirect("/auth/login")
   }
 
-  const isAdmin = ["admin", "scholar"].includes(profile.role)
+  const isAdmin = profile.role === "admin"
+
+  // Redirect admins to admin panel
+  if (isAdmin) {
+    redirect("/admin")
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -62,7 +50,7 @@ export default async function DashboardPage() {
           </div>
 
           {/* Quick Actions */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <Link href="/articles">
               <Card className="hover:shadow-lg transition-shadow cursor-pointer">
                 <CardHeader className="pb-3">
@@ -104,44 +92,9 @@ export default async function DashboardPage() {
                 </CardContent>
               </Card>
             </Link>
-
-            <Link href="/lectures">
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-                <CardHeader className="pb-3">
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <Mic className="h-5 w-5" />
-                    Lectures
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">Listen to audio lectures and sermons</p>
-                </CardContent>
-              </Card>
-            </Link>
           </div>
 
-          {/* Admin Panel Access */}
-          {isAdmin && (
-            <Card className="border-primary/20 bg-primary/5">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Shield className="h-5 w-5" />
-                  Admin Panel
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-muted-foreground">
-                  You have administrative access to manage content and users on the platform.
-                </p>
-                <Link href="/admin">
-                  <Button>
-                    <Settings className="h-4 w-4 mr-2" />
-                    Access Admin Panel
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
-          )}
+
 
           {/* Profile Information */}
           <Card>

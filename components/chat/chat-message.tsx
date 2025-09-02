@@ -33,8 +33,8 @@ export function ChatMessage({ message, isCurrentUser }: ChatMessageProps) {
     switch (role) {
       case "admin":
         return "bg-red-500/10 text-red-700 dark:text-red-300"
-      case "scholar":
-        return "bg-purple-500/10 text-purple-700 dark:text-purple-300"
+      case "user":
+        return "bg-green-500/10 text-green-700 dark:text-green-300"
       default:
         return "bg-blue-500/10 text-blue-700 dark:text-blue-300"
     }

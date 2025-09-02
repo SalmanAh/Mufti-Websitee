@@ -6,10 +6,11 @@ SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
-  INSERT INTO public.profiles (id, full_name, role)
+  INSERT INTO public.users (id, full_name, email, role)
   VALUES (
     NEW.id,
     COALESCE(NEW.raw_user_meta_data ->> 'full_name', 'User'),
+    NEW.email,
     'user'
   )
   ON CONFLICT (id) DO NOTHING;

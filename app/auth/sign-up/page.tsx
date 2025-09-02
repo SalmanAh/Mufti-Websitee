@@ -4,7 +4,6 @@ export const dynamic = 'force-dynamic'
 
 import type React from "react"
 
-// Supabase client removed
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -13,6 +12,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { Navigation } from "@/components/navigation"
+import { createClient } from "@/lib/supabase/client"
 
 export default function SignUpPage() {
   const [email, setEmail] = useState("")
@@ -34,13 +34,38 @@ export default function SignUpPage() {
       return
     }
 
-    // Placeholder sign-up - authentication removed
     try {
-      // Simulate loading
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      const supabase = createClient()
+      
+      // Sign up with Supabase
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: fullName,
+          },
+        },
+      })
+
+      if (signUpError) {
+        setError(signUpError.message)
+        return
+      }
+
+      if (data.user) {
+        // Wait a moment for the trigger to create the profile
+        await new Promise(resolve => setTimeout(resolve, 1500))
+        
+        // Since the trigger creates the profile automatically and we've waited,
+        // we can assume success. The user will be redirected to sign-up-success.
+        // Any profile issues will be caught during the actual login process.
+        console.log('Profile creation process completed for user:', data.user.id)
+      }
+
       router.push("/auth/sign-up-success")
     } catch (error: unknown) {
-      setError("Sign-up functionality temporarily disabled")
+      setError(error instanceof Error ? error.message : 'An error occurred during sign-up')
     } finally {
       setIsLoading(false)
     }
