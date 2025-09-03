@@ -13,9 +13,10 @@ const navigation = [
   { name: "Home", href: "/", icon: BookOpen },
   { name: "Articles", href: "/articles", icon: FileText },
   { name: "Videos", href: "/videos", icon: Video },
+  { name: "Hadiths", href: "/hadiths", icon: MessageCircle },
+  { name: "Ayats", href: "/ayats", icon: BookOpen },
   { name: "Books", href: "/books", icon: BookOpen },
   { name: "Bio", href: "/bio", icon: UserCircle },
-  { name: "Chat", href: "/chat", icon: MessageCircle },
 ]
 
 export function Navigation() {
@@ -63,7 +64,7 @@ export function Navigation() {
   }
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md">
+    <nav className="relative w-full border-b bg-background">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
@@ -104,12 +105,6 @@ export function Navigation() {
 
             {user ? (
               <div className="hidden md:flex items-center space-x-2">
-                <Link href="/dashboard">
-                  <Button variant="ghost" size="sm">
-                    <User className="h-4 w-4 mr-2" />
-                    Dashboard
-                  </Button>
-                </Link>
                 <Button variant="ghost" size="sm" onClick={handleSignOut}>
                   Sign Out
                 </Button>
@@ -120,9 +115,6 @@ export function Navigation() {
                   <Button variant="ghost" size="sm">
                     Sign In
                   </Button>
-                </Link>
-                <Link href="/auth/sign-up">
-                  <Button size="sm">Sign Up</Button>
                 </Link>
               </div>
             )}
@@ -159,12 +151,6 @@ export function Navigation() {
                   <div className="border-t pt-4 mt-4">
                     {user ? (
                       <div className="space-y-2">
-                        <Link href="/dashboard" onClick={() => setIsOpen(false)}>
-                          <Button variant="ghost" className="w-full justify-start">
-                            <User className="h-4 w-4 mr-2" />
-                            Dashboard
-                          </Button>
-                        </Link>
                         <Button variant="ghost" className="w-full justify-start" onClick={handleSignOut}>
                           Sign Out
                         </Button>
@@ -175,9 +161,6 @@ export function Navigation() {
                           <Button variant="ghost" className="w-full">
                             Sign In
                           </Button>
-                        </Link>
-                        <Link href="/auth/sign-up" onClick={() => setIsOpen(false)}>
-                          <Button className="w-full">Sign Up</Button>
                         </Link>
                       </div>
                     )}
