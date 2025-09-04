@@ -9,7 +9,8 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import Link from "next/link"
 
-const slideImages = [
+// Desktop/Laptop images (first 3)
+const desktopSlideImages = [
   {
     src: "/Pics/First.jpg",
     title: "Divine Names",
@@ -24,7 +25,11 @@ const slideImages = [
     src: "/Pics/Third.jpg",
     title: "Holy Quran",
     subtitle: "Divine Guidance for Humanity"
-  },
+  }
+]
+
+// Mobile images (last 3)
+const mobileSlideImages = [
   {
     src: "/Pics/Fourth.jpg",
     title: "Islamic Architecture",
@@ -80,20 +85,41 @@ const sampleContent = {
 
 export function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0)
+  const [isMobile, setIsMobile] = useState(false)
+
+  // Check if screen is mobile size
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768) // md breakpoint
+    }
+    
+    checkScreenSize()
+    window.addEventListener('resize', checkScreenSize)
+    
+    return () => window.removeEventListener('resize', checkScreenSize)
+  }, [])
+
+  // Get current slide images based on screen size
+  const currentSlideImages = isMobile ? mobileSlideImages : desktopSlideImages
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slideImages.length)
+      setCurrentSlide((prev) => (prev + 1) % currentSlideImages.length)
     }, 5000)
     return () => clearInterval(timer)
-  }, [])
+  }, [currentSlideImages.length])
+
+  // Reset slide when switching between mobile/desktop
+  useEffect(() => {
+    setCurrentSlide(0)
+  }, [isMobile])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-amber-50 dark:from-gray-800 dark:via-gray-900 dark:to-gray-800">
       {/* Hero Slideshow */}
       <div className="relative h-[400px] md:h-[500px] overflow-hidden bg-gradient-to-r from-green-100 to-amber-100 dark:from-gray-800 dark:to-gray-700">
         
-        {slideImages.map((image, index) => (
+        {currentSlideImages.map((image, index) => (
           <div
             key={index}
             className={`absolute inset-0 transition-transform duration-1000 ease-in-out ${
@@ -111,7 +137,7 @@ export function HeroSection() {
         
         {/* Slide Indicators */}
         <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-20 flex space-x-2">
-          {slideImages.map((_, index) => (
+          {currentSlideImages.map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentSlide(index)}
@@ -470,8 +496,11 @@ export function HeroSection() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="col-span-1 md:col-span-2">
               <div className="flex items-center space-x-2 mb-4">
-                <BookOpen className="h-8 w-8 text-amber-400" />
-                <span className="text-2xl font-bold">Islamic Scholar</span>
+                <img 
+                src="/Pics/Logo.png" 
+                alt="Mufti's Website Logo" 
+                className="h-20 w-auto object-contain"
+              />
               </div>
               <p className="text-green-100 mb-4 max-w-md">
                 Dedicated to spreading authentic Islamic knowledge and teachings through modern digital platforms.

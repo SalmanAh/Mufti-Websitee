@@ -17,8 +17,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     redirect("/auth/login")
   }
 
-  // Check admin role
-  const { data: profile } = await supabase.from("users").select("*").eq("id", user.id).single()
+  // Check admin role - only fetch required fields for better performance
+  const { data: profile } = await supabase.from("users").select("id, role, full_name, email").eq("id", user.id).single()
 
   if (!profile || profile.role !== "admin") {
     redirect("/dashboard")

@@ -42,11 +42,21 @@ export default function LoginPage() {
       }
 
       if (data.user) {
-        // Get role from JWT claims to avoid RLS recursion
-        const role = data.user.user_metadata?.role || 'user'
+        // Get user profile from database to check role
+        const { data: profile, error: profileError } = await supabase
+          .from('users')
+          .select('role')
+          .eq('id', data.user.id)
+          .single()
         
-        // Redirect based on role
-        if (role === 'admin') {
+        if (profileError) {
+          console.error('Error fetching user profile:', profileError)
+          setError('Failed to load user profile. Please try again.')
+          return
+        }
+        
+        // Redirect based on role from database
+        if (profile?.role === 'admin') {
           router.push('/admin')
         } else {
           router.push('/dashboard')

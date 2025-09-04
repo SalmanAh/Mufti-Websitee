@@ -11,25 +11,28 @@ export default function AdminArticlesPage() {
   const [articles, setArticles] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   useEffect(() => {
-    // Placeholder articles data - database functionality removed
+    // Placeholder articles data - matches database schema
     const placeholderArticles = [
       {
-        id: "1",
+        id: "550e8400-e29b-41d4-a716-446655440001",
         title: "Understanding Islamic Principles",
-        content: "Sample article content...",
-        author: { full_name: "Dr. Ahmad" },
-        category: { name: "Islamic Studies" },
-        created_at: new Date().toISOString(),
-        status: "published"
+        content: "This is a comprehensive article about the fundamental principles of Islam, covering the five pillars and their significance in a Muslim's daily life.",
+        author: "Dr. Ahmad Hassan",
+        created_at: new Date(Date.now() - 86400000).toISOString() // 1 day ago
       },
       {
-        id: "2",
-        title: "The Importance of Prayer",
-        content: "Sample article content...",
-        author: { full_name: "Admin Ali" },
-        category: { name: "Worship" },
-        created_at: new Date().toISOString(),
-        status: "published"
+        id: "550e8400-e29b-41d4-a716-446655440002",
+        title: "The Importance of Prayer in Islam",
+        content: "An in-depth exploration of Salah (prayer) as one of the five pillars of Islam, discussing its spiritual significance and practical implementation.",
+        author: "Sheikh Ali Rahman",
+        created_at: new Date(Date.now() - 172800000).toISOString() // 2 days ago
+      },
+      {
+        id: "550e8400-e29b-41d4-a716-446655440003",
+        title: "Zakat: The Third Pillar of Islam",
+        content: "Understanding the concept of Zakat, its calculation, and its role in creating social justice and economic balance in Islamic society.",
+        author: "Dr. Fatima Al-Zahra",
+        created_at: new Date(Date.now() - 259200000).toISOString() // 3 days ago
       }
     ]
     

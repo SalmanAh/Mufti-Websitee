@@ -77,6 +77,7 @@ export default async function AdminAnalyticsPage() {
           description="Total article engagement"
           icon={FileText}
           trend={{ value: 15, isPositive: true }}
+          gradient="from-emerald-600 to-emerald-700"
         />
         <StatsCard
           title="Video Views"
@@ -84,6 +85,7 @@ export default async function AdminAnalyticsPage() {
           description="Total video engagement"
           icon={Video}
           trend={{ value: 22, isPositive: true }}
+          gradient="from-amber-600 to-amber-700"
         />
         <StatsCard
           title="Lecture Listens"
@@ -91,6 +93,7 @@ export default async function AdminAnalyticsPage() {
           description="Total lecture engagement"
           icon={Mic}
           trend={{ value: 18, isPositive: true }}
+          gradient="from-emerald-700 to-emerald-800"
         />
         <StatsCard
           title="Book Downloads"
@@ -98,6 +101,7 @@ export default async function AdminAnalyticsPage() {
           description="Total book downloads"
           icon={Download}
           trend={{ value: 8, isPositive: true }}
+          gradient="from-amber-700 to-amber-800"
         />
       </div>
 
@@ -109,6 +113,7 @@ export default async function AdminAnalyticsPage() {
           description="Registered platform users"
           icon={Users}
           trend={{ value: Math.round(userGrowthRate), isPositive: userGrowthRate > 0 }}
+          gradient="from-emerald-600 to-emerald-700"
         />
         <StatsCard
           title="New Users (30d)"
@@ -116,6 +121,7 @@ export default async function AdminAnalyticsPage() {
           description="Users joined this month"
           icon={TrendingUp}
           trend={{ value: 25, isPositive: true }}
+          gradient="from-amber-600 to-amber-700"
         />
         <StatsCard
           title="Engagement Rate"
@@ -123,6 +129,7 @@ export default async function AdminAnalyticsPage() {
           description="Average user engagement"
           icon={Eye}
           trend={{ value: 5, isPositive: true }}
+          gradient="from-emerald-700 to-emerald-800"
         />
       </div>
 
@@ -140,7 +147,7 @@ export default async function AdminAnalyticsPage() {
                 .map((article, index) => (
                   <div key={index} className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center text-sm font-semibold">
+                      <div className="w-8 h-8 bg-emerald-600/10 rounded-full flex items-center justify-center text-sm font-semibold text-emerald-700">
                         {index + 1}
                       </div>
                       <div>
@@ -169,7 +176,7 @@ export default async function AdminAnalyticsPage() {
                 .map((video, index) => (
                   <div key={index} className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-red-500/10 rounded-full flex items-center justify-center text-sm font-semibold">
+                      <div className="w-8 h-8 bg-amber-600/10 rounded-full flex items-center justify-center text-sm font-semibold text-amber-700">
                         {index + 1}
                       </div>
                       <div>

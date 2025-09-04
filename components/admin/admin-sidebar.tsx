@@ -13,14 +13,14 @@ import {
   Video,
   BookOpen,
   Mic,
-  Users,
-  MessageCircle,
   Settings,
   BarChart3,
   FolderOpen,
   LogOut,
   Menu,
   X,
+  Scroll,
+  Quote,
 } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
@@ -31,8 +31,8 @@ const navigation = [
   { name: "Articles", href: "/admin/articles", icon: FileText },
   { name: "Videos", href: "/admin/videos", icon: Video },
   { name: "Books", href: "/admin/books", icon: BookOpen },
-  { name: "Users", href: "/admin/users", icon: Users },
-  { name: "Chat Rooms", href: "/admin/chat", icon: MessageCircle },
+  { name: "Hadiths", href: "/admin/hadiths", icon: Scroll },
+  { name: "Ayats", href: "/admin/ayats", icon: Quote },
   { name: "Settings", href: "/admin/settings", icon: Settings },
 ]
 

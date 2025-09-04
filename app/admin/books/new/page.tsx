@@ -1,0 +1,233 @@
+"use client"
+
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { ArrowLeft, Save } from "lucide-react"
+import { toast } from "sonner"
+import Link from "next/link"
+import { createClient } from "@/lib/supabase/client"
+
+export default function NewBookPage() {
+  const router = useRouter()
+  const [isLoading, setIsLoading] = useState(false)
+  const [formData, setFormData] = useState({
+    title: "",
+    description: ""
+  })
+  const [pdfFile, setPdfFile] = useState<File | null>(null)
+  const [uploadProgress, setUploadProgress] = useState(0)
+  const [isUploading, setIsUploading] = useState(false)
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }))
+  }
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file && file.type === 'application/pdf') {
+      setPdfFile(file)
+    } else {
+      toast.error('Please select a valid PDF file')
+    }
+  }
+
+  const uploadPdfToSupabase = async (file: File): Promise<string> => {
+    const supabase = createClient()
+    const fileExt = 'pdf'
+    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`
+    const filePath = `books/${fileName}`
+
+    const { data, error } = await supabase.storage
+      .from('E-Books')
+      .upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: false,
+        onUploadProgress: (progress) => {
+          const percent = (progress.loaded / progress.total) * 100
+          setUploadProgress(Math.round(percent))
+        }
+      })
+
+    if (error) {
+      throw new Error(`Upload failed: ${error.message}`)
+    }
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('E-Books')
+      .getPublicUrl(filePath)
+
+    return publicUrl
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    if (!formData.title.trim()) {
+      toast.error("Title is required")
+      return
+    }
+
+    if (!pdfFile) {
+      toast.error("Please select a PDF file")
+      return
+    }
+
+    setIsLoading(true)
+    
+    try {
+      setIsUploading(true)
+      setUploadProgress(0)
+      
+      // Upload PDF file to Supabase storage
+      const pdfUrl = await uploadPdfToSupabase(pdfFile)
+      
+      const supabase = createClient()
+      
+      const { data, error } = await supabase
+        .from('books')
+        .insert([{
+          title: formData.title,
+          pdf_url: pdfUrl,
+          description: formData.description
+        }])
+        .select()
+      
+      if (error) throw error
+      
+      toast.success("Book created successfully!")
+      
+      // Reset form after successful creation
+      setFormData({
+        title: "",
+        description: ""
+      })
+      setPdfFile(null)
+      setUploadProgress(0)
+      
+      // Reset file input
+      const fileInput = document.getElementById('pdf-file') as HTMLInputElement
+      if (fileInput) fileInput.value = ''
+      
+      router.push("/admin/books")
+    } catch (error) {
+      console.error("Error creating book:", error)
+      toast.error("Failed to create book")
+    } finally {
+      setIsLoading(false)
+      setIsUploading(false)
+      setUploadProgress(0)
+    }
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center gap-4">
+        <Link href="/admin/books">
+          <Button variant="ghost" size="icon">
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+        </Link>
+        <div>
+          <h1 className="text-3xl font-bold">Add New Book</h1>
+          <p className="text-muted-foreground">Create a new book entry for your website</p>
+        </div>
+      </div>
+
+      <Card className="max-w-2xl">
+        <CardHeader>
+          <CardTitle>Book Details</CardTitle>
+          <CardDescription>
+            Fill in the information below to create a new book entry
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="title">Title *</Label>
+              <Input
+                id="title"
+                name="title"
+                value={formData.title}
+                onChange={handleInputChange}
+                placeholder="Enter book title"
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="pdf-file">PDF File</Label>
+              <Input
+                id="pdf-file"
+                type="file"
+                accept=".pdf"
+                onChange={handleFileChange}
+                className="cursor-pointer"
+              />
+              {pdfFile && (
+                <p className="text-sm text-muted-foreground">
+                  Selected: {pdfFile.name} ({(pdfFile.size / 1024 / 1024).toFixed(2)} MB)
+                </p>
+              )}
+              {isUploading && (
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span>Uploading...</span>
+                    <span>{uploadProgress}%</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div 
+                      className="bg-blue-600 h-2 rounded-full transition-all duration-300" 
+                      style={{ width: `${uploadProgress}%` }}
+                    ></div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="description">Description</Label>
+              <Textarea
+                id="description"
+                name="description"
+                value={formData.description}
+                onChange={handleInputChange}
+                placeholder="Enter book description (optional)"
+                rows={6}
+              />
+            </div>
+
+            <div className="flex gap-4">
+              <Button type="submit" disabled={isLoading || isUploading}>
+                {isLoading || isUploading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    {isUploading ? 'Uploading...' : 'Creating...'}
+                  </>
+                ) : (
+                  <>
+                    <Save className="h-4 w-4 mr-2" />
+                    Create Book
+                  </>
+                )}
+              </Button>
+              <Link href="/admin/books">
+                <Button type="button" variant="outline">
+                  Cancel
+                </Button>
+              </Link>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
