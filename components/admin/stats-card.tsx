@@ -12,11 +12,12 @@ interface StatsCardProps {
     isPositive: boolean
   }
   gradient?: string
+  views?: number
 }
 
-export function StatsCard({ title, value, description, icon: Icon, trend, gradient = "from-blue-500 to-blue-600" }: StatsCardProps) {
+export function StatsCard({ title, value, description, icon: Icon, trend, gradient = "from-blue-500 to-blue-600", views }: StatsCardProps) {
   return (
-    <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group">
+    <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group hover:scale-105 bg-white">
       <div className={`bg-gradient-to-br ${gradient} p-6 text-white relative`}>
         <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -translate-y-10 translate-x-10"></div>
         <div className="absolute bottom-0 left-0 w-16 h-16 bg-white/5 rounded-full translate-y-8 -translate-x-8"></div>
@@ -29,20 +30,9 @@ export function StatsCard({ title, value, description, icon: Icon, trend, gradie
         <CardContent className="p-0 pt-4 relative z-10">
           <div className="text-3xl font-bold text-white mb-1">{value}</div>
           {description && <p className="text-sm text-white/80 mb-2">{description}</p>}
-          {trend && (
-            <div className="flex items-center gap-1">
-              {trend.isPositive ? (
-                <TrendingUp className="h-4 w-4 text-green-300" />
-              ) : (
-                <TrendingDown className="h-4 w-4 text-red-300" />
-              )}
-              <p className={`text-sm font-medium ${
-                trend.isPositive ? "text-green-300" : "text-red-300"
-              }`}>
-                {trend.isPositive ? "+" : ""}
-                {trend.value}%
-              </p>
-              <span className="text-white/70 text-sm ml-1">vs last month</span>
+          {views !== undefined && (
+            <div className="flex items-center gap-1 mb-2">
+              <span className="text-white/80 text-sm">Views: {views.toLocaleString()}</span>
             </div>
           )}
         </CardContent>

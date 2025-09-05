@@ -4,9 +4,10 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
-import { Eye, Clock, Download, Share2, BookmarkPlus, ArrowLeft } from "lucide-react"
+import { Eye, Clock, Download, Share2, BookmarkPlus, ArrowLeft, User } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
+import { getYouTubeThumbnail, getYouTubeEmbedUrl, isYouTubeUrl } from "@/lib/youtube-utils"
 
 interface ContentViewerProps {
   content: {
@@ -25,6 +26,7 @@ interface ContentViewerProps {
     thumbnail_url?: string
     cover_image?: string
     video_url?: string
+    youtube_link?: string
     audio_url?: string
     pdf_url?: string
   }
@@ -45,42 +47,49 @@ export function ContentViewer({ content, type }: ContentViewerProps) {
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
-      {/* Back Button */}
-      <Link href={`/${type}s`}>
-        <Button variant="ghost" className="mb-4">
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to {type}s
-        </Button>
-      </Link>
 
       {/* Header */}
-      <div className="space-y-6">
-        {/* Image/Video/Audio Player */}
+      <div className="space-y-8">
+        {/* Featured Image */}
         {imageUrl && (
-          <div className="relative aspect-video rounded-lg overflow-hidden">
+          <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl border border-emerald-100">
             <Image src={imageUrl || "/placeholder.svg"} alt={content.title} fill className="object-cover" />
             {content.featured && (
               <div className="absolute top-4 left-4">
-                <Badge className="bg-primary text-primary-foreground">Featured</Badge>
+                <Badge className="bg-emerald-600 text-white shadow-lg">Featured</Badge>
               </div>
             )}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
           </div>
         )}
 
         {/* Video Player */}
-        {type === "video" && content.video_url && (
-          <div className="aspect-video rounded-lg overflow-hidden bg-black">
-            <video controls className="w-full h-full" poster={content.thumbnail_url}>
-              <source src={content.video_url} type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
+        {type === "video" && (content.youtube_link || content.video_url) && (
+          <div className="aspect-video rounded-xl overflow-hidden bg-black shadow-2xl border border-emerald-100">
+            {isYouTubeUrl(content.youtube_link || content.video_url || '') ? (
+              <iframe
+                src={getYouTubeEmbedUrl(content.youtube_link || content.video_url || '')}
+                title={content.title}
+                className="w-full h-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            ) : (
+              <video controls className="w-full h-full" poster={getYouTubeThumbnail(content.youtube_link || content.video_url || '') || content.thumbnail_url}>
+                <source src={content.video_url} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            )}
           </div>
         )}
 
         {/* Audio Player */}
         {type === "lecture" && content.audio_url && (
-          <Card>
-            <CardContent className="p-6">
+          <Card className="border-emerald-100 shadow-lg">
+            <CardContent className="p-8">
+              <div className="text-center mb-4">
+                <h3 className="text-lg font-semibold text-emerald-800">Audio Lecture</h3>
+              </div>
               <audio controls className="w-full">
                 <source src={content.audio_url} type="audio/mpeg" />
                 Your browser does not support the audio element.
@@ -89,78 +98,99 @@ export function ContentViewer({ content, type }: ContentViewerProps) {
           </Card>
         )}
 
-        {/* Title and Meta */}
-        <div className="space-y-4">
-          <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="outline">{content.category.name}</Badge>
-            {content.duration && (
-              <Badge variant="secondary">
-                <Clock className="h-3 w-3 mr-1" />
-                {formatDuration(content.duration)}
-              </Badge>
-            )}
-          </div>
-
-          <h1 className="text-3xl md:text-4xl font-bold text-balance">{content.title}</h1>
-
-          <div className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground">
-            <div>
-              By <span className="font-medium text-primary">{content.author.full_name}</span>
-            </div>
-            <div className="flex items-center">
-              <Eye className="h-4 w-4 mr-1" />
-              {content.views.toLocaleString()} views
-            </div>
-            {content.downloads !== undefined && (
-              <div className="flex items-center">
-                <Download className="h-4 w-4 mr-1" />
-                {content.downloads.toLocaleString()} downloads
+        {/* Article Content Card */}
+        <Card className="border-emerald-100 shadow-lg bg-white">
+          <CardContent className="p-8">
+            <div className="space-y-6">
+              <div className="flex flex-wrap items-center gap-3">
+                <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200">{content.category.name}</Badge>
+                {content.duration && (
+                  <Badge variant="secondary" className="bg-teal-100 text-teal-800">
+                    <Clock className="h-3 w-3 mr-1" />
+                    {formatDuration(content.duration)}
+                  </Badge>
+                )}
               </div>
-            )}
-            <div>{new Date(content.created_at).toLocaleDateString()}</div>
-          </div>
 
-          {/* Action Buttons */}
-          <div className="flex flex-wrap gap-2">
-            <Button variant="outline" size="sm">
-              <BookmarkPlus className="h-4 w-4 mr-2" />
-              Save
-            </Button>
-            <Button variant="outline" size="sm">
-              <Share2 className="h-4 w-4 mr-2" />
-              Share
-            </Button>
-            {content.pdf_url && (
-              <Link href={content.pdf_url} target="_blank">
-                <Button size="sm">
-                  <Download className="h-4 w-4 mr-2" />
-                  Download PDF
+              {content.description && (
+                <div className="text-lg text-gray-700 leading-relaxed border-l-4 border-emerald-200 pl-4 bg-emerald-50/50 py-3 rounded-r-lg">
+                  {content.description}
+                </div>
+              )}
+
+              <div className="flex flex-wrap items-center gap-6 text-sm text-gray-600 pt-4 border-t border-emerald-100">
+                <div className="flex items-center">
+                  <User className="h-4 w-4 mr-2 text-emerald-600" />
+                  <span className="font-medium text-emerald-800">{content.author.full_name}</span>
+                </div>
+                <div className="flex items-center">
+                  <Eye className="h-4 w-4 mr-1 text-emerald-600" />
+                  {content.views.toLocaleString()} views
+                </div>
+                {content.downloads !== undefined && (
+                  <div className="flex items-center">
+                    <Download className="h-4 w-4 mr-1 text-emerald-600" />
+                    {content.downloads.toLocaleString()} downloads
+                  </div>
+                )}
+                <div className="flex items-center">
+                  <Clock className="h-4 w-4 mr-1 text-emerald-600" />
+                  {new Date(content.created_at).toLocaleDateString()}
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-wrap gap-3 pt-2">
+                <Button variant="outline" size="sm" className="border-emerald-200 text-emerald-700 hover:bg-emerald-50">
+                  <BookmarkPlus className="h-4 w-4 mr-2" />
+                  Save Article
                 </Button>
-              </Link>
+                <Button variant="outline" size="sm" className="border-emerald-200 text-emerald-700 hover:bg-emerald-50">
+                  <Share2 className="h-4 w-4 mr-2" />
+                  Share
+                </Button>
+                {content.pdf_url && (
+                  <Link href={content.pdf_url} target="_blank">
+                    <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white">
+                      <Download className="h-4 w-4 mr-2" />
+                      Download PDF
+                    </Button>
+                  </Link>
+                )}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Main Content */}
+      <Card className="border-emerald-100 shadow-lg bg-white">
+        <CardContent className="p-8">
+          <div className="prose prose-lg max-w-none dark:prose-invert">
+            {content.content && (
+              <div className="text-pretty leading-relaxed" dangerouslySetInnerHTML={{ __html: content.content }} />
             )}
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
-      <Separator />
-
-      {/* Content */}
-      <div className="prose prose-lg max-w-none dark:prose-invert">
-        {content.description && (
-          <div className="text-xl text-muted-foreground mb-8 text-pretty">{content.description}</div>
-        )}
-
-        {content.content && <div className="text-pretty" dangerouslySetInnerHTML={{ __html: content.content }} />}
-      </div>
-
-      {/* Related Content */}
-      <Card>
-        <CardContent className="p-6">
-          <h3 className="text-lg font-semibold mb-4">About the Author</h3>
-          <p className="text-muted-foreground">
-            {content.author.full_name} is a renowned Islamic scholar with extensive knowledge in Islamic theology and
-            contemporary issues.
-          </p>
+      {/* Author Information */}
+      <Card className="border-emerald-100 shadow-lg bg-gradient-to-r from-emerald-50 to-teal-50">
+        <CardContent className="p-8">
+          <div className="flex items-start space-x-4">
+            <div className="p-3 bg-emerald-100 rounded-full">
+              <User className="h-6 w-6 text-emerald-700" />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-xl font-semibold text-emerald-800 mb-2">About the Author</h3>
+              <h4 className="text-lg font-medium text-emerald-700 mb-3">{content.author.full_name}</h4>
+              <p className="text-gray-700 leading-relaxed">
+                {content.author.full_name} is a renowned Islamic scholar with extensive knowledge in Islamic theology, 
+                jurisprudence, and contemporary issues. Their scholarly work contributes to the understanding and 
+                practice of Islam in the modern world.
+              </p>
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>

@@ -8,6 +8,7 @@ import { ArrowRight, BookOpen, Video, FileText, MessageCircle, Heart, Mail, Phon
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import Link from "next/link"
+import { createClient } from "@/lib/supabase/client"
 
 // Desktop/Laptop images (first 3)
 const desktopSlideImages = [
@@ -55,37 +56,26 @@ const features = [
   { icon: BookOpen, title: "E-Books", description: "Digital Islamic books and literature", href: "/books", color: "bg-green-800" },
 ]
 
-const sampleContent = {
-  videos: [
-    { title: "Understanding Islamic Prayer", author: "Dr. Ahmad Ghamidi", views: "15K", duration: "25:30" },
-    { title: "The Pillars of Islam Explained", author: "Sheikh Abdullah", views: "12K", duration: "18:45" },
-    { title: "Quranic Recitation Techniques", author: "Qari Muhammad", views: "8K", duration: "32:15" }
-  ],
-  hadiths: [
-    { title: "The Importance of Seeking Knowledge", narrator: "Ibn Majah", category: "Knowledge" },
-    { title: "Kindness to Parents", narrator: "At-Tirmidhi", category: "Family" },
-    { title: "The Best of People", narrator: "Al-Tabarani", category: "Character" }
-  ],
-  ayats: [
-    { title: "Ayat al-Kursi", surah: "Al-Baqarah", verse: "2:255", theme: "Tawheed" },
-    { title: "Opening of Al-Fatiha", surah: "Al-Fatiha", verse: "1:2", theme: "Praise" },
-    { title: "Declaration of Unity", surah: "Al-Ikhlas", verse: "112:1", theme: "Unity" }
-  ],
-  articles: [
-    { title: "Modern Islamic Banking Principles", author: "Dr. Sarah Ahmed", category: "Finance", readTime: "8 min" },
-    { title: "Women's Rights in Islam", author: "Dr. Fatima Ali", category: "Social Issues", readTime: "12 min" },
-    { title: "Environmental Ethics in Islam", author: "Prof. Omar Hassan", category: "Ethics", readTime: "6 min" }
-  ],
-  books: [
-    { title: "Tafseer of Surah Al-Baqarah", author: "Dr. Ahmad Ghamidi", pages: "450", language: "English" },
-    { title: "Islamic History: The Golden Age", author: "Prof. Ali Rahman", pages: "320", language: "English" },
-    { title: "Principles of Islamic Jurisprudence", author: "Sheikh Abdullah", pages: "280", language: "Arabic" }
-  ]
+// Real content will be fetched from database
+interface ContentData {
+  videos: any[]
+  hadiths: any[]
+  ayats: any[]
+  articles: any[]
+  books: any[]
 }
 
 export function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isMobile, setIsMobile] = useState(false)
+  const [contentData, setContentData] = useState<ContentData>({
+    videos: [],
+    hadiths: [],
+    ayats: [],
+    articles: [],
+    books: []
+  })
+  const [loading, setLoading] = useState(true)
 
   // Check if screen is mobile size
   useEffect(() => {
@@ -114,6 +104,64 @@ export function HeroSection() {
     setCurrentSlide(0)
   }, [isMobile])
 
+  // Fetch real data from database
+  useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        const supabase = createClient()
+        
+        // Fetch latest videos (limit 3)
+        const { data: videos } = await supabase
+          .from('videos')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(3)
+        
+        // Fetch latest hadiths (limit 3)
+        const { data: hadiths } = await supabase
+          .from('hadiths')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(3)
+        
+        // Fetch latest ayats (limit 3)
+        const { data: ayats } = await supabase
+          .from('ayats')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(3)
+        
+        // Fetch latest articles (limit 3)
+        const { data: articles } = await supabase
+          .from('articles')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(3)
+        
+        // Fetch latest books (limit 3)
+        const { data: books } = await supabase
+          .from('books')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(3)
+        
+        setContentData({
+          videos: videos || [],
+          hadiths: hadiths || [],
+          ayats: ayats || [],
+          articles: articles || [],
+          books: books || []
+        })
+      } catch (error) {
+        console.error('Error fetching content:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    
+    fetchContent()
+  }, [])
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-amber-50 dark:from-gray-800 dark:via-gray-900 dark:to-gray-800">
       {/* Hero Slideshow */}
@@ -127,11 +175,13 @@ export function HeroSection() {
               index < currentSlide ? "-translate-x-full" : "translate-x-full"
             }`}
           >
-            <img 
-              src={image.src} 
-              alt={image.title}
-              className="w-full h-full object-contain"
-            />
+            <div className="w-[80%] h-full mx-auto flex items-center justify-center">
+              <img 
+                src={image.src} 
+                alt={image.title}
+                className="w-full h-full object-contain"
+              />
+            </div>
           </div>
         ))}
         
@@ -192,8 +242,21 @@ export function HeroSection() {
           {/* Videos Section */}
           <div className="mb-16">
             <h3 className="text-3xl md:text-4xl font-bold text-green-700 dark:text-green-400 mb-8 text-center">Latest Videos</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {sampleContent.videos.map((video, index) => (
+            {loading ? (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {[1, 2, 3].map((i) => (
+                  <Card key={i} className="animate-pulse">
+                    <div className="aspect-video bg-gray-200 dark:bg-gray-700"></div>
+                    <div className="p-6 space-y-4">
+                      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                      <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {contentData.videos.map((video, index) => (
                 <Card key={index} className="group hover:shadow-2xl hover:shadow-green-500/10 transition-all duration-500 overflow-hidden border-0 bg-gradient-to-br from-white to-gray-50/50 dark:from-gray-900 dark:to-gray-800/50 hover:-translate-y-2">
                   <div className="relative">
                     <div className="aspect-video relative overflow-hidden bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900">
@@ -204,11 +267,11 @@ export function HeroSection() {
                       <div className="absolute bottom-3 left-3 right-3">
                         <div className="flex items-center justify-between text-white text-sm">
                           <Badge variant="secondary" className="bg-black/70 text-white backdrop-blur-sm">
-                            {video.duration}
+                            Video
                           </Badge>
                           <div className="flex items-center gap-1">
                             <Eye className="h-3 w-3" />
-                            <span>{video.views}</span>
+                            <span>{video.views || 0}</span>
                           </div>
                         </div>
                       </div>
@@ -217,15 +280,16 @@ export function HeroSection() {
                   <div className="p-6 space-y-4">
                     <div>
                       <h4 className="text-xl font-semibold line-clamp-2 group-hover:text-green-600 transition-colors">{video.title}</h4>
-                      <p className="text-sm text-muted-foreground mt-2">By {video.author}</p>
+                      <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{video.description}</p>
                     </div>
                     <div className="flex items-center justify-between pt-4 border-t">
-                      <Badge variant="outline" className="border-green-500/20 text-green-600 bg-green-500/5">Educational</Badge>
+                      <Badge variant="outline" className="border-green-500/20 text-green-600 bg-green-500/5">Video</Badge>
                     </div>
                   </div>
                 </Card>
               ))}
             </div>
+            )}
             <div className="text-center mt-8">
               <Link href="/videos">
                 <Button variant="outline" className="border-green-600 text-green-600 hover:bg-green-600 hover:text-white">
@@ -239,8 +303,21 @@ export function HeroSection() {
           {/* Hadiths Section */}
           <div className="mb-16">
             <h3 className="text-3xl md:text-4xl font-bold text-amber-700 dark:text-amber-400 mb-8 text-center">Featured Hadiths</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {sampleContent.hadiths.map((hadith, index) => (
+            {loading ? (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {[1, 2, 3].map((i) => (
+                  <Card key={i} className="animate-pulse">
+                    <div className="aspect-video bg-gray-200 dark:bg-gray-700"></div>
+                    <div className="p-6 space-y-4">
+                      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                      <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {contentData.hadiths.map((hadith, index) => (
                 <Card key={index} className="group hover:shadow-2xl hover:shadow-amber-500/10 transition-all duration-500 overflow-hidden border-0 bg-gradient-to-br from-white to-gray-50/50 dark:from-gray-900 dark:to-gray-800/50 hover:-translate-y-2">
                   <div className="relative">
                     <div className="aspect-video relative overflow-hidden bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950 dark:to-amber-900">
@@ -250,23 +327,24 @@ export function HeroSection() {
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
                       <div className="absolute bottom-3 left-3 right-3">
                         <Badge variant="secondary" className="bg-black/70 text-white backdrop-blur-sm">
-                          {hadith.narrator}
+                          {hadith.address || 'Hadith'}
                         </Badge>
                       </div>
                     </div>
                   </div>
                   <div className="p-6 space-y-4">
                     <div>
-                      <h4 className="text-xl font-semibold line-clamp-2 group-hover:text-amber-600 transition-colors">{hadith.title}</h4>
-                      <p className="text-sm text-muted-foreground mt-2">Narrator: {hadith.narrator}</p>
+                      <h4 className="text-xl font-semibold line-clamp-2 group-hover:text-amber-600 transition-colors">{hadith.address}</h4>
+                      <p className="text-sm text-muted-foreground mt-2 line-clamp-3">{hadith.translation_eng}</p>
                     </div>
                     <div className="flex items-center justify-between pt-4 border-t">
-                      <Badge variant="outline" className="border-amber-500/20 text-amber-600 bg-amber-500/5">{hadith.category}</Badge>
+                      <Badge variant="outline" className="border-amber-500/20 text-amber-600 bg-amber-500/5">{hadith.category || 'Hadith'}</Badge>
                     </div>
                   </div>
                 </Card>
               ))}
             </div>
+            )}
             <div className="text-center mt-8">
               <Link href="/hadiths">
                 <Button variant="outline" className="border-amber-600 text-amber-600 hover:bg-amber-600 hover:text-white">
@@ -280,33 +358,21 @@ export function HeroSection() {
           {/* Ayats Section */}
           <div className="mb-16">
             <h3 className="text-3xl md:text-4xl font-bold text-amber-700 dark:text-amber-400 mb-8 text-center">Beautiful Ayats</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {[
-                {
-                  title: "Ayat al-Kursi",
-                  description: "The most powerful verse in the Quran, describing Allah's sovereignty and knowledge.",
-                  surah: "Al-Baqarah",
-                  verse: "255",
-                  theme: "Tawheed",
-                  text: "Allah - there is no deity except Him, the Ever-Living, the Sustainer of existence."
-                },
-                {
-                  title: "Opening of Al-Fatiha",
-                  description: "The opening chapter of the Quran, known as the essence of the entire Quran.",
-                  surah: "Al-Fatiha",
-                  verse: "1-2",
-                  theme: "Praise",
-                  text: "In the name of Allah, the Entirely Merciful, the Especially Merciful. All praise is due to Allah, Lord of the worlds."
-                },
-                {
-                  title: "Declaration of Unity",
-                  description: "A profound declaration of Allah's absolute oneness and uniqueness.",
-                  surah: "Al-Ikhlas",
-                  verse: "1-4",
-                  theme: "Unity",
-                  text: "Say, He is Allah, the One! Allah, the Eternal, Absolute; He begets not, nor is He begotten; And there is none like unto Him."
-                }
-              ].map((ayat, index) => (
+            {loading ? (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {[1, 2, 3].map((i) => (
+                  <Card key={i} className="animate-pulse">
+                    <div className="aspect-video bg-gray-200 dark:bg-gray-700"></div>
+                    <div className="p-6 space-y-4">
+                      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                      <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {contentData.ayats.map((ayat, index) => (
                 <Card key={index} className="group hover:shadow-2xl hover:shadow-amber-500/10 transition-all duration-500 overflow-hidden border-0 bg-gradient-to-br from-white to-gray-50/50 dark:from-gray-900 dark:to-gray-800/50 hover:-translate-y-2">
                   <div className="relative">
                     <div className="aspect-video relative overflow-hidden bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950 dark:to-amber-900">
@@ -316,25 +382,25 @@ export function HeroSection() {
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
                       <div className="absolute bottom-3 left-3 right-3">
                         <Badge variant="secondary" className="bg-black/70 text-white backdrop-blur-sm">
-                          {ayat.surah}
+                          {ayat.address || 'Quran'}
                         </Badge>
                       </div>
                     </div>
                   </div>
                   <div className="p-6 space-y-4">
                     <div>
-                      <h4 className="text-xl font-semibold line-clamp-2 group-hover:text-amber-600 transition-colors">{ayat.title}</h4>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 line-clamp-2">{ayat.description}</p>
-                      <p className="text-sm text-muted-foreground mt-2 italic line-clamp-3">"{ayat.text}"</p>
-                      <p className="text-xs text-muted-foreground mt-1">{ayat.surah}:{ayat.verse}</p>
+                      <h4 className="text-xl font-semibold line-clamp-2 group-hover:text-amber-600 transition-colors">{ayat.address}</h4>
+                      <p className="text-sm text-muted-foreground mt-2 italic line-clamp-3">"{ayat.translation_eng}"</p>
+                      <p className="text-xs text-muted-foreground mt-1">{ayat.revelation}</p>
                     </div>
                     <div className="flex items-center justify-between pt-4 border-t">
-                      <Badge variant="outline" className="border-amber-500/20 text-amber-600 bg-amber-500/5">{ayat.theme}</Badge>
+                      <Badge variant="outline" className="border-amber-500/20 text-amber-600 bg-amber-500/5">{ayat.category || 'Quran'}</Badge>
                     </div>
                   </div>
                 </Card>
               ))}
             </div>
+            )}
             <div className="text-center mt-8">
               <Link href="/ayats">
                 <Button variant="outline" className="border-amber-600 text-amber-600 hover:bg-amber-600 hover:text-white">
@@ -348,8 +414,21 @@ export function HeroSection() {
           {/* Articles Section */}
           <div className="mb-16">
             <h3 className="text-3xl md:text-4xl font-bold text-amber-700 dark:text-amber-400 mb-8 text-center">Recent Articles</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {sampleContent.articles.map((article, index) => (
+            {loading ? (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {[1, 2, 3].map((i) => (
+                  <Card key={i} className="animate-pulse">
+                    <div className="aspect-video bg-gray-200 dark:bg-gray-700"></div>
+                    <div className="p-6 space-y-4">
+                      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                      <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {contentData.articles.map((article, index) => (
                 <Card key={index} className="group hover:shadow-2xl hover:shadow-amber-500/10 transition-all duration-500 overflow-hidden border-0 bg-gradient-to-br from-white to-gray-50/50 dark:from-gray-900 dark:to-gray-800/50 hover:-translate-y-2">
                   <div className="relative">
                     <div className="aspect-video relative overflow-hidden bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950 dark:to-amber-900">
@@ -359,7 +438,7 @@ export function HeroSection() {
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
                       <div className="absolute bottom-3 left-3 right-3">
                         <Badge variant="secondary" className="bg-black/70 text-white backdrop-blur-sm">
-                          {article.readTime}
+                          Article
                         </Badge>
                       </div>
                     </div>
@@ -367,15 +446,21 @@ export function HeroSection() {
                   <div className="p-6 space-y-4">
                     <div>
                       <h4 className="text-xl font-semibold line-clamp-2 group-hover:text-amber-600 transition-colors">{article.title}</h4>
-                      <p className="text-sm text-muted-foreground mt-2">By {article.author}</p>
+                      <p className="text-sm text-muted-foreground mt-2 line-clamp-3">{article.content?.substring(0, 150)}...</p>
                     </div>
                     <div className="flex items-center justify-between pt-4 border-t">
-                      <Badge variant="outline" className="border-amber-500/20 text-amber-600 bg-amber-500/5">{article.category}</Badge>
+                      <div className="flex items-center space-x-4 text-xs text-muted-foreground">
+                        <span>By {article.author || 'Islamic Scholar'}</span>
+                        <span>•</span>
+                        <span>{article.views || 0} views</span>
+                      </div>
+                      <Badge variant="outline" className="border-amber-500/20 text-amber-600 bg-amber-500/5">Article</Badge>
                     </div>
                   </div>
                 </Card>
               ))}
             </div>
+            )}
             <div className="text-center mt-8">
               <Link href="/articles">
                 <Button variant="outline" className="border-amber-600 text-amber-600 hover:bg-amber-600 hover:text-white">
@@ -389,8 +474,21 @@ export function HeroSection() {
           {/* E-Books Section */}
           <div className="mb-16">
             <h3 className="text-3xl md:text-4xl font-bold text-green-700 dark:text-green-400 mb-8 text-center">Featured E-Books</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {sampleContent.books.map((book, index) => (
+            {loading ? (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {[1, 2, 3].map((i) => (
+                  <Card key={i} className="animate-pulse">
+                    <div className="aspect-[3/4] bg-gray-200 dark:bg-gray-700"></div>
+                    <div className="p-6 space-y-4">
+                      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                      <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {contentData.books.map((book, index) => (
                 <Card key={index} className="group hover:shadow-2xl hover:shadow-green-500/10 transition-all duration-500 overflow-hidden border-0 bg-gradient-to-br from-white to-gray-50/50 dark:from-gray-900 dark:to-gray-800/50 hover:-translate-y-2">
                   <div className="relative">
                     <div className="aspect-[3/4] relative overflow-hidden bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900">
@@ -401,10 +499,7 @@ export function HeroSection() {
                       <div className="absolute bottom-3 left-3 right-3">
                         <div className="flex items-center gap-2 text-white text-sm">
                           <Badge variant="secondary" className="bg-black/70 text-white backdrop-blur-sm">
-                            {book.pages} pages
-                          </Badge>
-                          <Badge variant="secondary" className="bg-black/70 text-white backdrop-blur-sm">
-                            {book.language}
+                            E-Book
                           </Badge>
                         </div>
                       </div>
@@ -413,15 +508,22 @@ export function HeroSection() {
                   <div className="p-6 space-y-4">
                     <div>
                       <h4 className="text-xl font-semibold line-clamp-2 group-hover:text-green-600 transition-colors">{book.title}</h4>
-                      <p className="text-sm text-muted-foreground mt-2">By {book.author}</p>
+                      <p className="text-sm text-muted-foreground mt-2">Islamic E-Book</p>
+                      <p className="text-sm text-muted-foreground mt-2 line-clamp-3">{book.description}</p>
                     </div>
                     <div className="flex items-center justify-between pt-4 border-t">
-                      <Badge variant="outline" className="border-green-500/20 text-green-600 bg-green-500/5">{book.language}</Badge>
+                      <div className="flex items-center space-x-4 text-xs text-muted-foreground">
+                        <span>{book.views || 0} views</span>
+                        <span>•</span>
+                        <span>E-Book</span>
+                      </div>
+                      <Badge variant="outline" className="border-green-500/20 text-green-600 bg-green-500/5">Book</Badge>
                     </div>
                   </div>
                 </Card>
               ))}
             </div>
+            )}
             <div className="text-center mt-8">
               <Link href="/books">
                 <Button variant="outline" className="border-green-600 text-green-600 hover:bg-green-600 hover:text-white">

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { QuillEditor } from "@/components/ui/quill-editor"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ArrowLeft, Save } from "lucide-react"
 import { toast } from "sonner"
@@ -32,6 +33,14 @@ export default function NewHadithPage() {
       ...prev,
       [name]: value
     }))
+  }
+
+  const handleTafseerEngChange = (content: string) => {
+    setFormData(prev => ({ ...prev, tafseer_eng: content }))
+  }
+
+  const handleTafseerUrduChange = (content: string) => {
+    setFormData(prev => ({ ...prev, tafseer_urdu: content }))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -178,27 +187,20 @@ export default function NewHadithPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <Label htmlFor="tafseer_eng">English Tafseer</Label>
-                <Textarea
-                  id="tafseer_eng"
-                  name="tafseer_eng"
+                <QuillEditor
                   value={formData.tafseer_eng}
-                  onChange={handleInputChange}
+                  onChange={handleTafseerEngChange}
                   placeholder="Enter English commentary/explanation"
-                  rows={4}
                 />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="tafseer_urdu">Urdu Tafseer</Label>
-                <Textarea
-                  id="tafseer_urdu"
-                  name="tafseer_urdu"
+                <QuillEditor
                   value={formData.tafseer_urdu}
-                  onChange={handleInputChange}
+                  onChange={handleTafseerUrduChange}
                   placeholder="Enter Urdu commentary/explanation"
-                  rows={4}
-                  dir="rtl"
-                  className="text-right"
+                  className="[&_.ProseMirror]:text-right [&_.ProseMirror]:dir-rtl"
                 />
               </div>
             </div>

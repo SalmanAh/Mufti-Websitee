@@ -1,224 +1,170 @@
-export const dynamic = 'force-dynamic'
-
 import { Navigation } from "@/components/navigation"
-// COMMENTED OUT: Server-side Supabase implementation using placeholder environment variables
-// import { createClient } from "@/lib/supabase/server"
-import { Video, Star, Calendar, User, Eye, Play } from "lucide-react"
-import { Card, CardContent } from "@/components/ui/card"
+import { createClient } from "@/lib/supabase/server"
+import { Video, Star, Calendar, User, Eye, Play, Search, Filter } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import Link from "next/link"
 import Image from "next/image"
+import { getYouTubeThumbnail } from "@/lib/youtube-utils"
 
-const dummyVideos = [
-  {
-    id: 1,
-    title: "The Beautiful Names of Allah - Complete Series",
-    description:
-      "A comprehensive exploration of the 99 beautiful names of Allah and their meanings in our daily lives.",
-    author: "Sheikh Muhammad Al-Shareef",
-    category: "Theology",
-    views: 45672,
-    createdAt: "2024-01-20",
-    thumbnailUrl: "/islamic-calligraphy-allah-names-golden.png",
-    duration: "2:45:30",
-    featured: true,
-  },
-  {
-    id: 2,
-    title: "Understanding the Quran: Surah Al-Fatiha Deep Dive",
-    description: "An in-depth analysis of the opening chapter of the Quran and its profound meanings.",
-    author: "Dr. Yasir Qadhi",
-    category: "Quran Studies",
-    views: 32145,
-    createdAt: "2024-01-18",
-    thumbnailUrl: "/quran-open-pages-with-arabic-text.png",
-    duration: "1:23:15",
-    featured: false,
-  },
-  {
-    id: 3,
-    title: "The Life of Prophet Muhammad (PBUH) - Early Years",
-    description: "Exploring the early life and character of Prophet Muhammad before his prophethood.",
-    author: "Sheikh Omar Suleiman",
-    category: "Seerah",
-    views: 67890,
-    createdAt: "2024-01-15",
-    thumbnailUrl: "/mecca-kaaba-historical-illustration.png",
-    duration: "58:42",
-    featured: true,
-  },
-  {
-    id: 4,
-    title: "Islamic Finance: Principles and Practice",
-    description: "Understanding the fundamentals of Islamic banking and finance in the modern world.",
-    author: "Dr. Mufti Taqi Usmani",
-    category: "Finance",
-    views: 28934,
-    createdAt: "2024-01-12",
-    thumbnailUrl: "/islamic-geometric-patterns-gold-and-green.png",
-    duration: "1:15:20",
-    featured: false,
-  },
-  {
-    id: 5,
-    title: "The Science of Hadith Authentication",
-    description: "Learn how Islamic scholars verify the authenticity of prophetic traditions.",
-    author: "Sheikh Hamza Yusuf",
-    category: "Hadith Studies",
-    views: 19876,
-    createdAt: "2024-01-10",
-    thumbnailUrl: "/arabic-manuscript-and-books.png",
-    duration: "42:18",
-    featured: true,
-  },
-  {
-    id: 6,
-    title: "Islamic Art and Architecture Through History",
-    description: "Exploring the rich tradition of Islamic artistic expression and architectural marvels.",
-    author: "Dr. Oleg Grabar",
-    category: "Culture",
-    views: 15432,
-    createdAt: "2024-01-08",
-    thumbnailUrl: "/islamic-architecture-mosque-interior.png",
-    duration: "1:08:45",
-    featured: false,
-  },
-  {
-    id: 7,
-    title: "Women in Islam: Rights and Responsibilities",
-    description: "A balanced discussion on the status and role of women in Islamic society.",
-    author: "Dr. Ingrid Mattson",
-    category: "Social Issues",
-    views: 41256,
-    createdAt: "2024-01-05",
-    thumbnailUrl: "/islamic-school-students-learning.png",
-    duration: "55:30",
-    featured: true,
-  },
-  {
-    id: 8,
-    title: "Islamic Medicine: Healing Body and Soul",
-    description: "The holistic approach to health and healing in Islamic tradition.",
-    author: "Dr. Ahmad Shafaat",
-    category: "Health",
-    views: 22187,
-    createdAt: "2024-01-03",
-    thumbnailUrl: "/medical-symbols-with-islamic-motifs.png",
-    duration: "38:25",
-    featured: false,
-  },
-]
-
-function VideoCard({ video }: { video: any }) {
-  return (
-    <Link href={`/videos/${video.id}`}>
-      <Card className="group hover:shadow-2xl hover:shadow-red-500/10 transition-all duration-500 overflow-hidden cursor-pointer border-0 bg-gradient-to-br from-white to-gray-50/50 dark:from-gray-900 dark:to-gray-800/50 hover:-translate-y-2">
-      <div className="relative aspect-video overflow-hidden bg-black">
-        <Image
-          src={video.thumbnailUrl || "/placeholder.svg"}
-          alt={video.title}
-          width={400}
-          height={225}
-          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-        />
-
-        {/* Play Button Overlay */}
-        <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-300 flex items-center justify-center">
-          <div className="bg-gradient-to-r from-red-600 to-red-700 text-white rounded-full p-4 group-hover:scale-125 transition-transform duration-300 shadow-2xl">
-            <Play className="h-8 w-8 ml-1" />
-          </div>
-        </div>
-
-        {/* Duration Badge */}
-        <div className="absolute bottom-3 right-3">
-          <Badge className="bg-black/80 text-white backdrop-blur-sm shadow-lg">{video.duration}</Badge>
-        </div>
-
-        {video.featured && (
-          <Badge className="absolute top-3 left-3 bg-gradient-to-r from-red-600 to-red-700 text-white shadow-lg">
-            <Star className="h-3 w-3 mr-1" />
-            Featured
-          </Badge>
-        )}
-      </div>
-
-      <CardContent className="p-0">
-        <div className="p-4 space-y-4">
-          <div>
-            <h3 className="font-semibold line-clamp-2 group-hover:text-red-600 transition-colors text-lg">{video.title}</h3>
-
-            <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground">
-              <User className="h-4 w-4" />
-              <span>{video.author}</span>
-            </div>
-          </div>
-
-          <p className="text-sm text-muted-foreground line-clamp-2">{video.description}</p>
-
-          <div className="flex items-center justify-between">
-            <Badge variant="outline" className="border-red-500/20 text-red-600 bg-red-500/5">{video.category}</Badge>
-          </div>
-
-          <div className="flex items-center gap-4 text-sm text-muted-foreground">
-            <div className="flex items-center gap-1">
-              <Eye className="h-4 w-4" />
-              <span>{video.views.toLocaleString()}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Calendar className="h-4 w-4" />
-              <span>{new Date(video.createdAt).toLocaleDateString()}</span>
-            </div>
-          </div>
-
-          <div className="w-full mt-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 text-white">
-            <Play className="h-4 w-4 mr-2" />
-            Watch Now
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-    </Link>
-  )
+interface VideoData {
+  id: string;
+  title: string;
+  description?: string;
+  youtube_link: string;
+  views: number;
+  created_at: string;
 }
 
+
+
 export default async function VideosPage() {
-  // COMMENTED OUT: Server-side data fetching
-  // const supabase = await createClient()
+  const supabase = await createClient();
 
-  // // Fetch videos from database
-  // const { data: videos } = await supabase
-  //   .from("videos")
-  //   .select(`*,author:profiles(full_name),category:categories(name)`)
-  //   .eq("published", true)
-  //   .order("created_at", { ascending: false })
+  const { data: videos, error } = await supabase
+      .from('videos')
+      .select('*')
+      .order('created_at', { ascending: false });
 
-  // Temporary placeholder data for development
-  const displayVideos = dummyVideos
+  if (error) {
+    console.error('Error fetching videos:', error);
+  }
+
+  // Since there are no categories in the DB, we'll use a simple filter
+  const categories = ["All"];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-pink-50">
       <Navigation />
-
-      <main className="container mx-auto px-4 py-8">
-        <div className="text-center space-y-4 mb-12">
-          <div className="flex justify-center">
-            <div className="p-4 bg-gradient-to-r from-red-500/10 to-red-600/10 rounded-full">
-              <Video className="h-8 w-8 text-red-600" />
+      
+      {/* Hero Section */}
+      <div className="relative bg-gradient-to-br from-rose-700 via-red-800 to-pink-900 text-white py-20 overflow-hidden">
+        <div className="absolute inset-0 bg-[url('/islamic-architecture-mosque-interior.png')] bg-cover bg-center opacity-20"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-rose-900/80 via-red-900/70 to-pink-900/80"></div>
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center space-y-6">
+            <div className="flex justify-center">
+              <div className="p-4 bg-white/10 rounded-full backdrop-blur-sm border border-white/20">
+                <Video className="h-16 w-16 text-rose-200" />
+              </div>
             </div>
+            <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-white via-rose-100 to-pink-100 bg-clip-text text-transparent drop-shadow-lg">
+              Islamic Videos
+            </h1>
+            <p className="text-xl md:text-2xl text-rose-100 max-w-3xl mx-auto leading-relaxed drop-shadow-md">
+              Watch inspiring Islamic lectures, sermons, and educational content
+            </p>
           </div>
-          <h1 className="text-4xl font-bold text-balance">Islamic Videos</h1>
-          <p className="text-xl text-muted-foreground text-pretty max-w-2xl mx-auto">
-            Watch educational videos by renowned Islamic scholars on various topics
-          </p>
+        </div>
+      </div>
+
+      {/* Search and Filter Section */}
+      <div className="container mx-auto px-4 py-8">
+        <div className="bg-white rounded-xl shadow-lg p-6 mb-8 border border-rose-100">
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Input 
+                  placeholder="Search videos by title, speaker, or topic..." 
+                  className="pl-10 border-rose-200 focus:border-rose-400"
+                />
+              </div>
+            </div>
+            <Button variant="outline" className="border-rose-200 text-rose-700 hover:bg-rose-50">
+              <Filter className="h-4 w-4 mr-2" />
+              Filter
+            </Button>
+          </div>
+          
+          {/* Categories */}
+          <div className="flex flex-wrap gap-2 mt-4">
+            <Badge 
+              variant="default"
+              className="bg-rose-600 hover:bg-rose-700"
+            >
+              All
+            </Badge>
+            {categories.map((category) => (
+              <Badge 
+                key={category} 
+                variant="outline"
+                className="border-rose-200 text-rose-700 hover:bg-rose-50"
+              >
+                {category}
+              </Badge>
+            ))}
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {displayVideos.map((video) => (
-            <VideoCard key={video.id} video={video} />
-          ))}
+        {/* Videos Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {videos && videos.length > 0 ? (
+            videos.map((video) => (
+              <Link 
+                 href={video.youtube_link || '#'} 
+                 target="_blank" 
+                 rel="noopener noreferrer"
+                 key={video.id} 
+                 className="group cursor-pointer block p-4 rounded-lg bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-all duration-200 border border-gray-100 dark:border-gray-700"
+               >
+                {/* Video Thumbnail */}
+                <div className="relative aspect-video overflow-hidden rounded-xl bg-gray-900 dark:bg-gray-800 mb-3">
+                  <Image
+                     src={getYouTubeThumbnail(video.youtube_link) || "/placeholder.svg"}
+                     alt={video.title}
+                     width={400}
+                     height={225}
+                     className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
+                   />
+                  {/* Play Button Overlay */}
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-200 flex items-center justify-center">
+                    <div className="bg-red-600 text-white rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-lg">
+                      <Play className="h-5 w-5 ml-0.5" />
+                    </div>
+                  </div>
+                  {/* No duration or featured badges since they don't exist in DB */}
+                </div>
+                
+                {/* Video Info */}
+                <div className="space-y-2">
+                  {/* Title */}
+                  <h3 className="font-semibold text-gray-900 dark:text-gray-100 text-sm leading-tight line-clamp-2 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
+                    {video.title}
+                  </h3>
+                  
+                  {/* Description */}
+                  <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2">
+                    {video.description || 'No description available'}
+                  </p>
+                  
+                  {/* Views and Date */}
+                  <div className="flex items-center text-gray-500 dark:text-gray-500 text-sm space-x-2">
+                    <span>{(video.views || 0).toLocaleString()} views</span>
+                    <span>•</span>
+                    <span>{new Date(video.created_at).toLocaleDateString()}</span>
+                  </div>
+                </div>
+              </Link>
+            ))
+          ) : (
+            <div className="col-span-full text-center py-12">
+              <Video className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-xl font-semibold mb-2">No Videos Found</h3>
+              <p className="text-muted-foreground">There are no published videos available at the moment.</p>
+            </div>
+          )}
         </div>
-      </main>
+
+        {/* Load More Button */}
+        <div className="text-center mt-12">
+          <Button className="bg-rose-600 hover:bg-rose-700 text-white px-8 py-3">
+            Load More Videos
+          </Button>
+        </div>
+      </div>
     </div>
   )
 }

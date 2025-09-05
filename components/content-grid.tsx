@@ -18,7 +18,7 @@ export function ContentGrid({ content, type, categories }: ContentGridProps) {
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [sortBy, setSortBy] = useState("newest")
 
-  const filteredContent = content
+  const filteredContent = (content || [])
     .filter((item) => {
       const matchesSearch =
         item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||

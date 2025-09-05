@@ -1,195 +1,203 @@
-export const dynamic = 'force-dynamic'
+"use client"
 
+import { useState, useEffect } from "react"
 import { Navigation } from "@/components/navigation"
-// COMMENTED OUT: Server-side Supabase implementation using placeholder environment variables
-// import { createClient } from "@/lib/supabase/server"
-import { FileText, Star, Calendar, User, Eye } from "lucide-react"
+import { createClient } from "@/lib/supabase/client"
+import { BookOpen, Search, Filter, Calendar, User, Eye } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import Link from "next/link"
-import Image from "next/image"
 
-// Dummy articles data with real Islamic content
-const dummyArticles = [
-  {
-    id: 1,
-    title: "Understanding the Concept of Tawheed in Modern Context",
-    excerpt: "An in-depth exploration of monotheism and its relevance in contemporary Islamic thought and practice.",
-    author: "Dr. Ahmad Hassan",
-    category: "Theology",
-    views: 2847,
-    createdAt: "2024-01-15",
-    featuredImage: "/islamic-calligraphy-and-geometric-patterns.png",
-    readTime: "8 min read",
-    featured: true,
-  },
-  {
-    id: 2,
-    title: "The Role of Women in Early Islamic Society",
-    excerpt: "Examining the historical contributions and status of women during the time of Prophet Muhammad (PBUH).",
-    author: "Prof. Fatima Al-Zahra",
-    category: "History",
-    views: 1923,
-    createdAt: "2024-01-12",
-    featuredImage: "/islamic-architecture-mosque-interior.png",
-    readTime: "12 min read",
-    featured: false,
-  },
-  {
-    id: 3,
-    title: "Principles of Islamic Finance and Banking",
-    excerpt: "Understanding Sharia-compliant financial systems and their implementation in modern banking.",
-    author: "Dr. Muhammad Yusuf",
-    category: "Finance",
-    views: 3156,
-    createdAt: "2024-01-10",
-    featuredImage: "/islamic-geometric-patterns-gold-and-green.png",
-    readTime: "15 min read",
-    featured: true,
-  },
-  {
-    id: 4,
-    title: "The Science of Hadith Authentication",
-    excerpt: "Methods and criteria used by scholars to verify the authenticity of prophetic traditions.",
-    author: "Sheikh Abdullah Rahman",
-    category: "Hadith Studies",
-    views: 1654,
-    createdAt: "2024-01-08",
-    featuredImage: "/arabic-manuscript-and-books.png",
-    readTime: "10 min read",
-    featured: false,
-  },
-  {
-    id: 5,
-    title: "Islamic Ethics in Medical Practice",
-    excerpt: "Exploring the intersection of Islamic principles with modern medical ethics and bioethics.",
-    author: "Dr. Aisha Malik",
-    category: "Ethics",
-    views: 2234,
-    createdAt: "2024-01-05",
-    featuredImage: "/medical-symbols-with-islamic-motifs.png",
-    readTime: "11 min read",
-    featured: false,
-  },
-  {
-    id: 6,
-    title: "The Philosophy of Islamic Education",
-    excerpt: "Understanding the holistic approach to education in Islamic tradition and its modern applications.",
-    author: "Prof. Omar Faruq",
-    category: "Education",
-    views: 1876,
-    createdAt: "2024-01-03",
-    featuredImage: "/islamic-school-students-learning.png",
-    readTime: "9 min read",
-    featured: false,
-  },
-]
+interface Article {
+  id: string
+  title: string
+  author: string
+  content: string
+  views: number
+  created_at: string
+}
 
-export default async function ArticlesPage() {
-  // COMMENTED OUT: Server-side data fetching
-  // const supabase = await createClient()
+export default function ArticlesPage() {
+  const [articles, setArticles] = useState<Article[]>([])
+  const [filteredArticles, setFilteredArticles] = useState<Article[]>([])
+  const [searchQuery, setSearchQuery] = useState('')
+  const [isLoading, setIsLoading] = useState(true)
 
-  // // Fetch articles with author and category info
-  // const { data: articles } = await supabase
-  //   .from("articles")
-  //   .select(`
-  //     *,
-  //     author:profiles(full_name),
-  //     category:categories(name)
-  //   `)
-  //   .eq("published", true)
-  //   .order("created_at", { ascending: false })
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        const supabase = createClient()
+        const { data, error } = await supabase
+          .from('articles')
+          .select('*')
+          .order('created_at', { ascending: false })
 
-  // // Fetch categories
-  // const { data: categories } = await supabase.from("categories").select("name").order("name")
+        if (error) {
+          console.error('Error fetching articles:', error)
+          return
+        }
 
-  // Temporary placeholder data for development
-  const articles = dummyArticles
-  const categoryNames = ["Theology", "History", "Finance", "Hadith Studies", "Ethics", "Education"]
+        setArticles(data || [])
+        setFilteredArticles(data || [])
+      } catch (error) {
+        console.error('Error in fetchArticles:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchArticles()
+  }, [])
+
+  useEffect(() => {
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase()
+      const filtered = articles.filter(article => 
+        article.title?.toLowerCase().includes(query) ||
+        article.author?.toLowerCase().includes(query) ||
+        article.content?.toLowerCase().includes(query)
+      )
+      setFilteredArticles(filtered)
+    } else {
+      setFilteredArticles(articles)
+    }
+  }, [articles, searchQuery])
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
       <Navigation />
-
-      <main className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="text-center space-y-4 mb-12">
-          <div className="flex justify-center">
-            <div className="p-4 bg-primary/10 rounded-full">
-              <FileText className="h-8 w-8 text-primary" />
+      
+      {/* Hero Section */}
+      <div className="relative bg-gradient-to-br from-blue-700 via-indigo-800 to-purple-900 text-white py-20 overflow-hidden">
+        <div className="absolute inset-0 bg-[url('/islamic-calligraphy-and-geometric-patterns.png')] bg-cover bg-center opacity-20"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/80 via-indigo-900/70 to-purple-900/80"></div>
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center space-y-6">
+            <div className="flex justify-center">
+              <div className="p-4 bg-white/10 rounded-full backdrop-blur-sm border border-white/20">
+                <BookOpen className="h-16 w-16 text-blue-200" />
+              </div>
             </div>
+            <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-white via-blue-100 to-indigo-100 bg-clip-text text-transparent drop-shadow-lg">
+              Islamic Articles
+            </h1>
+            <p className="text-xl md:text-2xl text-blue-100 max-w-3xl mx-auto leading-relaxed drop-shadow-md">
+              Explore our collection of Islamic articles and scholarly writings
+            </p>
           </div>
-          <h1 className="text-4xl font-bold text-balance">Islamic Articles</h1>
-          <p className="text-xl text-muted-foreground text-pretty max-w-2xl mx-auto">
-            Explore in-depth articles on Islamic theology, contemporary issues, and scholarly interpretations
-          </p>
+        </div>
+      </div>
+
+      {/* Search and Filter Section */}
+      <div className="container mx-auto px-4 py-8">
+        <div className="bg-white rounded-xl shadow-lg p-6 mb-8 border border-blue-100">
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Input 
+                  placeholder="Search articles by title, author, or content..." 
+                  className="pl-10 border-blue-200 focus:border-blue-400"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+            </div>
+            <Button variant="outline" className="border-blue-200 text-blue-700 hover:bg-blue-50">
+              <Filter className="h-4 w-4 mr-2" />
+              Filter
+            </Button>
+          </div>
+          
+          {/* Categories */}
+          <div className="flex flex-wrap gap-2 mt-4">
+            <Badge 
+              variant="default"
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              All
+            </Badge>
+          </div>
         </div>
 
         {/* Articles Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {(articles || dummyArticles).map((article) => (
-            <Card key={article.id} className="group hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500 overflow-hidden border-0 bg-gradient-to-br from-white to-gray-50/50 dark:from-gray-900 dark:to-gray-800/50 hover:-translate-y-2">
-              <div className="relative overflow-hidden">
-                <Image
-                  src={article.featuredImage || "/placeholder.svg"}
-                  alt={article.title}
-                  width={400}
-                  height={200}
-                  className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                {article.featured && (
-                  <Badge className="absolute top-3 left-3 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground shadow-lg">
-                    <Star className="h-3 w-3 mr-1" />
-                    Featured
-                  </Badge>
-                )}
-                <div className="absolute top-3 right-3">
-                  <Badge variant="secondary" className="bg-black/70 text-white backdrop-blur-sm">
-                    {article.readTime}
-                  </Badge>
-                </div>
-              </div>
-
-              <CardContent className="p-0">
-                <div className="p-6 space-y-4">
-                  <div className="flex items-center gap-2">
-                    <Badge variant="outline" className="border-primary/20 text-primary bg-primary/5">{article.category}</Badge>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {isLoading ? (
+            Array.from({ length: 8 }).map((_, i) => (
+              <Card key={i} className="animate-pulse">
+                <CardContent className="p-6">
+                  <div className="h-4 bg-gray-200 rounded mb-4"></div>
+                  <div className="h-3 bg-gray-200 rounded mb-2"></div>
+                  <div className="h-3 bg-gray-200 rounded mb-4"></div>
+                  <div className="flex justify-between">
+                    <div className="h-3 bg-gray-200 rounded w-16"></div>
+                    <div className="h-3 bg-gray-200 rounded w-20"></div>
                   </div>
-
-                  <h3 className="text-xl font-semibold line-clamp-2 group-hover:text-primary transition-colors">
+                </CardContent>
+              </Card>
+            ))
+          ) : filteredArticles && filteredArticles.length > 0 ? (
+            filteredArticles.map((article) => (
+              <Card key={article.id} className="h-full hover:shadow-lg transition-all duration-200 border border-gray-100 hover:border-blue-200">
+                <CardContent className="p-6 flex flex-col h-full">
+                  {/* Title */}
+                  <h3 className="font-semibold text-gray-900 text-lg leading-tight mb-3 line-clamp-2">
                     {article.title}
                   </h3>
-
-                  <p className="text-muted-foreground line-clamp-3 text-sm leading-relaxed">{article.excerpt}</p>
-
-                  <div className="flex items-center justify-between pt-4 border-t">
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <User className="h-4 w-4" />
-                      <span>{article.author}</span>
+                  
+                  {/* Author */}
+                  <div className="flex items-center text-gray-600 text-sm mb-3">
+                    <User className="h-4 w-4 mr-1" />
+                    <span>{article.author}</span>
+                  </div>
+                  
+                  {/* Content Preview */}
+                  <p className="text-gray-600 text-sm line-clamp-3 mb-4 flex-grow">
+                    {article.content?.replace(/<[^>]*>/g, '').substring(0, 150)}...
+                  </p>
+                  
+                  {/* Views and Date */}
+                  <div className="flex items-center justify-between text-gray-500 text-sm mb-4">
+                    <div className="flex items-center">
+                      <Eye className="h-4 w-4 mr-1" />
+                      <span>{(article.views || 0).toLocaleString()} views</span>
                     </div>
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                      <div className="flex items-center gap-1">
-                        <Eye className="h-4 w-4" />
-                        <span>{article.views.toLocaleString()}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Calendar className="h-4 w-4" />
-                        <span>{new Date(article.createdAt).toLocaleDateString()}</span>
-                      </div>
+                    <div className="flex items-center">
+                      <Calendar className="h-4 w-4 mr-1" />
+                      <span>{new Date(article.created_at).toLocaleDateString()}</span>
                     </div>
                   </div>
-
-                  <Button asChild className="w-full mt-4">
-                    <Link href={`/articles/${article.id}`}>Read Article</Link>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                  
+                  {/* View Article Button */}
+                  <Link href={`/articles/${article.id}/detail`} className="w-full">
+                    <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+                      <BookOpen className="h-4 w-4 mr-2" />
+                      View Article
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            <div className="col-span-full text-center py-12">
+              <BookOpen className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-xl font-semibold mb-2">No Articles Found</h3>
+              <p className="text-muted-foreground">There are no published articles available at the moment.</p>
+            </div>
+          )}
         </div>
-      </main>
+
+        {/* Load More Button */}
+        {filteredArticles.length > 0 && (
+          <div className="text-center mt-12">
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3">
+              Load More Articles
+            </Button>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

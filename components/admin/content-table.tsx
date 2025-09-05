@@ -6,20 +6,22 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Edit, Trash2, Eye, Search, Plus } from "lucide-react"
+import { Edit, Trash2, Search, Plus } from "lucide-react"
 import Link from "next/link"
+import { ConfirmationDialog } from "@/components/ui/confirmation-dialog"
 
 interface ContentTableProps {
   data: any[]
   type: "articles" | "videos" | "books" | "lectures" | "hadiths" | "ayats"
-  onEdit: (id: string) => void
   onDelete: (id: string) => void
-  onTogglePublished: (id: string, published: boolean) => void
+  onTogglePublished?: (id: string, published: boolean) => void
 }
 
-export function ContentTable({ data, type, onEdit, onDelete, onTogglePublished }: ContentTableProps) {
+export function ContentTable({ data, type, onDelete, onTogglePublished }: ContentTableProps) {
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [itemToDelete, setItemToDelete] = useState<string | null>(null)
 
   const getColumnsForType = (type: string) => {
     switch (type) {
@@ -28,8 +30,9 @@ export function ContentTable({ data, type, onEdit, onDelete, onTogglePublished }
       case "videos":
         return ["Title", "YouTube Link", "Created"]
       case "books":
-        return ["Title", "PDF URL", "Created"]
+        return ["Title", "PDF URL", "Description", "Created"]
       case "hadiths":
+        return ["Address", "Revelation", "Category", "Arabic Text", "Created"]
       case "ayats":
         return ["Address", "Revelation", "Category", "Arabic Text", "Created"]
       default:
@@ -118,28 +121,28 @@ export function ContentTable({ data, type, onEdit, onDelete, onTogglePublished }
         </div>
 
         <Link href={`/admin/${type}/new`}>
-          <Button>
-            <Plus className="h-4 w-4 mr-2" />
+          <Button className="transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-emerald-600 hover:border-emerald-600 active:scale-95">
+            <Plus className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:rotate-90" />
             Add {type.slice(0, -1)}
           </Button>
         </Link>
       </div>
 
       {/* Table */}
-      <div className="border rounded-lg">
+      <div className="border rounded-lg overflow-hidden shadow-sm">
         <Table>
           <TableHeader>
             <TableRow>
               {columns.map((column) => (
-                <TableHead key={column}>{column}</TableHead>
+                <TableHead key={column} className="px-4 py-3 font-semibold">{column}</TableHead>
               ))}
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead className="text-right px-4 py-3 font-semibold">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filteredData.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={columns.length + 1} className="text-center py-8 text-muted-foreground">
+                <TableCell colSpan={columns.length + 1} className="text-center py-12 text-muted-foreground">
                   No {type} found
                 </TableCell>
               </TableRow>
@@ -147,21 +150,26 @@ export function ContentTable({ data, type, onEdit, onDelete, onTogglePublished }
               filteredData.map((item) => (
                 <TableRow key={item.id}>
                   {columns.map((column) => (
-                    <TableCell key={column} className={column === "Title" || column === "Address" ? "font-medium" : ""}>
+                    <TableCell key={column} className={`px-4 py-4 ${column === "Title" || column === "Address" ? "font-medium" : ""}`}>
                       {renderCellContent(item, column)}
                     </TableCell>
                   ))}
-                  <TableCell className="text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      <Link href={`/${type}/${item.id}`}>
+                  <TableCell className="text-right px-4 py-4">
+                    <div className="flex items-center justify-end gap-1">
+                      <Link href={`/admin/${type}/${item.id}/edit`}>
                         <Button variant="ghost" size="icon">
-                          <Eye className="h-4 w-4" />
+                          <Edit className="h-4 w-4" />
                         </Button>
                       </Link>
-                      <Button variant="ghost" size="icon" onClick={() => onEdit(item.id)}>
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button variant="ghost" size="icon" onClick={() => onDelete(item.id)} className="text-red-600">
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        onClick={() => {
+                          setItemToDelete(item.id)
+                          setDeleteDialogOpen(true)
+                        }} 
+                        className="text-red-600"
+                      >
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
@@ -172,6 +180,21 @@ export function ContentTable({ data, type, onEdit, onDelete, onTogglePublished }
           </TableBody>
         </Table>
       </div>
+      
+      <ConfirmationDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        title="Are you sure to Delete it?"
+        description={`This action cannot be undone. This will permanently delete the ${type.slice(0, -1)}.`}
+        onConfirm={() => {
+          if (itemToDelete) {
+            onDelete(itemToDelete)
+            setItemToDelete(null)
+          }
+        }}
+        confirmText="Yes"
+        cancelText="No"
+      />
     </div>
   )
 }

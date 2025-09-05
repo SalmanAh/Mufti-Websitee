@@ -1,93 +1,116 @@
+'use client'
+
 import { Navigation } from "@/components/navigation"
 import { ContentGrid } from "@/components/content-grid"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { BookOpen, Search, Filter } from "lucide-react"
+import { BookOpen, Search, Filter, Heart, Eye, Calendar, Share2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { createClient } from "@/lib/supabase/client"
+import Link from "next/link"
+import { useState, useEffect } from "react"
 
-// Sample hadith data
-const hadiths = [
-  {
-    id: 1,
-    title: "The Importance of Seeking Knowledge",
-    arabic: "طَلَبُ الْعِلْمِ فَرِيضَةٌ عَلَى كُلِّ مُسْلِمٍ",
-    translation: "Seeking knowledge is an obligation upon every Muslim.",
-    narrator: "Ibn Majah",
-    book: "Sunan Ibn Majah",
-    category: "Knowledge",
-    hadithNumber: "224"
-  },
-  {
-    id: 2,
-    title: "The Best of People",
-    arabic: "خَيْرُ النَّاسِ أَنْفَعُهُمْ لِلنَّاسِ",
-    translation: "The best of people are those who are most beneficial to others.",
-    narrator: "Al-Tabarani",
-    book: "Al-Mu'jam al-Awsat",
-    category: "Character",
-    hadithNumber: "6026"
-  },
-  {
-    id: 3,
-    title: "Kindness to Parents",
-    arabic: "الْوَالِدُ أَوْسَطُ أَبْوَابِ الْجَنَّةِ",
-    translation: "The parent is the middle gate of Paradise.",
-    narrator: "At-Tirmidhi",
-    book: "Jami' at-Tirmidhi",
-    category: "Family",
-    hadithNumber: "1900"
-  },
-  {
-    id: 4,
-    title: "The Believer's Character",
-    arabic: "الْمُؤْمِنُ مَنْ أَمِنَهُ النَّاسُ عَلَى دِمَائِهِمْ وَأَمْوَالِهِمْ",
-    translation: "The believer is one from whom people are safe regarding their lives and wealth.",
-    narrator: "An-Nasa'i",
-    book: "Sunan an-Nasa'i",
-    category: "Faith",
-    hadithNumber: "4995"
-  },
-  {
-    id: 5,
-    title: "Prayer and Remembrance",
-    arabic: "أَحَبُّ الْأَعْمَالِ إِلَى اللَّهِ أَدْوَمُهَا وَإِنْ قَلَّ",
-    translation: "The most beloved deeds to Allah are those done consistently, even if they are small.",
-    narrator: "Al-Bukhari",
-    book: "Sahih al-Bukhari",
-    category: "Worship",
-    hadithNumber: "6464"
-  },
-  {
-    id: 6,
-    title: "Justice and Fairness",
-    arabic: "اعْدِلُوا هُوَ أَقْرَبُ لِلتَّقْوَى",
-    translation: "Be just, it is closer to righteousness.",
-    narrator: "Al-Bukhari",
-    book: "Sahih al-Bukhari",
-    category: "Justice",
-    hadithNumber: "2442"
-  }
-]
-
-const categories = ["All", "Knowledge", "Character", "Family", "Faith", "Worship", "Justice"]
+interface HadithData {
+  id: string;
+  address: string;
+  revelation?: string;
+  category?: string;
+  arabic_text: string;
+  translation_eng?: string;
+  translation_urdu?: string;
+  tafseer_eng?: string;
+  tafseer_urdu?: string;
+  author_id: string;
+  slug: string;
+  published: boolean;
+  featured: boolean;
+  views: number;
+  created_at: string;
+  updated_at: string;
+  users?: {
+    full_name: string;
+  };
+}
 
 export default function HadithsPage() {
+  const [hadiths, setHadiths] = useState<HadithData[]>([])
+  const [filteredHadiths, setFilteredHadiths] = useState<HadithData[]>([])
+  const [selectedCategory, setSelectedCategory] = useState('All')
+  const [searchQuery, setSearchQuery] = useState('')
+  const [loading, setLoading] = useState(true)
+  const supabase = createClient()
+
+  useEffect(() => {
+    fetchHadiths()
+  }, [])
+
+  useEffect(() => {
+    filterHadiths()
+  }, [hadiths, selectedCategory, searchQuery])
+
+  const fetchHadiths = async () => {
+    const { data, error } = await supabase
+      .from('hadiths')
+      .select('*')
+      .order('created_at', { ascending: false })
+
+    if (error) {
+      console.error('Error fetching hadiths:', error)
+    } else {
+      setHadiths(data || [])
+    }
+    setLoading(false)
+  }
+
+  const filterHadiths = () => {
+    let filtered = hadiths
+
+    // Filter by category
+    if (selectedCategory !== 'All') {
+      filtered = filtered.filter(hadith => hadith.category === selectedCategory)
+    }
+
+    // Filter by search query
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase()
+      filtered = filtered.filter(hadith => 
+        hadith.arabic_text?.toLowerCase().includes(query) ||
+        hadith.translation_eng?.toLowerCase().includes(query) ||
+        hadith.translation_urdu?.toLowerCase().includes(query) ||
+        hadith.address?.toLowerCase().includes(query) ||
+        hadith.category?.toLowerCase().includes(query)
+      )
+    }
+
+    setFilteredHadiths(filtered)
+  }
+
+  // Extract unique categories from hadiths
+  const categories = ["All", ...new Set(hadiths.map(hadith => hadith.category).filter(Boolean))];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-amber-50">
       <Navigation />
       
       {/* Hero Section */}
-      <div className="relative bg-gradient-to-r from-green-600 to-green-700 text-white py-20">
-        <div className="absolute inset-0 bg-[url('/islamic-geometric-pattern.png')] opacity-10 bg-repeat"></div>
-        <div className="relative container mx-auto px-4 text-center">
-          <div className="inline-flex items-center justify-center p-3 bg-white/10 rounded-full mb-6">
-            <BookOpen className="h-8 w-8" />
+      <div className="relative bg-gradient-to-br from-emerald-700 via-green-800 to-teal-900 text-white py-20 overflow-hidden">
+        <div className="absolute inset-0 bg-[url('/islamic-calligraphy-and-geometric-patterns.png')] bg-cover bg-center opacity-20"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/80 via-green-900/70 to-teal-900/80"></div>
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center space-y-6">
+            <div className="flex justify-center">
+              <div className="p-4 bg-white/10 rounded-full backdrop-blur-sm border border-white/20">
+                <BookOpen className="h-16 w-16 text-emerald-200" />
+              </div>
+            </div>
+            <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-white via-emerald-100 to-green-100 bg-clip-text text-transparent drop-shadow-lg">
+              Hadith Collection
+            </h1>
+            <p className="text-xl md:text-2xl text-emerald-100 max-w-3xl mx-auto leading-relaxed drop-shadow-md">
+              Explore authentic sayings and teachings of Prophet Muhammad (PBUH)
+            </p>
           </div>
-          <h1 className="text-4xl md:text-6xl font-bold mb-4">Hadith Collection</h1>
-          <p className="text-xl text-green-100 max-w-2xl mx-auto">
-            Explore authentic sayings and teachings of Prophet Muhammad (PBUH)
-          </p>
         </div>
       </div>
 
@@ -101,6 +124,8 @@ export default function HadithsPage() {
                 <Input 
                   placeholder="Search hadiths by text, narrator, or topic..." 
                   className="pl-10 border-green-200 focus:border-green-400"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
             </div>
@@ -115,8 +140,12 @@ export default function HadithsPage() {
             {categories.map((category) => (
               <Badge 
                 key={category} 
-                variant={category === "All" ? "default" : "outline"}
-                className={category === "All" ? "bg-green-600 hover:bg-green-700" : "border-green-200 text-green-700 hover:bg-green-50"}
+                variant={selectedCategory === category ? "default" : "outline"}
+                className={selectedCategory === category 
+                  ? "bg-green-600 hover:bg-green-700 cursor-pointer" 
+                  : "border-green-200 text-green-700 hover:bg-green-50 cursor-pointer"
+                }
+                onClick={() => setSelectedCategory(category)}
               >
                 {category}
               </Badge>
@@ -126,40 +155,84 @@ export default function HadithsPage() {
 
         {/* Hadiths Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {hadiths.map((hadith) => (
-            <Card key={hadith.id} className="hover:shadow-xl transition-all duration-300 border-green-100 hover:border-green-300 bg-white">
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between mb-2">
-                  <Badge variant="outline" className="border-amber-200 text-amber-700 bg-amber-50">
-                    {hadith.category}
-                  </Badge>
-                  <span className="text-sm text-gray-500">#{hadith.hadithNumber}</span>
-                </div>
-                <CardTitle className="text-lg text-green-800">{hadith.title}</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {/* Arabic Text */}
-                <div className="text-right p-4 bg-green-50 rounded-lg border border-green-100">
-                  <p className="text-lg font-arabic text-green-800 leading-relaxed">
-                    {hadith.arabic}
-                  </p>
-                </div>
-                
-                {/* Translation */}
-                <div className="p-4 bg-amber-50 rounded-lg border border-amber-100">
-                  <p className="text-gray-700 italic leading-relaxed">
-                    "{hadith.translation}"
-                  </p>
-                </div>
-                
-                {/* Source Information */}
-                <div className="text-sm text-gray-600 space-y-1">
-                  <p><span className="font-medium text-green-700">Narrator:</span> {hadith.narrator}</p>
-                  <p><span className="font-medium text-green-700">Source:</span> {hadith.book}</p>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+          {loading ? (
+            <div className="col-span-full text-center py-8">
+              <div className="text-green-600">Loading hadiths...</div>
+            </div>
+          ) : filteredHadiths && filteredHadiths.length > 0 ? (
+            filteredHadiths.map((hadith) => (
+              <Card key={hadith.id} className="hover:shadow-xl transition-all duration-300 border-green-100 hover:border-green-300 bg-white">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <Badge variant="outline" className="border-amber-200 text-amber-700 bg-amber-50">
+                      {hadith.category || 'Hadith'}
+                    </Badge>
+                    <span className="text-sm text-gray-500">{hadith.address}</span>
+                  </div>
+                  <CardTitle className="text-lg text-green-800">{hadith.revelation || hadith.address}</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {/* Arabic Text */}
+                  <div className="text-right p-4 bg-green-50 rounded-lg border border-green-100">
+                    <div 
+                      className="text-lg font-arabic text-green-800 leading-relaxed prose prose-lg max-w-none"
+                      dangerouslySetInnerHTML={{
+                        __html: hadith.arabic_text || ''
+                      }}
+                    />
+                  </div>
+                  
+                  {/* Translation */}
+                  {hadith.translation_eng && (
+                    <div className="p-4 bg-amber-50 rounded-lg border border-amber-100">
+                      <div 
+                        className="text-gray-700 italic leading-relaxed prose prose-sm max-w-none"
+                        dangerouslySetInnerHTML={{
+                          __html: `"${hadith.translation_eng}"`
+                        }}
+                      />
+                    </div>
+                  )}
+                  
+                  {/* Source Information */}
+                  <div className="text-sm text-gray-600 space-y-1 mb-4">
+                    <p><span className="font-medium text-green-700">Reference:</span> {hadith.address}</p>
+                    <p><span className="font-medium text-green-700">Views:</span> {hadith.views || 0}</p>
+                    <p><span className="font-medium text-green-700">Date:</span> {new Date(hadith.created_at).toLocaleDateString()}</p>
+                    {hadith.tafseer_eng && (
+                      <p><span className="font-medium text-green-700">Tafseer:</span> Available</p>
+                    )}
+                  </div>
+                  
+                  {/* Action Buttons */}
+                  <div className="flex gap-2 pt-2 border-t border-green-100">
+                    <Button asChild className="flex-1 bg-green-600 hover:bg-green-700 text-white text-sm py-2">
+                      <Link href={`/hadiths/${hadith.id}/detail`}>
+                        View Tafseer
+                      </Link>
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      className="border-green-200 text-green-700 hover:bg-green-50"
+                    >
+                      Share
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            <div className="col-span-full text-center py-12">
+              <BookOpen className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-xl font-semibold mb-2">No Hadiths Found</h3>
+              <p className="text-muted-foreground">
+                {searchQuery || selectedCategory !== 'All' 
+                  ? 'No hadiths found matching your criteria.' 
+                  : 'There are no published hadiths available at the moment.'}
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Load More Button */}

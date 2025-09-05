@@ -45,8 +45,10 @@ export default async function VideoPage({ params }: VideoPageProps) {
     category: { name: "Theology" },
     views: 45672,
     created_at: "2024-01-20T00:00:00Z",
+    updated_at: "2024-01-20T00:00:00Z",
     thumbnail_url: "/islamic-calligraphy-allah-names-golden.png",
-    duration: "2:45:30"
+    youtube_link: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    duration: 9930
   }
 
   return (

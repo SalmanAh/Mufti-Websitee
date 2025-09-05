@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -13,9 +13,14 @@ import { toast } from "sonner"
 import Link from "next/link"
 import { createClient } from "@/lib/supabase/client"
 
-export default function NewAyatPage() {
+interface EditHadithPageProps {
+  params: { id: string }
+}
+
+export default function EditHadithPage({ params }: EditHadithPageProps) {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
+  const [isLoadingData, setIsLoadingData] = useState(true)
   const [formData, setFormData] = useState({
     address: "",
     revelation: "",
@@ -26,6 +31,48 @@ export default function NewAyatPage() {
     tafseer_eng: "",
     tafseer_urdu: ""
   })
+
+  const supabase = createClient()
+
+  useEffect(() => {
+    const fetchHadith = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('hadiths')
+          .select('*')
+          .eq('id', params.id)
+          .single()
+
+        if (error) {
+          console.error('Error fetching hadith:', error)
+          toast.error('Failed to load hadith')
+          router.push('/admin/hadiths')
+          return
+        }
+
+        if (data) {
+          setFormData({
+            address: data.address || '',
+            revelation: data.revelation || '',
+            category: data.category || '',
+            arabic_text: data.arabic_text || '',
+            translation_eng: data.translation_eng || '',
+            translation_urdu: data.translation_urdu || '',
+            tafseer_eng: data.tafseer_eng || '',
+            tafseer_urdu: data.tafseer_urdu || ''
+          })
+        }
+      } catch (error) {
+        console.error('Error in fetchHadith:', error)
+        toast.error('An unexpected error occurred')
+        router.push('/admin/hadiths')
+      } finally {
+        setIsLoadingData(false)
+      }
+    }
+
+    fetchHadith()
+  }, [params.id, router, supabase])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -54,11 +101,9 @@ export default function NewAyatPage() {
     setIsLoading(true)
     
     try {
-      const supabase = createClient()
-      
       const { data, error } = await supabase
-        .from('ayats')
-        .insert([{
+        .from('hadiths')
+        .update({
           address: formData.address,
           revelation: formData.revelation,
           category: formData.category,
@@ -67,40 +112,71 @@ export default function NewAyatPage() {
           translation_urdu: formData.translation_urdu,
           tafseer_eng: formData.tafseer_eng,
           tafseer_urdu: formData.tafseer_urdu
-        }])
+        })
+        .eq('id', params.id)
         .select()
       
       if (error) throw error
       
-      toast.success("Ayat created successfully!")
-      router.push("/admin/ayats")
+      toast.success("Hadith updated successfully!")
+      router.push("/admin/hadiths")
     } catch (error) {
-      console.error("Error creating ayat:", error)
-      toast.error("Failed to create ayat")
+      console.error("Error updating hadith:", error)
+      toast.error("Failed to update hadith")
     } finally {
       setIsLoading(false)
     }
   }
 
+  if (isLoadingData) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center gap-4">
+          <Link href="/admin/hadiths">
+            <Button variant="ghost" size="icon">
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+          </Link>
+          <div>
+            <h1 className="text-3xl font-bold">Edit Hadith</h1>
+            <p className="text-muted-foreground">Loading hadith data...</p>
+          </div>
+        </div>
+        <Card className="max-w-4xl">
+          <CardContent className="p-6">
+            <div className="animate-pulse space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+                <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+              </div>
+              <div className="h-10 bg-gray-200 rounded"></div>
+              <div className="h-32 bg-gray-200 rounded"></div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Link href="/admin/ayats">
+        <Link href="/admin/hadiths">
           <Button variant="ghost" size="icon">
             <ArrowLeft className="h-4 w-4" />
           </Button>
         </Link>
         <div>
-          <h1 className="text-3xl font-bold">Add New Ayat</h1>
-          <p className="text-muted-foreground">Create a new Quranic verse entry for your website</p>
+          <h1 className="text-3xl font-bold">Edit Hadith</h1>
+          <p className="text-muted-foreground">Update the hadith information</p>
         </div>
       </div>
 
       <Card className="max-w-4xl">
         <CardHeader>
-          <CardTitle>Ayat Details</CardTitle>
+          <CardTitle>Hadith Details</CardTitle>
           <CardDescription>
-            Fill in the information below to create a new Quranic verse entry
+            Update the information below to modify the hadith entry
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -113,7 +189,7 @@ export default function NewAyatPage() {
                   name="address"
                   value={formData.address}
                   onChange={handleInputChange}
-                  placeholder="e.g., Surah Al-Fatiha 1:1"
+                  placeholder="e.g., Sahih Bukhari 1:1"
                   required
                 />
               </div>
@@ -136,7 +212,7 @@ export default function NewAyatPage() {
                   name="category"
                   value={formData.category}
                   onChange={handleInputChange}
-                  placeholder="e.g., Faith, Guidance, Stories"
+                  placeholder="e.g., Faith, Prayer, Charity"
                 />
               </div>
             </div>
@@ -148,7 +224,7 @@ export default function NewAyatPage() {
                 name="arabic_text"
                 value={formData.arabic_text}
                 onChange={handleInputChange}
-                placeholder="Enter Arabic text of the ayat"
+                placeholder="Enter Arabic text of the hadith"
                 rows={4}
                 dir="rtl"
                 className="text-right"
@@ -208,9 +284,9 @@ export default function NewAyatPage() {
             <div className="flex gap-4">
               <Button type="submit" disabled={isLoading}>
                 <Save className="h-4 w-4 mr-2" />
-                {isLoading ? "Creating..." : "Create Ayat"}
+                {isLoading ? "Updating..." : "Update Hadith"}
               </Button>
-              <Link href="/admin/ayats">
+              <Link href="/admin/hadiths">
                 <Button type="button" variant="outline">
                   Cancel
                 </Button>

@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
@@ -21,19 +21,17 @@ import {
   X,
   Scroll,
   Quote,
+  Loader2,
 } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
-import { useRouter } from "next/navigation"
 
 const navigation = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
-  { name: "Analytics", href: "/admin/analytics", icon: BarChart3 },
   { name: "Articles", href: "/admin/articles", icon: FileText },
   { name: "Videos", href: "/admin/videos", icon: Video },
   { name: "Books", href: "/admin/books", icon: BookOpen },
   { name: "Hadiths", href: "/admin/hadiths", icon: Scroll },
   { name: "Ayats", href: "/admin/ayats", icon: Quote },
-  { name: "Settings", href: "/admin/settings", icon: Settings },
 ]
 
 interface AdminSidebarProps {
@@ -45,8 +43,18 @@ interface AdminSidebarProps {
 
 export function AdminSidebar({ user }: AdminSidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false)
+  const [loadingPath, setLoadingPath] = useState<string | null>(null)
   const pathname = usePathname()
   const router = useRouter()
+  
+  const handleNavigation = (href: string) => {
+    if (href !== pathname) {
+      setLoadingPath(href)
+      // Reset loading state after navigation
+      setTimeout(() => setLoadingPath(null), 1000)
+    }
+  }
+  
   const handleSignOut = async () => {
     const supabase = createClient()
     await supabase.auth.signOut()
@@ -62,7 +70,7 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
         {!isCollapsed && (
           <div>
             <h2 className="text-lg font-semibold text-amber-100">Admin Panel</h2>
-            <p className="text-sm text-emerald-200">Islamic Scholar Platform</p>
+            <p className="text-sm text-emerald-200">Mufti Munir Shakir</p>
           </div>
         )}
         <Button variant="ghost" size="icon" onClick={() => setIsCollapsed(!isCollapsed)} className="text-emerald-200 hover:text-amber-100 hover:bg-emerald-700">
@@ -93,19 +101,32 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
           {navigation.map((item) => {
             const Icon = item.icon
             const isActive = pathname === item.href
+            const isLoading = loadingPath === item.href
             return (
-              <Link key={item.name} href={item.href}>
+              <Link key={item.name} href={item.href} onClick={() => handleNavigation(item.href)}>
                 <Button
                   variant={isActive ? "default" : "ghost"}
-                  className={`w-full justify-start ${isCollapsed ? "px-2" : "px-3"} ${
+                  className={`w-full justify-start ${isCollapsed ? "px-2" : "px-3"} transition-all duration-300 ${
                     isActive 
                       ? "bg-gradient-to-r from-amber-600 to-amber-700 text-white hover:from-amber-700 hover:to-amber-800 shadow-lg" 
-                      : "text-emerald-200 hover:text-amber-100 hover:bg-emerald-700/50"
+                      : isLoading
+                      ? "text-emerald-200 bg-emerald-700/50 shadow-md"
+                      : "text-emerald-200 hover:text-white hover:bg-emerald-700/80 hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]"
                   }`}
                   title={isCollapsed ? item.name : undefined}
+                  disabled={isLoading}
                 >
-                  <Icon className="h-4 w-4" />
-                  {!isCollapsed && <span className="ml-3">{item.name}</span>}
+                  {isLoading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Icon className="h-4 w-4" />
+                  )}
+                  {!isCollapsed && (
+                    <span className="ml-3">
+                      {item.name}
+                      {isLoading && <span className="ml-2 text-xs opacity-75">Loading...</span>}
+                    </span>
+                  )}
                 </Button>
               </Link>
             )
@@ -119,7 +140,7 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
       <div className="p-3">
         <Button
           variant="ghost"
-          className={`w-full justify-start text-red-300 hover:text-red-100 hover:bg-red-800/30 ${
+          className={`w-full justify-start text-red-300 hover:text-white hover:bg-red-700/60 hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 ${
             isCollapsed ? "px-2" : "px-3"
           }`}
           onClick={handleSignOut}
