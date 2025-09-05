@@ -20,7 +20,6 @@ export default function NewBookPage() {
     description: ""
   })
   const [pdfFile, setPdfFile] = useState<File | null>(null)
-  const [uploadProgress, setUploadProgress] = useState(0)
   const [isUploading, setIsUploading] = useState(false)
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -50,11 +49,7 @@ export default function NewBookPage() {
       .from('E-Books')
       .upload(filePath, file, {
         cacheControl: '3600',
-        upsert: false,
-        onUploadProgress: (progress) => {
-          const percent = (progress.loaded / progress.total) * 100
-          setUploadProgress(Math.round(percent))
-        }
+        upsert: false
       })
 
     if (error) {
@@ -85,7 +80,6 @@ export default function NewBookPage() {
     
     try {
       setIsUploading(true)
-      setUploadProgress(0)
       
       // Upload PDF file to Supabase storage
       const pdfUrl = await uploadPdfToSupabase(pdfFile)
@@ -111,7 +105,6 @@ export default function NewBookPage() {
         description: ""
       })
       setPdfFile(null)
-      setUploadProgress(0)
       
       // Reset file input
       const fileInput = document.getElementById('pdf-file') as HTMLInputElement
@@ -124,7 +117,6 @@ export default function NewBookPage() {
     } finally {
       setIsLoading(false)
       setIsUploading(false)
-      setUploadProgress(0)
     }
   }
 
@@ -178,17 +170,13 @@ export default function NewBookPage() {
                 </p>
               )}
               {isUploading && (
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span>Uploading...</span>
-                    <span>{uploadProgress}%</span>
+                <div className="flex items-center gap-2 text-sm text-blue-600">
+                  <div className="flex space-x-1">
+                    <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                    <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                    <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce"></div>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div 
-                      className="bg-blue-600 h-2 rounded-full transition-all duration-300" 
-                      style={{ width: `${uploadProgress}%` }}
-                    ></div>
-                  </div>
+                  <span>Uploading file...</span>
                 </div>
               )}
             </div>

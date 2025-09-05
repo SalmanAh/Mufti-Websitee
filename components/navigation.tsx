@@ -14,7 +14,7 @@ const navigation = [
   { name: "Articles", href: "/articles", icon: FileText },
   { name: "Videos", href: "/videos", icon: Video },
   { name: "Hadiths", href: "/hadiths", icon: MessageCircle },
-  { name: "Ayats", href: "/ayats", icon: BookOpen },
+  { name: "Quran", href: "/ayats", icon: BookOpen },
   { name: "Books", href: "/books", icon: BookOpen },
   { name: "Bio", href: "/bio", icon: UserCircle },
 ]
@@ -66,7 +66,7 @@ export function Navigation() {
   return (
     <nav className="relative w-full border-b bg-background">
       <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex h-20 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
             <img 
@@ -85,7 +85,7 @@ export function Navigation() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  className={`flex items-center space-x-2 px-4 py-3 rounded-lg text-base font-medium transition-colors ${
                     isActive
                       ? "bg-primary text-primary-foreground"
                       : "text-muted-foreground hover:text-foreground hover:bg-muted"
@@ -138,7 +138,7 @@ export function Navigation() {
                         key={item.name}
                         href={item.href}
                         onClick={() => setIsOpen(false)}
-                        className={`flex items-center space-x-3 px-3 py-3 rounded-lg text-sm font-medium transition-colors ${
+                        className={`flex items-center space-x-3 px-4 py-4 rounded-lg text-base font-medium transition-colors ${
                           isActive
                             ? "bg-primary text-primary-foreground"
                             : "text-muted-foreground hover:text-foreground hover:bg-muted"

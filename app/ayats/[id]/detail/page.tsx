@@ -38,7 +38,7 @@ export default async function AyatDetailPage({ params }: AyatDetailProps) {
       <Navigation />
       
       {/* Header Section */}
-      <div className="bg-gradient-to-br from-amber-700 via-amber-800 to-orange-900 text-white py-16">
+      <div className="bg-gradient-to-br from-orange-400 to-orange-700 text-white py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <div className="flex items-center gap-2 mb-4">

@@ -69,25 +69,6 @@ export default function ArticlesPage() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
       <Navigation />
       
-      {/* Hero Section */}
-      <div className="relative bg-white text-gray-900 py-20 overflow-hidden">
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center space-y-6">
-            <div className="flex justify-center">
-              <div className="p-4 bg-orange-100 rounded-full border border-orange-200">
-                <BookOpen className="h-16 w-16 text-orange-600" />
-              </div>
-            </div>
-            <h1 className="text-5xl md:text-6xl font-bold text-gray-900">
-              Islamic Articles
-            </h1>
-            <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Explore our collection of Islamic articles and scholarly writings
-            </p>
-          </div>
-        </div>
-      </div>
-
       {/* Search and Filter Section */}
       <div className="container mx-auto px-4 py-8">
         <div className="bg-white rounded-xl shadow-lg p-6 mb-8 border border-orange-100">
@@ -97,13 +78,13 @@ export default function ArticlesPage() {
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                 <Input 
                   placeholder="Search articles by title, author, or content..." 
-                  className="pl-10 border-orange-200 focus:border-orange-400"
+                  className="pl-10 border-orange-100 focus:border-orange-200"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
             </div>
-            <Button variant="outline" className="border-orange-200 text-orange-700 hover:bg-orange-50">
+            <Button variant="outline" className="border-orange-200 text-orange-500 hover:bg-orange-50">
               <Filter className="h-4 w-4 mr-2" />
               Filter
             </Button>
@@ -113,7 +94,7 @@ export default function ArticlesPage() {
           <div className="flex flex-wrap gap-2 mt-4">
             <Badge 
               variant="default"
-              className="bg-orange-600 hover:bg-orange-700"
+              className="bg-orange-400 hover:bg-orange-500"
             >
               All
             </Badge>
@@ -138,7 +119,7 @@ export default function ArticlesPage() {
             ))
           ) : filteredArticles && filteredArticles.length > 0 ? (
             filteredArticles.map((article) => (
-              <Card key={article.id} className="h-full hover:shadow-lg transition-all duration-200 border border-gray-100 hover:border-orange-200">
+              <Card key={article.id} className="h-full hover:shadow-lg transition-all duration-200 border border-gray-100 hover:border-orange-100">
                 <CardContent className="p-6 flex flex-col h-full">
                   {/* Title */}
                   <h3 className="font-semibold text-gray-900 text-lg leading-tight mb-3 line-clamp-2">
@@ -170,7 +151,7 @@ export default function ArticlesPage() {
                   
                   {/* View Article Button */}
                   <Link href={`/articles/${article.id}/detail`} className="w-full">
-                    <Button className="w-full bg-orange-600 hover:bg-orange-700 text-white">
+                    <Button className="w-full bg-orange-400 hover:bg-orange-500 text-white">
                       <BookOpen className="h-4 w-4 mr-2" />
                       View Article
                     </Button>
@@ -188,13 +169,7 @@ export default function ArticlesPage() {
         </div>
 
         {/* Load More Button */}
-        {filteredArticles.length > 0 && (
-          <div className="text-center mt-12">
-            <Button className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3">
-              Load More Articles
-            </Button>
-          </div>
-        )}
+        
       </div>
     </div>
   )

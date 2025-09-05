@@ -93,25 +93,6 @@ export default function HadithsPage() {
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-amber-50">
       <Navigation />
       
-      {/* Hero Section */}
-      <div className="relative bg-white text-gray-900 py-20 overflow-hidden">
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center space-y-6">
-            <div className="flex justify-center">
-              <div className="p-4 bg-orange-100 rounded-full border border-orange-200">
-                <BookOpen className="h-16 w-16 text-orange-600" />
-              </div>
-            </div>
-            <h1 className="text-5xl md:text-6xl font-bold text-gray-900">
-              Hadith Collection
-            </h1>
-            <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Explore authentic sayings and teachings of Prophet Muhammad (PBUH)
-            </p>
-          </div>
-        </div>
-      </div>
-
       {/* Search and Filter Section */}
       <div className="container mx-auto px-4 py-8">
         <div className="bg-white rounded-xl shadow-lg p-6 mb-8 border border-orange-100">
@@ -121,13 +102,13 @@ export default function HadithsPage() {
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                 <Input 
                   placeholder="Search hadiths by text, narrator, or topic..." 
-                  className="pl-10 border-orange-200 focus:border-orange-400"
+                  className="pl-10 border-orange-100 focus:border-orange-200"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
             </div>
-            <Button variant="outline" className="border-orange-200 text-orange-700 hover:bg-orange-50">
+            <Button variant="outline" className="border-orange-200 text-orange-500 hover:bg-orange-50">
               <Filter className="h-4 w-4 mr-2" />
               Filter
             </Button>
@@ -140,8 +121,8 @@ export default function HadithsPage() {
                 key={category} 
                 variant={selectedCategory === category ? "default" : "outline"}
                 className={selectedCategory === category 
-                  ? "bg-orange-600 hover:bg-orange-700 cursor-pointer"
-                : "border-orange-200 text-orange-700 hover:bg-orange-50 cursor-pointer"
+                  ? "bg-orange-400 hover:bg-orange-500 cursor-pointer"
+                : "border-orange-200 text-orange-500 hover:bg-orange-50 cursor-pointer"
                 }
                 onClick={() => setSelectedCategory(category)}
               >
@@ -155,11 +136,11 @@ export default function HadithsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {loading ? (
             <div className="col-span-full text-center py-8">
-              <div className="text-orange-600">Loading hadiths...</div>
+              <div className="text-orange-400">Loading hadiths...</div>
             </div>
           ) : filteredHadiths && filteredHadiths.length > 0 ? (
             filteredHadiths.map((hadith) => (
-              <Card key={hadith.id} className="hover:shadow-xl transition-all duration-300 border-orange-100 hover:border-orange-300 bg-white">
+              <Card key={hadith.id} className="hover:shadow-xl transition-all duration-300 border-orange-100 hover:border-orange-200 bg-white">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between mb-2">
                     <Badge variant="outline" className="border-amber-200 text-amber-700 bg-amber-50">
@@ -167,13 +148,13 @@ export default function HadithsPage() {
                     </Badge>
                     <span className="text-sm text-gray-500">{hadith.address}</span>
                   </div>
-                  <CardTitle className="text-lg text-orange-800">{hadith.revelation || hadith.address}</CardTitle>
+                  <CardTitle className="text-lg text-orange-500">{hadith.revelation || hadith.address}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {/* Arabic Text */}
                   <div className="text-right p-4 bg-orange-50 rounded-lg border border-orange-100">
                     <div 
-                      className="text-lg font-arabic text-orange-800 leading-relaxed prose prose-lg max-w-none"
+                      className="text-lg font-arabic text-orange-500 leading-relaxed prose prose-lg max-w-none"
                       dangerouslySetInnerHTML={{
                         __html: hadith.arabic_text || ''
                       }}
@@ -194,17 +175,17 @@ export default function HadithsPage() {
                   
                   {/* Source Information */}
                   <div className="text-sm text-gray-600 space-y-1 mb-4">
-                    <p><span className="font-medium text-orange-700">Reference:</span> {hadith.address}</p>
-                <p><span className="font-medium text-orange-700">Views:</span> {hadith.views || 0}</p>
-                <p><span className="font-medium text-orange-700">Date:</span> {new Date(hadith.created_at).toLocaleDateString()}</p>
+                    <p><span className="font-medium text-orange-500">Reference:</span> {hadith.address}</p>
+            <p><span className="font-medium text-orange-500">Views:</span> {hadith.views || 0}</p>
+            <p><span className="font-medium text-orange-500">Date:</span> {new Date(hadith.created_at).toLocaleDateString()}</p>
                     {hadith.tafseer_eng && (
-                      <p><span className="font-medium text-orange-700">Tafseer:</span> Available</p>
+                      <p><span className="font-medium text-orange-500">Tafseer:</span> Available</p>
                     )}
                   </div>
                   
                   {/* Action Buttons */}
                   <div className="flex gap-2 pt-2 border-t border-orange-100">
-                    <Button asChild className="flex-1 bg-orange-600 hover:bg-orange-700 text-white text-sm py-2">
+                    <Button asChild className="flex-1 bg-orange-400 hover:bg-orange-500 text-white text-sm py-2">
                       <Link href={`/hadiths/${hadith.id}/detail`}>
                         View Tafseer
                       </Link>
@@ -212,7 +193,7 @@ export default function HadithsPage() {
                     <Button 
                       variant="outline" 
                       size="sm"
-                      className="border-orange-200 text-orange-700 hover:bg-orange-50"
+                      className="border-orange-200 text-orange-500 hover:bg-orange-50"
                     >
                       Share
                     </Button>
@@ -233,12 +214,7 @@ export default function HadithsPage() {
           )}
         </div>
 
-        {/* Load More Button */}
-        <div className="text-center mt-12">
-          <Button className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3">
-            Load More Hadiths
-          </Button>
-        </div>
+
       </div>
     </div>
   )

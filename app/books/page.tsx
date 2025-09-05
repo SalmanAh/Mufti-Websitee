@@ -90,41 +90,22 @@ export default function BooksPage() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
       <Navigation />
       
-      {/* Hero Section */}
-       <div className="relative bg-white text-gray-900 py-20 overflow-hidden">
-         <div className="container mx-auto px-4 relative z-10">
-           <div className="text-center space-y-6">
-             <div className="flex justify-center">
-               <div className="p-4 bg-orange-100 rounded-full border border-orange-200">
-                 <BookOpen className="h-16 w-16 text-orange-600" />
-               </div>
-             </div>
-             <h1 className="text-5xl md:text-6xl font-bold text-gray-900">
-               Islamic Books
-             </h1>
-             <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-               Discover authentic Islamic literature and expand your knowledge with our curated collection
-             </p>
-           </div>
-         </div>
-       </div>
-
       {/* Search and Filter Section */}
         <div className="container mx-auto px-4 py-8">
-          <div className="bg-white rounded-xl shadow-lg p-6 mb-8 border border-indigo-100">
+          <div className="bg-white rounded-xl shadow-lg p-6 mb-8 border border-orange-100">
             <div className="flex flex-col md:flex-row gap-4">
               <div className="flex-1">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                   <Input 
                     placeholder="Search books by title, author, or category..." 
-                    className="pl-10 border-orange-200 focus:border-orange-400"
+                    className="pl-10 border-orange-100 focus:border-orange-200"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
                 </div>
               </div>
-              <Button variant="outline" className="border-orange-200 text-orange-700 hover:bg-orange-50">
+              <Button variant="outline" className="border-orange-200 text-orange-500 hover:bg-orange-50">
                 <Filter className="h-4 w-4 mr-2" />
                 Filter
               </Button>
@@ -137,8 +118,8 @@ export default function BooksPage() {
                   key={category} 
                   variant={selectedCategory === category ? "default" : "outline"}
                   className={selectedCategory === category 
-                    ? "bg-orange-600 hover:bg-orange-700 cursor-pointer" 
-                    : "border-orange-200 text-orange-700 hover:bg-orange-50 cursor-pointer"
+                    ? "bg-orange-400 hover:bg-orange-500 cursor-pointer"
+            : "border-orange-200 text-orange-500 hover:bg-orange-50 cursor-pointer"
                   }
                   onClick={() => setSelectedCategory(category)}
                 >
@@ -158,15 +139,15 @@ export default function BooksPage() {
             </div>
           ) : filteredBooks && filteredBooks.length > 0 ? (
             filteredBooks.map((book) => (
-              <Card key={book.id} className="group hover:shadow-2xl hover:shadow-orange-500/10 transition-all duration-500 overflow-hidden border-0 bg-gradient-to-br from-white to-gray-50/50 dark:from-gray-900 dark:to-gray-800/50 hover:-translate-y-2">
+              <Card key={book.id} className="group hover:shadow-2xl hover:shadow-orange-200/10 transition-all duration-500 overflow-hidden border-0 bg-gradient-to-br from-white to-gray-50/50 dark:from-gray-900 dark:to-gray-800/50 hover:-translate-y-2">
                 <CardContent className="p-6 space-y-4">
                   {/* Header with Category and Featured Badge */}
                   <div className="flex items-center justify-between">
-                    <Badge variant="outline" className="border-orange-500/20 text-orange-600 bg-orange-500/5">
+                    <Badge variant="outline" className="border-orange-200/20 text-orange-400 bg-orange-100/5">
                       {book.categories?.name || 'Book'}
                     </Badge>
                     {book.featured && (
-                      <Badge className="bg-gradient-to-r from-orange-600 to-orange-700 text-white shadow-lg">
+                      <Badge className="bg-gradient-to-r from-orange-400 to-orange-500 text-white shadow-lg">
                         <Star className="h-3 w-3 mr-1" />
                         Featured
                       </Badge>
@@ -220,7 +201,7 @@ export default function BooksPage() {
                   {/* Action Buttons */}
                   <div className="flex gap-3 pt-4">
                     <Link href={`/books/${book.id}`} className="flex-1">
-                      <Button variant="outline" className="w-full border-orange-200 text-orange-700 hover:bg-orange-50">
+                      <Button variant="outline" className="w-full border-orange-200 text-orange-500 hover:bg-orange-50">
                         <BookOpen className="h-4 w-4 mr-2" />
                         View Details
                       </Button>
@@ -231,7 +212,7 @@ export default function BooksPage() {
                           e.preventDefault();
                           window.open(book.pdf_url, '_blank');
                         }}
-                        className="flex-1 bg-orange-600 hover:bg-orange-700 text-white"
+                        className="flex-1 bg-orange-400 hover:bg-orange-500 text-white"
                       >
                         <Download className="h-4 w-4 mr-2" />
                         View PDF
@@ -258,12 +239,7 @@ export default function BooksPage() {
           )}
         </div>
 
-        {/* Load More Button */}
-        <div className="text-center mt-12">
-          <Button className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3">
-            Load More Books
-          </Button>
-        </div>
+
       </div>
     </div>
   )
