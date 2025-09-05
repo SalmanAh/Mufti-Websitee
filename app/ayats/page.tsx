@@ -94,14 +94,13 @@ export default function AyatsPage() {
       <Navigation />
       
       {/* Hero Section */}
-      <div className="relative bg-gradient-to-r from-amber-600 to-amber-700 text-white py-20">
-        <div className="absolute inset-0 bg-[url('/islamic-calligraphy-and-geometric-patterns.png')] opacity-10 bg-repeat"></div>
+      <div className="relative bg-white text-gray-900 py-20">
         <div className="relative container mx-auto px-4 text-center">
-          <div className="inline-flex items-center justify-center p-3 bg-white/10 rounded-full mb-6">
-            <BookOpen className="h-8 w-8" />
+          <div className="inline-flex items-center justify-center p-3 bg-orange-100 rounded-full mb-6 border border-orange-200">
+            <BookOpen className="h-8 w-8 text-orange-600" />
           </div>
-          <h1 className="text-4xl md:text-6xl font-bold mb-4">Quranic Verses</h1>
-          <p className="text-xl text-amber-100 max-w-2xl mx-auto">
+          <h1 className="text-4xl md:text-6xl font-bold mb-4 text-gray-900">Quranic Verses</h1>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Discover the divine wisdom and guidance from the Holy Quran
           </p>
         </div>
@@ -109,20 +108,20 @@ export default function AyatsPage() {
 
       {/* Search and Filter Section */}
       <div className="container mx-auto px-4 py-8">
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-8 border border-amber-100">
+        <div className="bg-white rounded-xl shadow-lg p-6 mb-8 border border-orange-100">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                 <Input 
                   placeholder="Search verses by text, surah, or theme..." 
-                  className="pl-10 border-amber-200 focus:border-amber-400"
+                  className="pl-10 border-orange-200 focus:border-orange-400"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
             </div>
-            <Button variant="outline" className="border-amber-200 text-amber-700 hover:bg-amber-50">
+            <Button variant="outline" className="border-orange-200 text-orange-700 hover:bg-orange-50">
               <Filter className="h-4 w-4 mr-2" />
               Filter
             </Button>
@@ -135,8 +134,8 @@ export default function AyatsPage() {
                 key={category} 
                 variant={selectedCategory === category ? "default" : "outline"}
                 className={selectedCategory === category 
-                  ? "bg-amber-600 hover:bg-amber-700 cursor-pointer" 
-                  : "border-amber-200 text-amber-700 hover:bg-amber-50 cursor-pointer"
+                  ? "bg-orange-600 hover:bg-orange-700 cursor-pointer" 
+                  : "border-orange-200 text-orange-700 hover:bg-orange-50 cursor-pointer"
                 }
                 onClick={() => setSelectedCategory(category)}
               >
@@ -150,18 +149,18 @@ export default function AyatsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {loading ? (
             <div className="col-span-full text-center py-8">
-              <div className="text-amber-600">Loading ayats...</div>
+              <div className="text-orange-600">Loading ayats...</div>
             </div>
           ) : filteredAyats && filteredAyats.length > 0 ? (
             filteredAyats.map((ayat) => (
-              <Card key={ayat.id} className="hover:shadow-xl transition-all duration-300 border-amber-100 hover:border-amber-300 bg-white">
+              <Card key={ayat.id} className="hover:shadow-xl transition-all duration-300 border-orange-100 hover:border-orange-300 bg-white">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <Badge variant="outline" className="border-green-200 text-green-700 bg-green-50">
                         {ayat.category || 'Ayat'}
                       </Badge>
-                      <Badge variant="outline" className="border-amber-200 text-amber-700 bg-amber-50">
+                      <Badge variant="outline" className="border-orange-200 text-orange-700 bg-orange-50">
                         {ayat.revelation || 'Quran'}
                       </Badge>
                     </div>
@@ -169,15 +168,15 @@ export default function AyatsPage() {
                       <Heart className="h-4 w-4" />
                     </Button>
                   </div>
-                  <CardTitle className="text-lg text-amber-800">
+                  <CardTitle className="text-lg text-orange-800">
                     {ayat.address}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   {/* Arabic Text */}
-                  <div className="text-right p-6 bg-gradient-to-r from-amber-50 to-green-50 rounded-lg border border-amber-200">
+                  <div className="text-right p-6 bg-orange-50 rounded-lg border border-orange-200">
                     <div 
-                      className="text-2xl font-arabic text-amber-800 leading-relaxed prose prose-xl max-w-none"
+                      className="text-2xl font-arabic text-orange-800 leading-relaxed prose prose-xl max-w-none"
                       dangerouslySetInnerHTML={{
                         __html: ayat.arabic_text || ''
                       }}
@@ -186,10 +185,10 @@ export default function AyatsPage() {
                   
                   {/* Urdu Translation */}
                   {ayat.translation_urdu && (
-                    <div className="p-4 bg-green-50 rounded-lg border border-green-100">
-                      <p className="text-sm font-medium text-green-700 mb-1">Urdu Translation:</p>
+                    <div className="p-4 bg-orange-50 rounded-lg border border-orange-100">
+                      <p className="text-sm font-medium text-orange-700 mb-1">Urdu Translation:</p>
                       <div 
-                        className="text-green-800 prose prose-sm max-w-none text-right"
+                        className="text-orange-800 prose prose-sm max-w-none text-right"
                         style={{fontFamily: 'Noto Nastaliq Urdu, serif'}}
                         dangerouslySetInnerHTML={{
                           __html: `"${ayat.translation_urdu}"`
@@ -199,8 +198,8 @@ export default function AyatsPage() {
                   )}
                   
                   {/* Translation */}
-                  <div className="p-4 bg-amber-50 rounded-lg border border-amber-100">
-                    <p className="text-sm font-medium text-amber-700 mb-1">Translation:</p>
+                  <div className="p-4 bg-orange-50 rounded-lg border border-orange-100">
+                    <p className="text-sm font-medium text-orange-700 mb-1">Translation:</p>
                     <div 
                       className="text-gray-700 leading-relaxed prose prose-sm max-w-none"
                       dangerouslySetInnerHTML={{
@@ -210,7 +209,7 @@ export default function AyatsPage() {
                   </div>
 
                   {/* Source Information */}
-                  <div className="text-xs text-gray-500 space-y-1 pt-2 border-t border-amber-100">
+                  <div className="text-xs text-gray-500 space-y-1 pt-2 border-t border-orange-100">
                     <div>Reference: {ayat.address}</div>
                     {ayat.tafseer_eng && (
                       <div>Tafseer: Available</div>
@@ -228,13 +227,13 @@ export default function AyatsPage() {
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="flex gap-2 pt-2 border-t border-amber-100">
-                    <Button asChild className="flex-1 bg-amber-600 hover:bg-amber-700 text-white text-sm py-2">
+                  <div className="flex gap-2 pt-2 border-t border-orange-100">
+                    <Button asChild className="flex-1 bg-orange-600 hover:bg-orange-700 text-white text-sm py-2">
                       <Link href={`/ayats/${ayat.id}/detail`}>
                         View Tafseer
                       </Link>
                     </Button>
-                    <Button variant="outline" size="sm" className="border-amber-200 text-amber-700 hover:bg-amber-50">
+                    <Button variant="outline" size="sm" className="border-orange-200 text-orange-700 hover:bg-orange-50">
                       <Share2 className="h-4 w-4" />
                     </Button>
                   </div>
@@ -256,7 +255,7 @@ export default function AyatsPage() {
 
         {/* Load More Button */}
         <div className="text-center mt-12">
-          <Button className="bg-amber-600 hover:bg-amber-700 text-white px-8 py-3">
+          <Button className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3">
             Load More Ayats
           </Button>
         </div>

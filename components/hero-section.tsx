@@ -1,14 +1,16 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
+import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ArrowRight, BookOpen, Video, FileText, MessageCircle, Heart, Mail, Phone, MapPin, MessageSquare, Play, Eye } from "lucide-react"
+import { ArrowRight, BookOpen, Video, FileText, MessageCircle, Heart, Mail, Phone, MapPin, MessageSquare, Play, Eye, Download, Share2, Calendar } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import Link from "next/link"
+import Image from "next/image"
 import { createClient } from "@/lib/supabase/client"
+import { getYouTubeThumbnail } from "@/lib/youtube-utils"
 
 // Desktop/Laptop images (first 3)
 const desktopSlideImages = [
@@ -49,11 +51,11 @@ const mobileSlideImages = [
 ]
 
 const features = [
-  { icon: Video, title: "Videos", description: "Educational Islamic lectures and talks", href: "/videos", color: "bg-green-600" },
-  { icon: BookOpen, title: "Hadiths", description: "Authentic sayings of Prophet Muhammad (PBUH)", href: "/hadiths", color: "bg-amber-600" },
-  { icon: Heart, title: "Ayats", description: "Beautiful verses from the Holy Quran", href: "/ayats", color: "bg-green-700" },
-  { icon: FileText, title: "Articles", description: "Scholarly writings and Islamic insights", href: "/articles", color: "bg-amber-700" },
-  { icon: BookOpen, title: "E-Books", description: "Digital Islamic books and literature", href: "/books", color: "bg-green-800" },
+  { icon: Video, title: "Videos", description: "Educational Islamic lectures and talks", href: "/videos", color: "bg-orange-600" },
+  { icon: BookOpen, title: "Hadiths", description: "Authentic sayings of Prophet Muhammad (PBUH)", href: "/hadiths", color: "bg-orange-600" },
+  { icon: Heart, title: "Ayats", description: "Beautiful verses from the Holy Quran", href: "/ayats", color: "bg-orange-700" },
+  { icon: FileText, title: "Articles", description: "Scholarly writings and Islamic insights", href: "/articles", color: "bg-orange-700" },
+  { icon: BookOpen, title: "E-Books", description: "Digital Islamic books and literature", href: "/books", color: "bg-orange-800" },
 ]
 
 // Real content will be fetched from database
@@ -111,39 +113,69 @@ export function HeroSection() {
         const supabase = createClient()
         
         // Fetch latest videos (limit 3)
-        const { data: videos } = await supabase
+        const { data: videos, error: videosError } = await supabase
           .from('videos')
           .select('*')
           .order('created_at', { ascending: false })
           .limit(3)
         
+        if (videosError) {
+          console.error('Error fetching videos:', videosError)
+        } else {
+          console.log('Videos fetched:', videos?.length || 0, 'items')
+        }
+        
         // Fetch latest hadiths (limit 3)
-        const { data: hadiths } = await supabase
+        const { data: hadiths, error: hadithsError } = await supabase
           .from('hadiths')
           .select('*')
           .order('created_at', { ascending: false })
           .limit(3)
         
+        if (hadithsError) {
+          console.error('Error fetching hadiths:', hadithsError)
+        } else {
+          console.log('Hadiths fetched:', hadiths?.length || 0, 'items')
+        }
+        
         // Fetch latest ayats (limit 3)
-        const { data: ayats } = await supabase
+        const { data: ayats, error: ayatsError } = await supabase
           .from('ayats')
           .select('*')
           .order('created_at', { ascending: false })
           .limit(3)
         
+        if (ayatsError) {
+          console.error('Error fetching ayats:', ayatsError)
+        } else {
+          console.log('Ayats fetched:', ayats?.length || 0, 'items')
+        }
+        
         // Fetch latest articles (limit 3)
-        const { data: articles } = await supabase
+        const { data: articles, error: articlesError } = await supabase
           .from('articles')
           .select('*')
           .order('created_at', { ascending: false })
           .limit(3)
         
+        if (articlesError) {
+          console.error('Error fetching articles:', articlesError)
+        } else {
+          console.log('Articles fetched:', articles?.length || 0, 'items')
+        }
+        
         // Fetch latest books (limit 3)
-        const { data: books } = await supabase
+        const { data: books, error: booksError } = await supabase
           .from('books')
           .select('*')
           .order('created_at', { ascending: false })
           .limit(3)
+        
+        if (booksError) {
+          console.error('Error fetching books:', booksError)
+        } else {
+          console.log('Books fetched:', books?.length || 0, 'items')
+        }
         
         setContentData({
           videos: videos || [],
@@ -163,9 +195,9 @@ export function HeroSection() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-amber-50 dark:from-gray-800 dark:via-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-white dark:from-gray-800 dark:via-gray-900 dark:to-gray-800">
       {/* Hero Slideshow */}
-      <div className="relative h-[400px] md:h-[500px] overflow-hidden bg-gradient-to-r from-green-100 to-amber-100 dark:from-gray-800 dark:to-gray-700">
+      <div className="relative h-[400px] md:h-[500px] overflow-hidden bg-white dark:from-gray-800 dark:to-gray-700">
         
         {currentSlideImages.map((image, index) => (
           <div
@@ -198,16 +230,16 @@ export function HeroSection() {
           ))}
         </div>
       </div>
-<div className="bg-gradient-to-r from-green-100 to-amber-100">
+<div className="bg-white">
   <br />
 </div>
       <hr />
 
       {/* Features Section */}
-      <div className="bg-gradient-to-r from-green-100 to-amber-100 dark:from-gray-800 dark:to-gray-700 py-16">
+      <div className="bg-white dark:from-gray-800 dark:to-gray-700 py-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold text-green-800 dark:text-green-400 mb-4">All Features</h2>
+            <h2 className="text-4xl md:text-5xl font-bold text-orange-800 dark:text-orange-400 mb-4">All Features</h2>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
@@ -215,11 +247,11 @@ export function HeroSection() {
               const IconComponent = feature.icon
               return (
                 <Link key={index} href={feature.href}>
-                  <Card className="p-6 text-center hover:shadow-lg transition-shadow cursor-pointer bg-white dark:bg-gray-800 border-green-100 dark:border-gray-700">
+                  <Card className="p-6 text-center hover:shadow-lg transition-shadow cursor-pointer bg-white dark:bg-gray-800 border-orange-100 dark:border-gray-700">
                     <div className={`${feature.color} w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4`}>
                       <IconComponent className="h-8 w-8 text-white" />
                     </div>
-                    <h3 className="font-semibold text-green-800 dark:text-green-400 mb-2">{feature.title}</h3>
+                    <h3 className="font-semibold text-orange-800 dark:text-orange-400 mb-2">{feature.title}</h3>
                     <p className="text-sm text-gray-600 dark:text-gray-300">{feature.description}</p>
                   </Card>
                 </Link>
@@ -233,15 +265,15 @@ export function HeroSection() {
       <hr className="border-gray-300 dark:border-gray-600" />
 
       {/* Explore More Section */}
-      <div className="bg-gradient-to-r from-green-100 to-amber-100 dark:from-gray-800 dark:to-gray-700 py-16">
+      <div className="bg-white dark:from-gray-800 dark:to-gray-700 py-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-green-800 dark:text-green-400 mb-4">Explore More</h2>
+            <h2 className="text-4xl md:text-5xl font-bold text-orange-800 dark:text-orange-400 mb-4">Explore More</h2>
           </div>
 
           {/* Videos Section */}
           <div className="mb-16">
-            <h3 className="text-3xl md:text-4xl font-bold text-green-700 dark:text-green-400 mb-8 text-center">Latest Videos</h3>
+            <h3 className="text-3xl md:text-4xl font-bold text-orange-700 dark:text-orange-400 mb-8 text-center">Latest Videos</h3>
             {loading ? (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {[1, 2, 3].map((i) => (
@@ -254,45 +286,65 @@ export function HeroSection() {
                   </Card>
                 ))}
               </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            ) : contentData.videos.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {contentData.videos.map((video, index) => (
-                <Card key={index} className="group hover:shadow-2xl hover:shadow-green-500/10 transition-all duration-500 overflow-hidden border-0 bg-gradient-to-br from-white to-gray-50/50 dark:from-gray-900 dark:to-gray-800/50 hover:-translate-y-2">
-                  <div className="relative">
-                    <div className="aspect-video relative overflow-hidden bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900">
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <Play className="h-16 w-16 text-green-600 group-hover:scale-110 transition-transform duration-500" />
-                      </div>
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
-                      <div className="absolute bottom-3 left-3 right-3">
-                        <div className="flex items-center justify-between text-white text-sm">
-                          <Badge variant="secondary" className="bg-black/70 text-white backdrop-blur-sm">
-                            Video
-                          </Badge>
-                          <div className="flex items-center gap-1">
-                            <Eye className="h-3 w-3" />
-                            <span>{video.views || 0}</span>
-                          </div>
+                  <Link 
+                    href={video.youtube_link || '#'} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    key={index} 
+                    className="group cursor-pointer block p-4 rounded-lg bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-all duration-200 border border-gray-100 dark:border-gray-700"
+                  >
+                    {/* Video Thumbnail */}
+                    <div className="relative aspect-video overflow-hidden rounded-xl bg-gray-900 dark:bg-gray-800 mb-3">
+                      <Image
+                        src={getYouTubeThumbnail(video.youtube_link) || "/placeholder.svg"}
+                        alt={video.title}
+                        width={400}
+                        height={225}
+                        className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
+                      />
+                      {/* Play Button Overlay */}
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-200 flex items-center justify-center">
+                        <div className="bg-orange-600 text-white rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-lg">
+                          <Play className="h-5 w-5 ml-0.5" />
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="p-6 space-y-4">
-                    <div>
-                      <h4 className="text-xl font-semibold line-clamp-2 group-hover:text-green-600 transition-colors">{video.title}</h4>
-                      <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{video.description}</p>
+                    
+                    {/* Video Info */}
+                    <div className="space-y-2">
+                      {/* Title */}
+                      <h3 className="font-semibold text-gray-900 dark:text-gray-100 text-sm leading-tight line-clamp-2 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
+                        {video.title}
+                      </h3>
+                      
+                      {/* Description */}
+                      <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2">
+                        {video.description || 'No description available'}
+                      </p>
+                      
+                      {/* Views and Date */}
+                      <div className="flex items-center text-gray-500 dark:text-gray-500 text-sm space-x-2">
+                        <span>{(video.views || 0).toLocaleString()} views</span>
+                        <span>•</span>
+                        <span>{new Date(video.created_at).toLocaleDateString()}</span>
+                      </div>
                     </div>
-                    <div className="flex items-center justify-between pt-4 border-t">
-                      <Badge variant="outline" className="border-green-500/20 text-green-600 bg-green-500/5">Video</Badge>
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <Video className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                <h4 className="text-xl font-semibold text-gray-600 mb-2">No Videos Available</h4>
+                <p className="text-gray-500">Videos will appear here once they are added to the database.</p>
+              </div>
             )}
             <div className="text-center mt-8">
               <Link href="/videos">
-                <Button variant="outline" className="border-green-600 text-green-600 hover:bg-green-600 hover:text-white">
+                <Button variant="outline" className="border-orange-600 text-orange-600 hover:bg-orange-600 hover:text-white">
                   See More Videos <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
@@ -302,7 +354,7 @@ export function HeroSection() {
 
           {/* Hadiths Section */}
           <div className="mb-16">
-            <h3 className="text-3xl md:text-4xl font-bold text-amber-700 dark:text-amber-400 mb-8 text-center">Featured Hadiths</h3>
+            <h3 className="text-3xl md:text-4xl font-bold text-orange-700 dark:text-orange-400 mb-8 text-center">Featured Hadiths</h3>
             {loading ? (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {[1, 2, 3].map((i) => (
@@ -315,39 +367,79 @@ export function HeroSection() {
                   </Card>
                 ))}
               </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            ) : contentData.hadiths.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {contentData.hadiths.map((hadith, index) => (
-                <Card key={index} className="group hover:shadow-2xl hover:shadow-amber-500/10 transition-all duration-500 overflow-hidden border-0 bg-gradient-to-br from-white to-gray-50/50 dark:from-gray-900 dark:to-gray-800/50 hover:-translate-y-2">
-                  <div className="relative">
-                    <div className="aspect-video relative overflow-hidden bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950 dark:to-amber-900">
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <BookOpen className="h-16 w-16 text-amber-600 group-hover:scale-110 transition-transform duration-500" />
-                      </div>
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
-                      <div className="absolute bottom-3 left-3 right-3">
-                        <Badge variant="secondary" className="bg-black/70 text-white backdrop-blur-sm">
-                          {hadith.address || 'Hadith'}
+                  <Card key={index} className="hover:shadow-xl transition-all duration-300 border-orange-100 hover:border-orange-300 bg-white">
+                    <div className="p-6 space-y-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <Badge variant="outline" className="border-orange-200 text-orange-700 bg-orange-50">
+                          {hadith.category || 'Hadith'}
                         </Badge>
+                        <span className="text-sm text-gray-500">{hadith.address}</span>
                       </div>
+                      
+                      {/* Arabic Text */}
+                      <div className="text-right p-4 bg-orange-50 rounded-lg border border-orange-100">
+                        <div 
+                          className="text-lg font-arabic text-orange-800 leading-relaxed"
+                          dangerouslySetInnerHTML={{
+                            __html: hadith.arabic_text || ''
+                          }}
+                        />
+                      </div>
+                      
+                      {/* Translation */}
+                      {hadith.translation_eng && (
+                        <div className="p-4 bg-orange-50 rounded-lg border border-orange-100">
+                          <div 
+                            className="text-gray-700 italic leading-relaxed text-sm"
+                            dangerouslySetInnerHTML={{
+                              __html: `"${hadith.translation_eng}"`
+                            }}
+                          />
+                        </div>
+                      )}
+                      
+                      {/* Source Information */}
+                       <div className="text-sm text-gray-600 space-y-1 mb-4">
+                         <p><span className="font-medium text-orange-700">Reference:</span> {hadith.address}</p>
+                         <p><span className="font-medium text-orange-700">Views:</span> {hadith.views || 0}</p>
+                         <p><span className="font-medium text-orange-700">Date:</span> {new Date(hadith.created_at).toLocaleDateString()}</p>
+                         {hadith.tafseer_eng && (
+                           <p><span className="font-medium text-orange-700">Tafseer:</span> Available</p>
+                         )}
+                       </div>
+                       
+                       {/* Action Buttons */}
+                       <div className="flex gap-2 pt-2 border-t border-orange-100">
+                         <Button asChild className="flex-1 bg-orange-600 hover:bg-orange-700 text-white text-sm py-2">
+                           <Link href={`/hadiths/${hadith.id}/detail`}>
+                             View Tafseer
+                           </Link>
+                         </Button>
+                         <Button 
+                           variant="outline" 
+                           size="sm"
+                           className="border-orange-200 text-orange-700 hover:bg-orange-50"
+                         >
+                           Share
+                         </Button>
+                       </div>
                     </div>
-                  </div>
-                  <div className="p-6 space-y-4">
-                    <div>
-                      <h4 className="text-xl font-semibold line-clamp-2 group-hover:text-amber-600 transition-colors">{hadith.address}</h4>
-                      <p className="text-sm text-muted-foreground mt-2 line-clamp-3">{hadith.translation_eng}</p>
-                    </div>
-                    <div className="flex items-center justify-between pt-4 border-t">
-                      <Badge variant="outline" className="border-amber-500/20 text-amber-600 bg-amber-500/5">{hadith.category || 'Hadith'}</Badge>
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <BookOpen className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                <h4 className="text-xl font-semibold text-gray-600 mb-2">No Hadiths Available</h4>
+                <p className="text-gray-500">Hadiths will appear here once they are added to the database.</p>
+              </div>
             )}
             <div className="text-center mt-8">
               <Link href="/hadiths">
-                <Button variant="outline" className="border-amber-600 text-amber-600 hover:bg-amber-600 hover:text-white">
+                <Button variant="outline" className="border-orange-600 text-orange-600 hover:bg-orange-600 hover:text-white">
                   See More Hadiths <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
@@ -357,7 +449,7 @@ export function HeroSection() {
 
           {/* Ayats Section */}
           <div className="mb-16">
-            <h3 className="text-3xl md:text-4xl font-bold text-amber-700 dark:text-amber-400 mb-8 text-center">Beautiful Ayats</h3>
+            <h3 className="text-3xl md:text-4xl font-bold text-orange-700 dark:text-orange-400 mb-8 text-center">Beautiful Ayats</h3>
             {loading ? (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {[1, 2, 3].map((i) => (
@@ -370,40 +462,92 @@ export function HeroSection() {
                   </Card>
                 ))}
               </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            ) : contentData.ayats.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {contentData.ayats.map((ayat, index) => (
-                <Card key={index} className="group hover:shadow-2xl hover:shadow-amber-500/10 transition-all duration-500 overflow-hidden border-0 bg-gradient-to-br from-white to-gray-50/50 dark:from-gray-900 dark:to-gray-800/50 hover:-translate-y-2">
-                  <div className="relative">
-                    <div className="aspect-video relative overflow-hidden bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950 dark:to-amber-900">
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <BookOpen className="h-16 w-16 text-amber-600 group-hover:scale-110 transition-transform duration-500" />
+                  <Card key={index} className="hover:shadow-xl transition-all duration-300 border-orange-100 hover:border-orange-300 bg-white">
+                    <div className="p-6 space-y-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline" className="border-orange-200 text-orange-700 bg-orange-50">
+                            {ayat.category || 'Ayat'}
+                          </Badge>
+                          <Badge variant="outline" className="border-orange-200 text-orange-700 bg-orange-50">
+                            {ayat.revelation || 'Quran'}
+                          </Badge>
+                        </div>
+                        <Button variant="ghost" size="sm" className="text-red-500 hover:text-red-600">
+                          <Heart className="h-4 w-4" />
+                        </Button>
                       </div>
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
-                      <div className="absolute bottom-3 left-3 right-3">
-                        <Badge variant="secondary" className="bg-black/70 text-white backdrop-blur-sm">
-                          {ayat.address || 'Quran'}
-                        </Badge>
+                      <h4 className="text-lg text-orange-800">
+                        {ayat.address}
+                      </h4>
+                      
+                      {/* Arabic Text */}
+                      <div className="text-right p-6 bg-orange-50 rounded-lg border border-orange-200">
+                        <div 
+                          className="text-2xl font-arabic text-orange-800 leading-relaxed"
+                          dangerouslySetInnerHTML={{
+                            __html: ayat.arabic_text || ''
+                          }}
+                        />
                       </div>
+                      
+                      {/* Translation */}
+                      <div className="p-4 bg-orange-50 rounded-lg border border-orange-100">
+                        <p className="text-sm font-medium text-orange-700 mb-1">Translation:</p>
+                        <div 
+                          className="text-gray-700 leading-relaxed text-sm"
+                          dangerouslySetInnerHTML={{
+                            __html: `"${ayat.translation_eng}"`
+                          }}
+                        />
+                      </div>
+
+                      {/* Source Information */}
+                       <div className="text-xs text-gray-500 space-y-1 pt-2 border-t border-orange-100">
+                         <div>Reference: {ayat.address}</div>
+                         {ayat.tafseer_eng && (
+                           <div>Tafseer: Available</div>
+                         )}
+                         <div className="flex items-center gap-4">
+                           <span className="flex items-center gap-1">
+                             <Eye className="h-3 w-3" />
+                             {ayat.views || 0}
+                           </span>
+                           <span className="flex items-center gap-1">
+                             <Calendar className="h-3 w-3" />
+                             {new Date(ayat.created_at).toLocaleDateString()}
+                           </span>
+                         </div>
+                       </div>
+
+                       {/* Action Buttons */}
+                       <div className="flex gap-2 pt-2 border-t border-orange-100">
+                         <Button asChild className="flex-1 bg-orange-600 hover:bg-orange-700 text-white text-sm py-2">
+                           <Link href={`/ayats/${ayat.id}/detail`}>
+                             View Tafseer
+                           </Link>
+                         </Button>
+                         <Button variant="outline" size="sm" className="border-orange-200 text-orange-700 hover:bg-orange-50">
+                           <Share2 className="h-4 w-4" />
+                         </Button>
+                       </div>
                     </div>
-                  </div>
-                  <div className="p-6 space-y-4">
-                    <div>
-                      <h4 className="text-xl font-semibold line-clamp-2 group-hover:text-amber-600 transition-colors">{ayat.address}</h4>
-                      <p className="text-sm text-muted-foreground mt-2 italic line-clamp-3">"{ayat.translation_eng}"</p>
-                      <p className="text-xs text-muted-foreground mt-1">{ayat.revelation}</p>
-                    </div>
-                    <div className="flex items-center justify-between pt-4 border-t">
-                      <Badge variant="outline" className="border-amber-500/20 text-amber-600 bg-amber-500/5">{ayat.category || 'Quran'}</Badge>
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <BookOpen className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                <h4 className="text-xl font-semibold text-gray-600 mb-2">No Ayats Available</h4>
+                <p className="text-gray-500">Quranic verses will appear here once they are added to the database.</p>
+              </div>
             )}
             <div className="text-center mt-8">
               <Link href="/ayats">
-                <Button variant="outline" className="border-amber-600 text-amber-600 hover:bg-amber-600 hover:text-white">
+                <Button variant="outline" className="border-orange-600 text-orange-600 hover:bg-orange-600 hover:text-white">
                   See More Ayats <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
@@ -413,7 +557,7 @@ export function HeroSection() {
 
           {/* Articles Section */}
           <div className="mb-16">
-            <h3 className="text-3xl md:text-4xl font-bold text-amber-700 dark:text-amber-400 mb-8 text-center">Recent Articles</h3>
+            <h3 className="text-3xl md:text-4xl font-bold text-orange-700 dark:text-orange-400 mb-8 text-center">Recent Articles</h3>
             {loading ? (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {[1, 2, 3].map((i) => (
@@ -426,44 +570,69 @@ export function HeroSection() {
                   </Card>
                 ))}
               </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            ) : contentData.articles.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {contentData.articles.map((article, index) => (
-                <Card key={index} className="group hover:shadow-2xl hover:shadow-amber-500/10 transition-all duration-500 overflow-hidden border-0 bg-gradient-to-br from-white to-gray-50/50 dark:from-gray-900 dark:to-gray-800/50 hover:-translate-y-2">
-                  <div className="relative">
-                    <div className="aspect-video relative overflow-hidden bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950 dark:to-amber-900">
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <FileText className="h-16 w-16 text-amber-600 group-hover:scale-110 transition-transform duration-500" />
-                      </div>
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
-                      <div className="absolute bottom-3 left-3 right-3">
-                        <Badge variant="secondary" className="bg-black/70 text-white backdrop-blur-sm">
-                          Article
+                  <Card key={index} className="hover:shadow-xl transition-all duration-300 border-orange-100 hover:border-orange-300 bg-white">
+                    <div className="p-6 space-y-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <Badge variant="outline" className="border-orange-200 text-orange-700 bg-orange-50">
+                          {article.category || 'Article'}
                         </Badge>
                       </div>
-                    </div>
-                  </div>
-                  <div className="p-6 space-y-4">
-                    <div>
-                      <h4 className="text-xl font-semibold line-clamp-2 group-hover:text-amber-600 transition-colors">{article.title}</h4>
-                      <p className="text-sm text-muted-foreground mt-2 line-clamp-3">{article.content?.substring(0, 150)}...</p>
-                    </div>
-                    <div className="flex items-center justify-between pt-4 border-t">
-                      <div className="flex items-center space-x-4 text-xs text-muted-foreground">
-                        <span>By {article.author || 'Islamic Scholar'}</span>
-                        <span>•</span>
-                        <span>{article.views || 0} views</span>
+                      <h3 className="text-lg font-semibold text-orange-800 line-clamp-2">
+                        {article.title}
+                      </h3>
+                      <p className="text-sm text-gray-600 mt-1">
+                        By {article.author || 'Unknown Author'}
+                      </p>
+                      
+                      {/* Content Preview */}
+                      <div className="p-4 bg-orange-50 rounded-lg border border-orange-100">
+                        <div 
+                          className="text-gray-700 text-sm leading-relaxed line-clamp-4"
+                          dangerouslySetInnerHTML={{
+                            __html: article.content || ''
+                          }}
+                        />
                       </div>
-                      <Badge variant="outline" className="border-amber-500/20 text-amber-600 bg-amber-500/5">Article</Badge>
+                      
+                      {/* Article Stats */}
+                       <div className="flex items-center justify-between text-sm text-gray-500 pt-2 border-t border-orange-100">
+                         <div className="flex items-center gap-4">
+                           <span className="flex items-center gap-1">
+                             <Eye className="h-3 w-3" />
+                             {article.views || 0}
+                           </span>
+                           <span className="flex items-center gap-1">
+                             <Calendar className="h-3 w-3" />
+                             {new Date(article.created_at).toLocaleDateString()}
+                           </span>
+                         </div>
+                       </div>
+                       
+                       {/* Action Button */}
+                        <div className="pt-2">
+                          <Button asChild className="w-full bg-orange-600 hover:bg-orange-700 text-white text-sm py-2">
+                            <Link href={`/articles/${article.id}/detail`}>
+                              View Article
+                            </Link>
+                          </Button>
+                        </div>
                     </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <FileText className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                <h4 className="text-xl font-semibold text-gray-600 mb-2">No Articles Available</h4>
+                <p className="text-gray-500">Articles will appear here once they are added to the database.</p>
+              </div>
             )}
             <div className="text-center mt-8">
               <Link href="/articles">
-                <Button variant="outline" className="border-amber-600 text-amber-600 hover:bg-amber-600 hover:text-white">
+                <Button variant="outline" className="border-orange-600 text-orange-600 hover:bg-orange-600 hover:text-white">
                   See More Articles <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
@@ -473,7 +642,7 @@ export function HeroSection() {
 
           {/* E-Books Section */}
           <div className="mb-16">
-            <h3 className="text-3xl md:text-4xl font-bold text-green-700 dark:text-green-400 mb-8 text-center">Featured E-Books</h3>
+            <h3 className="text-3xl md:text-4xl font-bold text-orange-700 dark:text-orange-400 mb-8 text-center">Featured E-Books</h3>
             {loading ? (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {[1, 2, 3].map((i) => (
@@ -486,47 +655,103 @@ export function HeroSection() {
                   </Card>
                 ))}
               </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            ) : contentData.books.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {contentData.books.map((book, index) => (
-                <Card key={index} className="group hover:shadow-2xl hover:shadow-green-500/10 transition-all duration-500 overflow-hidden border-0 bg-gradient-to-br from-white to-gray-50/50 dark:from-gray-900 dark:to-gray-800/50 hover:-translate-y-2">
-                  <div className="relative">
-                    <div className="aspect-[3/4] relative overflow-hidden bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900">
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <BookOpen className="h-16 w-16 text-green-600 group-hover:scale-110 transition-transform duration-500" />
-                      </div>
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
-                      <div className="absolute bottom-3 left-3 right-3">
-                        <div className="flex items-center gap-2 text-white text-sm">
-                          <Badge variant="secondary" className="bg-black/70 text-white backdrop-blur-sm">
-                            E-Book
+                  <Card key={index} className="hover:shadow-xl transition-all duration-300 border-orange-100 hover:border-orange-300 bg-white">
+                    <div className="p-6 space-y-4">
+                      {/* Header with badges */}
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline" className="border-orange-200 text-orange-700 bg-orange-50">
+                            {book.category || 'E-Book'}
                           </Badge>
+                          {book.featured && (
+                            <Badge variant="outline" className="border-yellow-200 text-yellow-700 bg-yellow-50">
+                              Featured
+                            </Badge>
+                          )}
                         </div>
                       </div>
-                    </div>
-                  </div>
-                  <div className="p-6 space-y-4">
-                    <div>
-                      <h4 className="text-xl font-semibold line-clamp-2 group-hover:text-green-600 transition-colors">{book.title}</h4>
-                      <p className="text-sm text-muted-foreground mt-2">Islamic E-Book</p>
-                      <p className="text-sm text-muted-foreground mt-2 line-clamp-3">{book.description}</p>
-                    </div>
-                    <div className="flex items-center justify-between pt-4 border-t">
-                      <div className="flex items-center space-x-4 text-xs text-muted-foreground">
-                        <span>{book.views || 0} views</span>
-                        <span>•</span>
-                        <span>E-Book</span>
+                      
+                      {/* Book Title */}
+                      <div>
+                        <h3 className="text-lg font-semibold text-orange-800 line-clamp-2 mb-2">
+                          {book.title}
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-3">
+                          By {book.author || 'Unknown Author'}
+                        </p>
                       </div>
-                      <Badge variant="outline" className="border-green-500/20 text-green-600 bg-green-500/5">Book</Badge>
+                      
+                      {/* Description */}
+                      <div className="p-4 bg-orange-50 rounded-lg border border-orange-100">
+                        <div 
+                          className="text-gray-700 text-sm leading-relaxed line-clamp-3"
+                          dangerouslySetInnerHTML={{
+                            __html: book.description || ''
+                          }}
+                        />
+                      </div>
+                      
+                      {/* Book Details */}
+                      <div className="space-y-2 text-sm text-gray-600">
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium text-orange-700">Language:</span>
+                          <span>{book.language || 'Not specified'}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium text-orange-700">Pages:</span>
+                          <span>{book.pages || 'N/A'}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium text-orange-700">Downloads:</span>
+                          <span className="flex items-center gap-1">
+                            <Download className="h-3 w-3" />
+                            {book.downloads || 0}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium text-orange-700">Added:</span>
+                          <span>{new Date(book.created_at).toLocaleDateString()}</span>
+                        </div>
+                      </div>
+                      
+                      {/* Action Buttons */}
+                      <div className="flex gap-3 pt-4">
+                        <Button asChild variant="outline" className="flex-1 border-orange-200 text-orange-700 hover:bg-orange-50">
+                          <Link href={`/books/${book.id}`}>
+                            <BookOpen className="h-4 w-4 mr-2" />
+                            View Details
+                          </Link>
+                        </Button>
+                        {book.pdf_url && (
+                          <Button 
+                            onClick={(e) => {
+                              e.preventDefault();
+                              window.open(book.pdf_url, '_blank');
+                            }}
+                            className="flex-1 bg-orange-600 hover:bg-orange-700 text-white"
+                          >
+                            <Download className="h-4 w-4 mr-2" />
+                            View PDF
+                          </Button>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <BookOpen className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                <h4 className="text-xl font-semibold text-gray-600 mb-2">No E-Books Available</h4>
+                <p className="text-gray-500">E-Books will appear here once they are added to the database.</p>
+              </div>
             )}
             <div className="text-center mt-8">
               <Link href="/books">
-                <Button variant="outline" className="border-green-600 text-green-600 hover:bg-green-600 hover:text-white">
+                <Button variant="outline" className="border-orange-600 text-orange-600 hover:bg-orange-600 hover:text-white">
                   See More E-Books <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
@@ -545,18 +770,18 @@ export function HeroSection() {
         <div className="bg-white dark:bg-gray-900 py-16">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
-              <h2 className="text-4xl md:text-5xl font-bold text-green-800 dark:text-green-400 mb-4">Contact Us</h2>
+              <h2 className="text-4xl md:text-5xl font-bold text-orange-800 dark:text-orange-400 mb-4">Contact Us</h2>
               <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">Get in touch with us for any questions or inquiries about Islamic teachings and our platform.</p>
             </div>
             
             <div className="max-w-2xl mx-auto">
               <div className="space-y-8">
                 <div>
-                  <h3 className="text-xl font-semibold text-green-800 dark:text-green-400 mb-6">Get in Touch</h3>
+                  <h3 className="text-xl font-semibold text-orange-800 dark:text-orange-400 mb-6">Get in Touch</h3>
                   <div className="space-y-4">
                     <div className="flex items-center space-x-3">
-                      <div className="p-2 bg-green-100 dark:bg-green-800 rounded-lg">
-                        <Mail className="h-5 w-5 text-green-600 dark:text-green-400" />
+                      <div className="p-2 bg-orange-100 dark:bg-orange-800 rounded-lg">
+                        <Mail className="h-5 w-5 text-orange-600 dark:text-orange-400" />
                       </div>
                       <div>
                         <p className="font-medium text-gray-800 dark:text-gray-200">Email</p>
@@ -564,8 +789,8 @@ export function HeroSection() {
                       </div>
                     </div>
                     <div className="flex items-center space-x-3">
-                      <div className="p-2 bg-green-100 dark:bg-green-800 rounded-lg">
-                        <Phone className="h-5 w-5 text-green-600 dark:text-green-400" />
+                      <div className="p-2 bg-orange-100 dark:bg-orange-800 rounded-lg">
+                        <Phone className="h-5 w-5 text-orange-600 dark:text-orange-400" />
                       </div>
                       <div>
                         <p className="font-medium text-gray-800 dark:text-gray-200">Phone</p>
@@ -573,8 +798,8 @@ export function HeroSection() {
                       </div>
                     </div>
                     <div className="flex items-center space-x-3">
-                      <div className="p-2 bg-green-100 dark:bg-green-800 rounded-lg">
-                        <MapPin className="h-5 w-5 text-green-600 dark:text-green-400" />
+                      <div className="p-2 bg-orange-100 dark:bg-orange-800 rounded-lg">
+                        <MapPin className="h-5 w-5 text-orange-600 dark:text-orange-400" />
                       </div>
                       <div>
                         <p className="font-medium text-gray-800 dark:text-gray-200">Address</p>
@@ -593,7 +818,7 @@ export function HeroSection() {
        <hr className="border-gray-200 dark:border-gray-700" />
  
         {/* Footer */}
-       <footer className="bg-green-800 dark:bg-gray-800 text-white py-12">
+       <footer className="bg-orange-800 dark:bg-gray-800 text-white py-12">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="col-span-1 md:col-span-2">
@@ -604,34 +829,34 @@ export function HeroSection() {
                 className="h-20 w-auto object-contain"
               />
               </div>
-              <p className="text-green-100 mb-4 max-w-md">
+              <p className="text-orange-100 mb-4 max-w-md">
                 Dedicated to spreading authentic Islamic knowledge and teachings through modern digital platforms.
               </p>
             </div>
             
             <div>
-              <h4 className="font-semibold mb-4 text-amber-400">Quick Links</h4>
-              <ul className="space-y-2 text-green-100">
-                <li><Link href="/articles" className="hover:text-amber-400 transition-colors">Articles</Link></li>
-                <li><Link href="/videos" className="hover:text-amber-400 transition-colors">Videos</Link></li>
-                <li><Link href="/books" className="hover:text-amber-400 transition-colors">Books</Link></li>
-                <li><Link href="/hadiths" className="hover:text-amber-400 transition-colors">Hadiths</Link></li>
-                <li><Link href="/ayats" className="hover:text-amber-400 transition-colors">Ayats</Link></li>
+              <h4 className="font-semibold mb-4 text-orange-400">Quick Links</h4>
+              <ul className="space-y-2 text-orange-100">
+                <li><Link href="/articles" className="hover:text-orange-400 transition-colors">Articles</Link></li>
+                <li><Link href="/videos" className="hover:text-orange-400 transition-colors">Videos</Link></li>
+                <li><Link href="/books" className="hover:text-orange-400 transition-colors">Books</Link></li>
+                <li><Link href="/hadiths" className="hover:text-orange-400 transition-colors">Hadiths</Link></li>
+                <li><Link href="/ayats" className="hover:text-orange-400 transition-colors">Ayats</Link></li>
               </ul>
             </div>
             
             <div>
-              <h4 className="font-semibold mb-4 text-amber-400">Connect</h4>
-              <ul className="space-y-2 text-green-100">
-                <li><Link href="/bio" className="hover:text-amber-400 transition-colors">About Scholar</Link></li>
-                <li><Link href="/chat" className="hover:text-amber-400 transition-colors">Live Chat</Link></li>
-                <li><a href="mailto:info@islamicscholar.com" className="hover:text-amber-400 transition-colors">Contact</a></li>
+              <h4 className="font-semibold mb-4 text-orange-400">Connect</h4>
+              <ul className="space-y-2 text-orange-100">
+                <li><Link href="/bio" className="hover:text-orange-400 transition-colors">About Scholar</Link></li>
+                <li><Link href="/chat" className="hover:text-orange-400 transition-colors">Live Chat</Link></li>
+                <li><a href="mailto:info@islamicscholar.com" className="hover:text-orange-400 transition-colors">Contact</a></li>
               </ul>
             </div>
           </div>
           
-          <div className="border-t border-green-700 mt-8 pt-8 text-center">
-            <p className="text-green-100">
+          <div className="border-t border-orange-700 mt-8 pt-8 text-center">
+            <p className="text-orange-100">
               © 2024 Islamic Scholar Platform. All rights reserved. | Spreading knowledge with wisdom and compassion.
             </p>
           </div>
@@ -643,7 +868,7 @@ export function HeroSection() {
         <div className="fixed bottom-6 right-6 z-50">
           <Button 
             size="lg" 
-            className="rounded-full w-14 h-14 bg-green-600 hover:bg-green-700 shadow-lg hover:shadow-xl transition-all duration-300 group"
+            className="rounded-full w-14 h-14 bg-orange-600 hover:bg-orange-700 shadow-lg hover:shadow-xl transition-all duration-300 group"
           >
             <MessageSquare className="h-6 w-6 text-white group-hover:scale-110 transition-transform" />
           </Button>

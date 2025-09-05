@@ -91,20 +91,18 @@ export default function BooksPage() {
       <Navigation />
       
       {/* Hero Section */}
-       <div className="relative bg-gradient-to-br from-indigo-700 via-purple-800 to-blue-900 text-white py-20 overflow-hidden">
-         <div className="absolute inset-0 bg-[url('/arabic-manuscript-and-books.png')] bg-cover bg-center opacity-20"></div>
-         <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/80 via-purple-900/70 to-blue-900/80"></div>
+       <div className="relative bg-white text-gray-900 py-20 overflow-hidden">
          <div className="container mx-auto px-4 relative z-10">
            <div className="text-center space-y-6">
              <div className="flex justify-center">
-               <div className="p-4 bg-white/10 rounded-full backdrop-blur-sm border border-white/20">
-                 <BookOpen className="h-16 w-16 text-indigo-200" />
+               <div className="p-4 bg-orange-100 rounded-full border border-orange-200">
+                 <BookOpen className="h-16 w-16 text-orange-600" />
                </div>
              </div>
-             <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-white via-indigo-100 to-purple-100 bg-clip-text text-transparent drop-shadow-lg">
+             <h1 className="text-5xl md:text-6xl font-bold text-gray-900">
                Islamic Books
              </h1>
-             <p className="text-xl md:text-2xl text-indigo-100 max-w-3xl mx-auto leading-relaxed drop-shadow-md">
+             <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
                Discover authentic Islamic literature and expand your knowledge with our curated collection
              </p>
            </div>
@@ -120,13 +118,13 @@ export default function BooksPage() {
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                   <Input 
                     placeholder="Search books by title, author, or category..." 
-                    className="pl-10 border-indigo-200 focus:border-indigo-400"
+                    className="pl-10 border-orange-200 focus:border-orange-400"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
                 </div>
               </div>
-              <Button variant="outline" className="border-indigo-200 text-indigo-700 hover:bg-indigo-50">
+              <Button variant="outline" className="border-orange-200 text-orange-700 hover:bg-orange-50">
                 <Filter className="h-4 w-4 mr-2" />
                 Filter
               </Button>
@@ -139,8 +137,8 @@ export default function BooksPage() {
                   key={category} 
                   variant={selectedCategory === category ? "default" : "outline"}
                   className={selectedCategory === category 
-                    ? "bg-indigo-600 hover:bg-indigo-700 cursor-pointer" 
-                    : "border-indigo-200 text-indigo-700 hover:bg-indigo-50 cursor-pointer"
+                    ? "bg-orange-600 hover:bg-orange-700 cursor-pointer" 
+                    : "border-orange-200 text-orange-700 hover:bg-orange-50 cursor-pointer"
                   }
                   onClick={() => setSelectedCategory(category)}
                 >
@@ -160,15 +158,15 @@ export default function BooksPage() {
             </div>
           ) : filteredBooks && filteredBooks.length > 0 ? (
             filteredBooks.map((book) => (
-              <Card key={book.id} className="group hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-500 overflow-hidden border-0 bg-gradient-to-br from-white to-gray-50/50 dark:from-gray-900 dark:to-gray-800/50 hover:-translate-y-2">
+              <Card key={book.id} className="group hover:shadow-2xl hover:shadow-orange-500/10 transition-all duration-500 overflow-hidden border-0 bg-gradient-to-br from-white to-gray-50/50 dark:from-gray-900 dark:to-gray-800/50 hover:-translate-y-2">
                 <CardContent className="p-6 space-y-4">
                   {/* Header with Category and Featured Badge */}
                   <div className="flex items-center justify-between">
-                    <Badge variant="outline" className="border-indigo-500/20 text-indigo-600 bg-indigo-500/5">
+                    <Badge variant="outline" className="border-orange-500/20 text-orange-600 bg-orange-500/5">
                       {book.categories?.name || 'Book'}
                     </Badge>
                     {book.featured && (
-                      <Badge className="bg-gradient-to-r from-indigo-600 to-purple-700 text-white shadow-lg">
+                      <Badge className="bg-gradient-to-r from-orange-600 to-orange-700 text-white shadow-lg">
                         <Star className="h-3 w-3 mr-1" />
                         Featured
                       </Badge>
@@ -222,7 +220,7 @@ export default function BooksPage() {
                   {/* Action Buttons */}
                   <div className="flex gap-3 pt-4">
                     <Link href={`/books/${book.id}`} className="flex-1">
-                      <Button variant="outline" className="w-full border-indigo-200 text-indigo-700 hover:bg-indigo-50">
+                      <Button variant="outline" className="w-full border-orange-200 text-orange-700 hover:bg-orange-50">
                         <BookOpen className="h-4 w-4 mr-2" />
                         View Details
                       </Button>
@@ -233,7 +231,7 @@ export default function BooksPage() {
                           e.preventDefault();
                           window.open(book.pdf_url, '_blank');
                         }}
-                        className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white"
+                        className="flex-1 bg-orange-600 hover:bg-orange-700 text-white"
                       >
                         <Download className="h-4 w-4 mr-2" />
                         View PDF
@@ -262,7 +260,7 @@ export default function BooksPage() {
 
         {/* Load More Button */}
         <div className="text-center mt-12">
-          <Button className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3">
+          <Button className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3">
             Load More Books
           </Button>
         </div>
