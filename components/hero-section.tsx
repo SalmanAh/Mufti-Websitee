@@ -5,7 +5,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ArrowRight, BookOpen, Video, FileText, MessageCircle, Heart, Mail, Phone, MapPin, MessageSquare, Play, Eye, Download, Share2, Calendar, ChevronLeft, ChevronRight } from "lucide-react"
+import { ArrowRight, BookOpen, Video, FileText, MessageCircle, Heart, Mail, Phone, MapPin, MessageSquare, Play, Eye, Download, Share2, Calendar } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import Image from "next/image"
@@ -70,7 +70,6 @@ interface ContentData {
 export function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isMobile, setIsMobile] = useState(false)
-  const [featuresScrollPosition, setFeaturesScrollPosition] = useState(0)
   const [contentData, setContentData] = useState<ContentData>({
     videos: [],
     hadiths: [],
@@ -107,27 +106,18 @@ export function HeroSection() {
     setCurrentSlide(0)
   }, [isMobile])
 
-  const scrollFeaturesLeft = () => {
-    setFeaturesScrollPosition((prev) => Math.max(0, prev - 280))
-  }
-
-  const scrollFeaturesRight = () => {
-    const maxScroll = (features.length - 1) * 280
-    setFeaturesScrollPosition((prev) => Math.min(maxScroll, prev + 280))
-  }
-
   // Fetch real data from database
   useEffect(() => {
     const fetchContent = async () => {
       try {
         const supabase = createClient()
         
-        // Fetch latest videos (limit 3)
+        // Fetch latest videos (limit 4)
         const { data: videos, error: videosError } = await supabase
           .from('videos')
           .select('*')
           .order('created_at', { ascending: false })
-          .limit(3)
+          .limit(4)
         
         if (videosError) {
           console.error('Error fetching videos:', videosError)
@@ -135,12 +125,12 @@ export function HeroSection() {
           console.log('Videos fetched:', videos?.length || 0, 'items')
         }
         
-        // Fetch latest hadiths (limit 3)
+        // Fetch latest hadiths (limit 4)
         const { data: hadiths, error: hadithsError } = await supabase
           .from('hadiths')
           .select('*')
           .order('created_at', { ascending: false })
-          .limit(3)
+          .limit(4)
         
         if (hadithsError) {
           console.error('Error fetching hadiths:', hadithsError)
@@ -148,12 +138,12 @@ export function HeroSection() {
           console.log('Hadiths fetched:', hadiths?.length || 0, 'items')
         }
         
-        // Fetch latest ayats (limit 3)
+        // Fetch latest ayats (limit 4)
         const { data: ayats, error: ayatsError } = await supabase
           .from('ayats')
           .select('*')
           .order('created_at', { ascending: false })
-          .limit(3)
+          .limit(4)
         
         if (ayatsError) {
           console.error('Error fetching ayats:', ayatsError)
@@ -161,12 +151,12 @@ export function HeroSection() {
           console.log('Ayats fetched:', ayats?.length || 0, 'items')
         }
         
-        // Fetch latest articles (limit 3)
+        // Fetch latest articles (limit 4)
         const { data: articles, error: articlesError } = await supabase
           .from('articles')
           .select('*')
           .order('created_at', { ascending: false })
-          .limit(3)
+          .limit(4)
         
         if (articlesError) {
           console.error('Error fetching articles:', articlesError)
@@ -174,12 +164,12 @@ export function HeroSection() {
           console.log('Articles fetched:', articles?.length || 0, 'items')
         }
         
-        // Fetch latest books (limit 3)
+        // Fetch latest books (limit 4)
         const { data: books, error: booksError } = await supabase
           .from('books')
           .select('*')
           .order('created_at', { ascending: false })
-          .limit(3)
+          .limit(4)
         
         if (booksError) {
           console.error('Error fetching books:', booksError)
@@ -245,43 +235,20 @@ export function HeroSection() {
 </div>
 
       {/* Features Section */}
-      <div className="bg-white dark:from-gray-800 dark:to-gray-700 py-16">
+      <div className="bg-white dark:from-gray-800 dark:to-gray-700 py-8">
         <div className="container mx-auto px-4">
-          <div className="mb-12">
+          <div className="mb-6">
             <hr />
           </div>
           
-          {/* Horizontal Scrollable Links */}
-          <div className="relative">
-            <div className="flex items-center">
-              <button 
-                onClick={scrollFeaturesLeft}
-                className="absolute left-0 z-10 bg-orange-400 hover:bg-orange-600 text-white p-2 rounded-full shadow-lg cursor-pointer"
-                disabled={featuresScrollPosition === 0}
-              >
-                <ChevronLeft className="h-5 w-5" />
-              </button>
-              
-              <div className="overflow-hidden mx-12">
-                <div 
-                  className="flex transition-transform duration-300 ease-in-out gap-8"
-                  style={{ transform: `translateX(-${featuresScrollPosition}px)` }}
-                >
-                  {features.map((feature, index) => (
-                    <Link key={index} href={feature.href} className="text-orange-500 dark:text-orange-300 hover:text-orange-600 dark:hover:text-orange-400 font-medium transition-colors whitespace-nowrap flex-shrink-0">
-                      {feature.title}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-              
-              <button 
-                onClick={scrollFeaturesRight}
-                className="absolute right-0 z-10 bg-orange-400 hover:bg-orange-600 text-white p-2 rounded-full shadow-lg cursor-pointer"
-                disabled={featuresScrollPosition >= (features.length - 1) * 150}
-              >
-                <ChevronRight className="h-5 w-5" />
-              </button>
+          {/* Category Navigation Links */}
+          <div className="mb-4">
+            <div className="flex justify-between items-center max-w-4xl mx-auto px-4">
+              {features.map((feature, index) => (
+                <Link key={index} href={feature.href} className="text-orange-500 dark:text-orange-300 hover:text-orange-600 dark:hover:text-orange-400 font-medium transition-colors text-center flex-1">
+                  {feature.title}
+                </Link>
+              ))}
             </div>
           </div>
         </div>
@@ -299,10 +266,10 @@ export function HeroSection() {
           <div className="mb-16">
 
             {loading ? (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {[1, 2, 3].map((i) => (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {[1, 2, 3, 4].map((i) => (
                   <Card key={i} className="animate-pulse">
-                    <div className="aspect-video bg-gray-200 dark:bg-gray-700"></div>
+                    <div className="aspect-[16/9] bg-gray-200 dark:bg-gray-700"></div>
                     <div className="p-6 space-y-4">
                       <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
                       <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
@@ -380,10 +347,10 @@ export function HeroSection() {
           <div className="mb-16">
 
             {loading ? (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {[1, 2, 3].map((i) => (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {[1, 2, 3, 4].map((i) => (
                   <Card key={i} className="animate-pulse">
-                    <div className="aspect-video bg-gray-200 dark:bg-gray-700"></div>
+                    <div className="aspect-[16/9] bg-gray-200 dark:bg-gray-700"></div>
                     <div className="p-6 space-y-4">
                       <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
                       <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
@@ -468,10 +435,10 @@ export function HeroSection() {
           <div className="mb-16">
 
             {loading ? (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {[1, 2, 3].map((i) => (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {[1, 2, 3, 4].map((i) => (
                   <Card key={i} className="animate-pulse">
-                    <div className="aspect-video bg-gray-200 dark:bg-gray-700"></div>
+                    <div className="aspect-[16/9] bg-gray-200 dark:bg-gray-700"></div>
                     <div className="p-6 space-y-4">
                       <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
                       <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
@@ -573,10 +540,10 @@ export function HeroSection() {
           <div className="mb-16">
 
             {loading ? (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {[1, 2, 3].map((i) => (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {[1, 2, 3, 4].map((i) => (
                   <Card key={i} className="animate-pulse">
-                    <div className="aspect-video bg-gray-200 dark:bg-gray-700"></div>
+                    <div className="aspect-[4/3] bg-gray-200 dark:bg-gray-700"></div>
                     <div className="p-6 space-y-4">
                       <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
                       <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
@@ -587,7 +554,22 @@ export function HeroSection() {
             ) : contentData.articles.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {contentData.articles.map((article, index) => (
-                  <Card key={index} className="hover:shadow-xl transition-all duration-300 border-orange-100 hover:border-orange-200 bg-white">
+                  <Card key={index} className="hover:shadow-xl transition-all duration-300 border-orange-100 hover:border-orange-200 bg-white overflow-hidden">
+                    {/* Thumbnail */}
+                    <div className="aspect-[16/9] bg-gray-100 relative overflow-hidden">
+                      {article.thumbnail_url ? (
+                        <Image
+                          src={article.thumbnail_url}
+                          alt={article.title}
+                          fill
+                          className="object-cover hover:scale-105 transition-transform duration-300"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
+                          <FileText className="h-12 w-12 text-orange-400" />
+                        </div>
+                      )}
+                    </div>
                     <div className="p-6 space-y-4">
                       <div className="flex items-center justify-between mb-2">
                         <Badge variant="outline" className="border-orange-200 text-orange-500 bg-orange-50">
@@ -657,8 +639,8 @@ export function HeroSection() {
           {/* E-Books Section */}
           <div className="mb-16">
             {loading ? (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {[1, 2, 3].map((i) => (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {[1, 2, 3, 4].map((i) => (
                   <Card key={i} className="animate-pulse">
                     <div className="aspect-[3/4] bg-gray-200 dark:bg-gray-700"></div>
                     <div className="p-6 space-y-4">
@@ -671,7 +653,22 @@ export function HeroSection() {
             ) : contentData.books.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {contentData.books.map((book, index) => (
-                  <Card key={index} className="hover:shadow-xl transition-all duration-300 border-orange-100 hover:border-orange-200 bg-white">
+                  <Card key={index} className="hover:shadow-xl transition-all duration-300 border-orange-100 hover:border-orange-200 bg-white overflow-hidden">
+                    {/* Thumbnail */}
+                    <div className="aspect-[16/9] bg-gray-100 relative overflow-hidden">
+                      {book.thumbnail_url ? (
+                        <Image
+                          src={book.thumbnail_url}
+                          alt={book.title}
+                          fill
+                          className="object-cover hover:scale-105 transition-transform duration-300"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
+                          <BookOpen className="h-16 w-16 text-orange-400" />
+                        </div>
+                      )}
+                    </div>
                     <div className="p-6 space-y-4">
                       {/* Header with badges */}
                       <div className="flex items-center justify-between mb-4">

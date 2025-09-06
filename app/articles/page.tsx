@@ -3,12 +3,13 @@
 import { useState, useEffect } from "react"
 import { Navigation } from "@/components/navigation"
 import { createClient } from "@/lib/supabase/client"
-import { BookOpen, Search, Filter, Calendar, User, Eye } from "lucide-react"
+import { BookOpen, Search, Filter, Calendar, User, Eye, FileText } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
+import Image from "next/image"
 
 interface Article {
   id: string
@@ -17,6 +18,7 @@ interface Article {
   content: string
   views: number
   created_at: string
+  thumbnail_url?: string
 }
 
 export default function ArticlesPage() {
@@ -119,7 +121,22 @@ export default function ArticlesPage() {
             ))
           ) : filteredArticles && filteredArticles.length > 0 ? (
             filteredArticles.map((article) => (
-              <Card key={article.id} className="h-full hover:shadow-lg transition-all duration-200 border border-gray-100 hover:border-orange-100">
+              <Card key={article.id} className="h-full hover:shadow-lg transition-all duration-200 border border-gray-100 hover:border-orange-100 overflow-hidden">
+                {/* Thumbnail */}
+                <div className="aspect-[16/9] bg-gray-100 relative overflow-hidden">
+                  {article.thumbnail_url ? (
+                    <Image
+                      src={article.thumbnail_url}
+                      alt={article.title}
+                      fill
+                      className="object-cover hover:scale-105 transition-transform duration-300"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
+                      <FileText className="h-12 w-12 text-orange-400" />
+                    </div>
+                  )}
+                </div>
                 <CardContent className="p-6 flex flex-col h-full">
                   {/* Title */}
                   <h3 className="font-semibold text-gray-900 text-lg leading-tight mb-3 line-clamp-2">

@@ -20,6 +20,7 @@ export default function NewBookPage() {
     description: ""
   })
   const [pdfFile, setPdfFile] = useState<File | null>(null)
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null)
   const [isUploading, setIsUploading] = useState(false)
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -39,11 +40,44 @@ export default function NewBookPage() {
     }
   }
 
+  const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file && file.type.startsWith('image/')) {
+      setThumbnailFile(file)
+    } else {
+      toast.error('Please select a valid image file')
+    }
+  }
+
   const uploadPdfToSupabase = async (file: File): Promise<string> => {
     const supabase = createClient()
     const fileExt = 'pdf'
     const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`
     const filePath = `books/${fileName}`
+
+    const { data, error } = await supabase.storage
+      .from('E-Books')
+      .upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: false
+      })
+
+    if (error) {
+      throw new Error(`Upload failed: ${error.message}`)
+    }
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('E-Books')
+      .getPublicUrl(filePath)
+
+    return publicUrl
+  }
+
+  const uploadThumbnailToSupabase = async (file: File): Promise<string> => {
+    const supabase = createClient()
+    const fileExt = file.name.split('.').pop()
+    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`
+    const filePath = `images/${fileName}`
 
     const { data, error } = await supabase.storage
       .from('E-Books')
@@ -84,6 +118,12 @@ export default function NewBookPage() {
       // Upload PDF file to Supabase storage
       const pdfUrl = await uploadPdfToSupabase(pdfFile)
       
+      // Upload thumbnail if provided
+      let thumbnailUrl = ''
+      if (thumbnailFile) {
+        thumbnailUrl = await uploadThumbnailToSupabase(thumbnailFile)
+      }
+      
       const supabase = createClient()
       
       const { data, error } = await supabase
@@ -91,7 +131,8 @@ export default function NewBookPage() {
         .insert([{
           title: formData.title,
           pdf_url: pdfUrl,
-          description: formData.description
+          description: formData.description,
+          thumbnail_url: thumbnailUrl
         }])
         .select()
       
@@ -105,10 +146,13 @@ export default function NewBookPage() {
         description: ""
       })
       setPdfFile(null)
+      setThumbnailFile(null)
       
-      // Reset file input
-      const fileInput = document.getElementById('pdf-file') as HTMLInputElement
-      if (fileInput) fileInput.value = ''
+      // Reset file inputs
+      const pdfFileInput = document.getElementById('pdf-file') as HTMLInputElement
+      if (pdfFileInput) pdfFileInput.value = ''
+      const thumbnailInput = document.getElementById('thumbnail') as HTMLInputElement
+      if (thumbnailInput) thumbnailInput.value = ''
       
       router.push("/admin/books")
     } catch (error) {
@@ -169,6 +213,22 @@ export default function NewBookPage() {
                   Selected: {pdfFile.name} ({(pdfFile.size / 1024 / 1024).toFixed(2)} MB)
                 </p>
               )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="thumbnail">Thumbnail Image</Label>
+              <Input
+                id="thumbnail"
+                type="file"
+                accept="image/*"
+                onChange={handleThumbnailChange}
+                className="cursor-pointer"
+              />
+              {thumbnailFile && (
+                <p className="text-sm text-muted-foreground">
+                  Selected: {thumbnailFile.name} ({(thumbnailFile.size / 1024 / 1024).toFixed(2)} MB)
+                </p>
+              )}
               {isUploading && (
                 <div className="flex items-center gap-2 text-sm text-blue-600">
                   <div className="flex space-x-1">
@@ -176,7 +236,7 @@ export default function NewBookPage() {
                     <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
                     <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce"></div>
                   </div>
-                  <span>Uploading file...</span>
+                  <span>Uploading files...</span>
                 </div>
               )}
             </div>

@@ -23,8 +23,11 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
   const [formData, setFormData] = useState({
     title: "",
     author: "",
-    content: ""
+    content: "",
+    thumbnail_url: ""
   })
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null)
+  const [isUploading, setIsUploading] = useState(false)
 
   const supabase = createClient()
 
@@ -48,7 +51,8 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
           setFormData({
             title: data.title || '',
             author: data.author || '',
-            content: data.content || ''
+            content: data.content || '',
+            thumbnail_url: data.thumbnail_url || ''
           })
         }
       } catch (error) {
@@ -75,6 +79,39 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
     setFormData(prev => ({ ...prev, content }))
   }
 
+  const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file && file.type.startsWith('image/')) {
+      setThumbnailFile(file)
+    } else {
+      toast.error('Please select a valid image file')
+    }
+  }
+
+  const uploadThumbnailToSupabase = async (file: File): Promise<string> => {
+    const supabase = createClient()
+    const fileExt = file.name.split('.').pop()
+    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`
+    const filePath = `images/${fileName}`
+
+    const { data, error } = await supabase.storage
+      .from('E-Books')
+      .upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: false
+      })
+
+    if (error) {
+      throw new Error(`Upload failed: ${error.message}`)
+    }
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('E-Books')
+      .getPublicUrl(filePath)
+
+    return publicUrl
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
@@ -86,12 +123,20 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
     setIsLoading(true)
     
     try {
+      let thumbnailUrl = formData.thumbnail_url
+      
+      if (thumbnailFile) {
+        setIsUploading(true)
+        thumbnailUrl = await uploadThumbnailToSupabase(thumbnailFile)
+      }
+      
       const { data, error } = await supabase
         .from('articles')
         .update({
           title: formData.title,
           author: formData.author,
-          content: formData.content
+          content: formData.content,
+          thumbnail_url: thumbnailUrl
         })
         .eq('id', params.id)
         .select()
@@ -105,6 +150,7 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
       toast.error("Failed to update article")
     } finally {
       setIsLoading(false)
+      setIsUploading(false)
     }
   }
 
@@ -186,6 +232,37 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
             </div>
 
             <div className="space-y-2">
+              <Label htmlFor="thumbnail">Thumbnail Image</Label>
+              <Input
+                id="thumbnail"
+                type="file"
+                accept="image/*"
+                onChange={handleThumbnailChange}
+                className="cursor-pointer"
+              />
+              {formData.thumbnail_url && !thumbnailFile && (
+                <p className="text-sm text-muted-foreground">
+                  Current thumbnail: <a href={formData.thumbnail_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">View current image</a>
+                </p>
+              )}
+              {thumbnailFile && (
+                <p className="text-sm text-muted-foreground">
+                  New thumbnail: {thumbnailFile.name} ({(thumbnailFile.size / 1024 / 1024).toFixed(2)} MB)
+                </p>
+              )}
+              {isUploading && (
+                <div className="flex items-center gap-2 text-sm text-blue-600">
+                  <div className="flex space-x-1">
+                    <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                    <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                    <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce"></div>
+                  </div>
+                  <span>Uploading thumbnail...</span>
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-2">
               <Label htmlFor="content">Content *</Label>
               <QuillEditor
                 value={formData.content}
@@ -195,9 +272,18 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
             </div>
 
             <div className="flex gap-4">
-              <Button type="submit" disabled={isLoading}>
-                <Save className="h-4 w-4 mr-2" />
-                {isLoading ? "Updating..." : "Update Article"}
+              <Button type="submit" disabled={isLoading || isUploading}>
+                {isLoading || isUploading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    {isUploading ? 'Uploading...' : 'Updating...'}
+                  </>
+                ) : (
+                  <>
+                    <Save className="h-4 w-4 mr-2" />
+                    Update Article
+                  </>
+                )}
               </Button>
               <Link href="/admin/articles">
                 <Button type="button" variant="outline">

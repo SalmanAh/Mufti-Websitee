@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
+import Image from "next/image"
 import { createClient } from "@/lib/supabase/client"
 import { useState, useEffect } from "react"
 
@@ -24,6 +25,7 @@ interface BookData {
   downloads: number;
   created_at: string;
   updated_at: string;
+  thumbnail_url?: string;
   categories?: {
     name: string;
   };
@@ -140,6 +142,21 @@ export default function BooksPage() {
           ) : filteredBooks && filteredBooks.length > 0 ? (
             filteredBooks.map((book) => (
               <Card key={book.id} className="group hover:shadow-2xl hover:shadow-orange-200/10 transition-all duration-500 overflow-hidden border-0 bg-gradient-to-br from-white to-gray-50/50 dark:from-gray-900 dark:to-gray-800/50 hover:-translate-y-2">
+                {/* Thumbnail */}
+                <div className="aspect-[16/9] bg-gray-100 relative overflow-hidden">
+                  {book.thumbnail_url ? (
+                    <Image
+                      src={book.thumbnail_url}
+                      alt={book.title}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
+                      <BookOpen className="h-16 w-16 text-orange-400" />
+                    </div>
+                  )}
+                </div>
                 <CardContent className="p-6 space-y-4">
                   {/* Header with Category and Featured Badge */}
                   <div className="flex items-center justify-between">

@@ -22,10 +22,13 @@ export default function EditBookPage({ params }: EditBookPageProps) {
   const [formData, setFormData] = useState({
     title: "",
     author: "",
-    pdf_url: ""
+    pdf_url: "",
+    thumbnail_url: ""
   })
   const [pdfFile, setPdfFile] = useState<File | null>(null)
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null)
   const [uploadProgress, setUploadProgress] = useState(0)
+  const [isUploading, setIsUploading] = useState(false)
 
   const supabase = createClient()
 
@@ -49,7 +52,8 @@ export default function EditBookPage({ params }: EditBookPageProps) {
           setFormData({
             title: data.title || '',
             author: data.author || '',
-            pdf_url: data.pdf_url || ''
+            pdf_url: data.pdf_url || '',
+            thumbnail_url: data.thumbnail_url || ''
           })
         }
       } catch (error) {
@@ -81,6 +85,39 @@ export default function EditBookPage({ params }: EditBookPageProps) {
       }
       setPdfFile(file)
     }
+  }
+
+  const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file && file.type.startsWith('image/')) {
+      setThumbnailFile(file)
+    } else {
+      toast.error('Please select a valid image file')
+    }
+  }
+
+  const uploadThumbnailToSupabase = async (file: File): Promise<string> => {
+    const supabase = createClient()
+    const fileExt = file.name.split('.').pop()
+    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`
+    const filePath = `images/${fileName}`
+
+    const { data, error } = await supabase.storage
+      .from('E-Books')
+      .upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: false
+      })
+
+    if (error) {
+      throw new Error(`Upload failed: ${error.message}`)
+    }
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('E-Books')
+      .getPublicUrl(filePath)
+
+    return publicUrl
   }
 
   const uploadPdf = async (file: File): Promise<string> => {
@@ -118,10 +155,17 @@ export default function EditBookPage({ params }: EditBookPageProps) {
     
     try {
       let pdfUrl = formData.pdf_url
+      let thumbnailUrl = formData.thumbnail_url
       
       // If a new PDF file is selected, upload it
       if (pdfFile) {
         pdfUrl = await uploadPdf(pdfFile)
+      }
+
+      if (thumbnailFile) {
+        setIsUploading(true)
+        thumbnailUrl = await uploadThumbnailToSupabase(thumbnailFile)
+        setIsUploading(false)
       }
       
       const { data, error } = await supabase
@@ -129,7 +173,8 @@ export default function EditBookPage({ params }: EditBookPageProps) {
         .update({
           title: formData.title,
           author: formData.author,
-          pdf_url: pdfUrl
+          pdf_url: pdfUrl,
+          thumbnail_url: thumbnailUrl
         })
         .eq('id', params.id)
         .select()
@@ -143,6 +188,7 @@ export default function EditBookPage({ params }: EditBookPageProps) {
       toast.error("Failed to update book")
     } finally {
       setIsLoading(false)
+      setIsUploading(false)
       setUploadProgress(0)
     }
   }
@@ -224,6 +270,37 @@ export default function EditBookPage({ params }: EditBookPageProps) {
             </div>
 
             <div className="space-y-2">
+              <Label htmlFor="thumbnail">Thumbnail Image</Label>
+              <div className="space-y-2">
+                {formData.thumbnail_url && (
+                  <p className="text-sm text-muted-foreground">
+                    Current thumbnail: <a href={formData.thumbnail_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">View Image</a>
+                  </p>
+                )}
+                <Input
+                  id="thumbnail"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleThumbnailChange}
+                />
+                {thumbnailFile && (
+                  <p className="text-sm text-green-600">
+                    Selected: {thumbnailFile.name} ({(thumbnailFile.size / 1024 / 1024).toFixed(2)} MB)
+                  </p>
+                )}
+                {isUploading && (
+                  <div className="flex items-center gap-2 text-sm text-blue-600">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                    Uploading thumbnail...
+                  </div>
+                )}
+                <p className="text-sm text-muted-foreground">
+                  {thumbnailFile ? 'New thumbnail selected. ' : ''}Leave empty to keep current thumbnail.
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-2">
               <Label htmlFor="pdf">PDF File</Label>
               <div className="space-y-2">
                 {formData.pdf_url && (
@@ -252,9 +329,9 @@ export default function EditBookPage({ params }: EditBookPageProps) {
             </div>
 
             <div className="flex gap-4">
-              <Button type="submit" disabled={isLoading}>
+              <Button type="submit" disabled={isLoading || isUploading}>
                 <Save className="h-4 w-4 mr-2" />
-                {isLoading ? "Updating..." : "Update Book"}
+                {isUploading ? "Uploading..." : isLoading ? "Updating..." : "Update Book"}
               </Button>
               <Link href="/admin/books">
                 <Button type="button" variant="outline">
