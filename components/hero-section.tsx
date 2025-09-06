@@ -207,7 +207,7 @@ export function HeroSection() {
   return (
     <div className="min-h-screen bg-white dark:from-gray-800 dark:via-gray-900 dark:to-gray-800">
       {/* Hero Slideshow */}
-      <div className="relative h-[400px] md:h-[500px] overflow-hidden bg-white dark:from-gray-800 dark:to-gray-700 mx-4">
+      <div className="relative h-[400px] md:h-[500px] overflow-hidden bg-white dark:from-gray-800 dark:to-gray-700 w-full">
         
         {currentSlideImages.map((image, index) => (
           <div
@@ -221,7 +221,7 @@ export function HeroSection() {
               <img 
                 src={image.src} 
                 alt={image.title}
-                className="w-full h-full object-contain"
+                className="w-full h-full object-fill md:object-contain"
               />
             </div>
           </div>
@@ -247,34 +247,16 @@ export function HeroSection() {
       {/* Features Section */}
       <div className="bg-white dark:from-gray-800 dark:to-gray-700 py-16">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold text-orange-500 dark:text-orange-300 mb-4">All Features</h2>
+          <div className="mb-12">
+            <hr />
           </div>
           
-          {/* Desktop Grid */}
-          <div className="hidden md:grid md:grid-cols-3 lg:grid-cols-5 gap-6">
-            {features.map((feature, index) => {
-              const IconComponent = feature.icon
-              return (
-                <Link key={index} href={feature.href}>
-                  <Card className="p-6 text-center hover:shadow-lg transition-shadow cursor-pointer bg-white dark:bg-gray-800 border-orange-100 dark:border-gray-700">
-                    <div className={`${feature.color} w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4`}>
-                      <IconComponent className="h-8 w-8 text-white" />
-                    </div>
-                    <h3 className="font-semibold text-orange-500 dark:text-orange-300 mb-2">{feature.title}</h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">{feature.description}</p>
-                  </Card>
-                </Link>
-              )
-            })}
-          </div>
-
-          {/* Mobile Horizontal Scroll */}
-          <div className="md:hidden relative">
+          {/* Horizontal Scrollable Links */}
+          <div className="relative">
             <div className="flex items-center">
               <button 
                 onClick={scrollFeaturesLeft}
-                 className="absolute left-0 z-10 bg-orange-400 hover:bg-orange-600 text-white p-2 rounded-full shadow-lg cursor-pointer"
+                className="absolute left-0 z-10 bg-orange-400 hover:bg-orange-600 text-white p-2 rounded-full shadow-lg cursor-pointer"
                 disabled={featuresScrollPosition === 0}
               >
                 <ChevronLeft className="h-5 w-5" />
@@ -282,30 +264,21 @@ export function HeroSection() {
               
               <div className="overflow-hidden mx-12">
                 <div 
-                  className="flex transition-transform duration-300 ease-in-out"
+                  className="flex transition-transform duration-300 ease-in-out gap-8"
                   style={{ transform: `translateX(-${featuresScrollPosition}px)` }}
                 >
-                  {features.map((feature, index) => {
-                    const IconComponent = feature.icon
-                    return (
-                      <Link key={index} href={feature.href}>
-                        <Card className="p-4 text-center hover:shadow-lg transition-shadow cursor-pointer bg-white dark:bg-gray-800 border-orange-100 dark:border-gray-700 flex-shrink-0 w-64 mx-2">
-                          <div className={`${feature.color} w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3`}>
-                            <IconComponent className="h-6 w-6 text-white" />
-                          </div>
-                          <h3 className="font-semibold text-orange-500 dark:text-orange-300 mb-2 text-sm">{feature.title}</h3>
-                          <p className="text-xs text-gray-600 dark:text-gray-300">{feature.description}</p>
-                        </Card>
-                      </Link>
-                    )
-                  })}
+                  {features.map((feature, index) => (
+                    <Link key={index} href={feature.href} className="text-orange-500 dark:text-orange-300 hover:text-orange-600 dark:hover:text-orange-400 font-medium transition-colors whitespace-nowrap flex-shrink-0">
+                      {feature.title}
+                    </Link>
+                  ))}
                 </div>
               </div>
               
               <button 
                 onClick={scrollFeaturesRight}
-                 className="absolute right-0 z-10 bg-orange-400 hover:bg-orange-600 text-white p-2 rounded-full shadow-lg cursor-pointer"
-                disabled={featuresScrollPosition >= (features.length - 1) * 280}
+                className="absolute right-0 z-10 bg-orange-400 hover:bg-orange-600 text-white p-2 rounded-full shadow-lg cursor-pointer"
+                disabled={featuresScrollPosition >= (features.length - 1) * 150}
               >
                 <ChevronRight className="h-5 w-5" />
               </button>
@@ -469,13 +442,6 @@ export function HeroSection() {
                              View Tafseer
                            </Link>
                          </Button>
-                         <Button 
-                           variant="outline" 
-                           size="sm"
-                           className="border-orange-200 text-orange-500 hover:bg-orange-50"
-                         >
-                           Share
-                         </Button>
                        </div>
                     </div>
                   </Card>
@@ -580,9 +546,6 @@ export function HeroSection() {
                            <Link href={`/ayats/${ayat.id}/detail`}>
                              View Tafseer
                            </Link>
-                         </Button>
-                         <Button variant="outline" size="sm" className="border-orange-200 text-orange-500 hover:bg-orange-50">
-                           <Share2 className="h-4 w-4" />
                          </Button>
                        </div>
                     </div>
@@ -769,19 +732,13 @@ export function HeroSection() {
                       
                       {/* Action Buttons */}
                       <div className="flex gap-3 pt-4">
-                        <Button asChild variant="outline" className="flex-1 border-orange-200 text-orange-500 hover:bg-orange-50">
-                          <Link href={`/books/${book.id}`}>
-                            <BookOpen className="h-4 w-4 mr-2" />
-                            View Details
-                          </Link>
-                        </Button>
                         {book.pdf_url && (
                           <Button 
                             onClick={(e) => {
                               e.preventDefault();
                               window.open(book.pdf_url, '_blank');
                             }}
-                            className="flex-1 bg-orange-400 hover:bg-orange-500 text-white"
+                            className="w-full bg-orange-400 hover:bg-orange-500 text-white"
                           >
                             <Download className="h-4 w-4 mr-2" />
                             View PDF

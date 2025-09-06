@@ -100,8 +100,8 @@ export function Navigation() {
 
           {/* Right side actions */}
           <div className="flex items-center space-x-2">
-            <Button variant="ghost" size="icon" onClick={toggleDarkMode} className="h-9 w-9">
-              {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            <Button variant="ghost" size="icon" onClick={toggleDarkMode} className="h-9 w-9 md:h-9 md:w-9">
+              {isDark ? <Sun className="h-6 w-6 md:h-4 md:w-4" /> : <Moon className="h-6 w-6 md:h-4 md:w-4" />}
             </Button>
 
             {user ? (
@@ -123,8 +123,8 @@ export function Navigation() {
             {/* Mobile menu */}
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="md:hidden">
-                  <Menu className="h-5 w-5" />
+                <Button variant="ghost" size="icon" className="md:hidden h-10 w-10">
+                  <Menu className="h-6 w-6" />
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-80">

@@ -190,13 +190,6 @@ export default function HadithsPage() {
                         View Tafseer
                       </Link>
                     </Button>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      className="border-orange-200 text-orange-500 hover:bg-orange-50"
-                    >
-                      Share
-                    </Button>
                   </div>
                 </CardContent>
               </Card>

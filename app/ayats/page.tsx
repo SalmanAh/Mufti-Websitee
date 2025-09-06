@@ -220,9 +220,6 @@ export default function AyatsPage() {
                         View Tafseer
                       </Link>
                     </Button>
-                    <Button variant="outline" size="sm" className="border-orange-200 text-orange-500 hover:bg-orange-50">
-                      <Share2 className="h-4 w-4" />
-                    </Button>
                   </div>
                 </CardContent>
               </Card>

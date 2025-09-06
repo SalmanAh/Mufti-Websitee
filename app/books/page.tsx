@@ -200,19 +200,13 @@ export default function BooksPage() {
 
                   {/* Action Buttons */}
                   <div className="flex gap-3 pt-4">
-                    <Link href={`/books/${book.id}`} className="flex-1">
-                      <Button variant="outline" className="w-full border-orange-200 text-orange-500 hover:bg-orange-50">
-                        <BookOpen className="h-4 w-4 mr-2" />
-                        View Details
-                      </Button>
-                    </Link>
                     {book.pdf_url && (
                       <Button 
                         onClick={(e) => {
                           e.preventDefault();
                           window.open(book.pdf_url, '_blank');
                         }}
-                        className="flex-1 bg-orange-400 hover:bg-orange-500 text-white"
+                        className="w-full bg-orange-400 hover:bg-orange-500 text-white"
                       >
                         <Download className="h-4 w-4 mr-2" />
                         View PDF
