@@ -1,6 +1,27 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* Jameel Noori Nastaleeq font for Urdu text */
+@font-face {
+  font-family: 'Jameel Noori Nastaleeq';
+  src: url('../styles/Jameel Noori Nastaleeq Regular/Jameel Noori Nastaleeq Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Urdu text styling */
+.urdu-text {
+  font-family: 'Jameel Noori Nastaleeq', serif;
+  direction: rtl;
+  text-align: right;
+}
+
+/* Urdu font utility class */
+.font-urdu {
+  font-family: 'Jameel Noori Nastaleeq', serif;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 /* Typography styles for prose content */
@@ -60,11 +81,11 @@
 
 :root {
   /* Updated color scheme for sophisticated Islamic scholarly theme */
-  --background: oklch(0.99 0.005 85);
-  --foreground: oklch(0.15 0.02 85);
-  --card: oklch(0.98 0.008 85);
-  --card-foreground: oklch(0.15 0.02 85);
-  --popover: oklch(0.98 0.008 85);
+  --background: #FCF8F1;
+    --foreground: oklch(0.15 0.006 256);
+    --card: #F8F0E3;
+    --card-foreground: oklch(0.15 0.006 256);
+    --popover: #F8F0E3;
   --popover-foreground: oklch(0.15 0.02 85);
   --primary: oklch(0.65 0.15 45);
   --primary-foreground: oklch(0.98 0.008 85);

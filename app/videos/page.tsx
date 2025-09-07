@@ -36,12 +36,12 @@ export default async function VideosPage() {
   const categories = ["All"];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-pink-50">
+    <div className="min-h-screen bg-background">
       <Navigation />
       
       {/* Search and Filter Section */}
       <div className="container mx-auto px-4 py-8">
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-8 border border-orange-100">
+        <div className="bg-card rounded-xl shadow-lg p-6 mb-8 border border-orange-100 dark:border-gray-700">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1">
               <div className="relative">
@@ -62,7 +62,7 @@ export default async function VideosPage() {
           <div className="flex flex-wrap gap-2 mt-4">
             <Badge 
               variant="default"
-              className="bg-orange-400 hover:bg-orange-500"
+              className="bg-orange-400 hover:bg-orange-500 font-urdu"
             >
               All
             </Badge>
@@ -70,7 +70,7 @@ export default async function VideosPage() {
               <Badge 
                 key={category} 
                 variant="outline"
-                className="border-orange-200 text-orange-500 hover:bg-orange-50"
+                className="border-orange-200 text-orange-500 hover:bg-orange-50 font-urdu"
               >
                 {category}
               </Badge>
@@ -87,7 +87,7 @@ export default async function VideosPage() {
                  target="_blank" 
                  rel="noopener noreferrer"
                  key={video.id} 
-                 className="group cursor-pointer block p-4 rounded-lg bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-all duration-200 border border-gray-100 dark:border-gray-700"
+                 className="group cursor-pointer block p-4 rounded-lg bg-card shadow-sm hover:shadow-md transition-all duration-200 border border-black dark:border-white"
                >
                 {/* Video Thumbnail */}
                 <div className="relative aspect-video overflow-hidden rounded-xl bg-gray-900 dark:bg-gray-800 mb-3">

@@ -104,12 +104,12 @@ export default function BooksPage() {
   // Extract unique categories for filtering
   const categories = ['All', ...Array.from(new Set(books?.map(book => book.categories?.name).filter(Boolean)))] as string[]
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-background">
       <Navigation />
       
       {/* Search and Filter Section */}
         <div className="container mx-auto px-4 py-8">
-          <div className="bg-white rounded-xl shadow-lg p-6 mb-8 border border-orange-100">
+          <div className="bg-card rounded-xl shadow-lg p-6 mb-8 border border-orange-100 dark:border-gray-700">
             <div className="flex flex-col md:flex-row gap-4">
               <div className="flex-1">
                 <div className="relative">
@@ -156,9 +156,9 @@ export default function BooksPage() {
             </div>
           ) : filteredBooks && filteredBooks.length > 0 ? (
             filteredBooks.map((book, index) => (
-              <Card key={book.id} className="group hover:shadow-2xl hover:shadow-orange-200/10 transition-all duration-500 overflow-hidden border-0 bg-gradient-to-br from-white to-gray-50/50 dark:from-gray-900 dark:to-gray-800/50 hover:-translate-y-2">
+              <Card key={book.id} className="group hover:shadow-md transition-all duration-200 overflow-hidden border border-black dark:border-white bg-card dark:bg-gray-800">
                 {/* Thumbnail */}
-                <div className="aspect-[16/9] bg-gray-100 relative overflow-hidden">
+                <div className="aspect-[16/9] bg-gray-100 dark:bg-gray-700 relative overflow-hidden">
                   {book.thumbnail_url ? (
                     <Image
                       src={book.thumbnail_url}
@@ -167,7 +167,7 @@ export default function BooksPage() {
                       className="object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
+                    <div className="w-full h-full bg-gradient-to-br from-orange-100 to-orange-200 dark:from-orange-900/30 dark:to-orange-800/30 flex items-center justify-center">
                       <BookOpen className="h-16 w-16 text-orange-400" />
                     </div>
                   )}
@@ -175,7 +175,7 @@ export default function BooksPage() {
                 <CardContent className="p-6 space-y-4">
                   {/* Header with Category and Featured Badge */}
                   <div className="flex items-center justify-between">
-                    <Badge variant="outline" className="border-orange-200/20 text-orange-400 bg-orange-100/5">
+                    <Badge variant="outline" className="border-orange-200 text-orange-500 bg-orange-50 dark:bg-orange-900/20 dark:border-orange-800 dark:text-orange-400 font-urdu">
                       {book.categories?.name || 'Book'}
                     </Badge>
                     {book.featured && (

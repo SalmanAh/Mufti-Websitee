@@ -68,12 +68,12 @@ export default function ArticlesPage() {
   }, [articles, searchQuery])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+    <div className="min-h-screen bg-background">
       <Navigation />
       
       {/* Search and Filter Section */}
       <div className="container mx-auto px-4 py-8">
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-8 border border-orange-100">
+        <div className="bg-card rounded-xl shadow-lg p-6 mb-8 border border-orange-100 dark:border-gray-700">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1">
               <div className="relative">
@@ -96,7 +96,7 @@ export default function ArticlesPage() {
           <div className="flex flex-wrap gap-2 mt-4">
             <Badge 
               variant="default"
-              className="bg-orange-400 hover:bg-orange-500"
+              className="bg-orange-400 hover:bg-orange-500 font-urdu"
             >
               All
             </Badge>
@@ -121,9 +121,9 @@ export default function ArticlesPage() {
             ))
           ) : filteredArticles && filteredArticles.length > 0 ? (
             filteredArticles.map((article) => (
-              <Card key={article.id} className="h-full hover:shadow-lg transition-all duration-200 border border-gray-100 hover:border-orange-100 overflow-hidden">
+              <Card key={article.id} className="h-full hover:shadow-md transition-all duration-200 border border-black dark:border-white bg-card dark:bg-gray-800 overflow-hidden">
                 {/* Thumbnail */}
-                <div className="aspect-[16/9] bg-gray-100 relative overflow-hidden">
+                <div className="aspect-[16/9] bg-gray-100 dark:bg-gray-700 relative overflow-hidden">
                   {article.thumbnail_url ? (
                     <Image
                       src={article.thumbnail_url}
@@ -132,30 +132,30 @@ export default function ArticlesPage() {
                       className="object-cover hover:scale-105 transition-transform duration-300"
                     />
                   ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
+                    <div className="w-full h-full bg-gradient-to-br from-orange-100 to-orange-200 dark:from-orange-900/30 dark:to-orange-800/30 flex items-center justify-center">
                       <FileText className="h-12 w-12 text-orange-400" />
                     </div>
                   )}
                 </div>
                 <CardContent className="p-6 flex flex-col h-full">
                   {/* Title */}
-                  <h3 className="font-semibold text-gray-900 text-lg leading-tight mb-3 line-clamp-2">
+                  <h3 className="font-semibold text-gray-900 dark:text-white text-lg leading-tight mb-3 line-clamp-2">
                     {article.title}
                   </h3>
                   
                   {/* Author */}
-                  <div className="flex items-center text-gray-600 text-sm mb-3">
+                  <div className="flex items-center text-gray-600 dark:text-gray-300 text-sm mb-3">
                     <User className="h-4 w-4 mr-1" />
                     <span>{article.author}</span>
                   </div>
                   
                   {/* Content Preview */}
-                  <p className="text-gray-600 text-sm line-clamp-3 mb-4 flex-grow">
+                  <p className="text-gray-600 dark:text-gray-300 text-sm line-clamp-3 mb-4 flex-grow">
                     {article.content?.replace(/<[^>]*>/g, '').substring(0, 150)}...
                   </p>
                   
                   {/* Views and Date */}
-                  <div className="flex items-center justify-between text-gray-500 text-sm mb-4">
+                  <div className="flex items-center justify-between text-gray-500 dark:text-gray-400 text-sm mb-4">
                     <div className="flex items-center">
                       <Eye className="h-4 w-4 mr-1" />
                       <span>{(article.views || 0).toLocaleString()} views</span>

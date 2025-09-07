@@ -90,12 +90,12 @@ export default function AyatsPage() {
   const categories = ['All', ...new Set(ayats.map(ayat => ayat.category).filter(Boolean))]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-green-50">
+    <div className="min-h-screen bg-background">
       <Navigation />
       
       {/* Search and Filter Section */}
       <div className="container mx-auto px-4 py-8">
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-8 border border-orange-100">
+        <div className="bg-card rounded-xl shadow-lg p-6 mb-8 border border-orange-100 dark:border-gray-700">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1">
               <div className="relative">
@@ -140,14 +140,14 @@ export default function AyatsPage() {
             </div>
           ) : filteredAyats && filteredAyats.length > 0 ? (
             filteredAyats.map((ayat) => (
-              <Card key={ayat.id} className="hover:shadow-xl transition-all duration-300 border-orange-200 hover:border-orange-300 bg-white">
+              <Card key={ayat.id} className="hover:shadow-md transition-all duration-200 border border-black dark:border-white bg-card dark:bg-gray-800">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
-                      <Badge variant="outline" className="border-green-200 text-green-700 bg-green-50">
+                      <Badge variant="outline" className="border-green-200 text-green-700 bg-green-50 font-urdu">
                         {ayat.category || 'Ayat'}
                       </Badge>
-                      <Badge variant="outline" className="border-orange-300 text-orange-600 bg-orange-100">
+                      <Badge variant="outline" className="border-orange-300 text-orange-600 bg-orange-100 font-urdu">
                         {ayat.revelation || 'Quran'}
                       </Badge>
                     </div>
@@ -155,13 +155,13 @@ export default function AyatsPage() {
                       <Heart className="h-4 w-4" />
                     </Button>
                   </div>
-                  <CardTitle className="text-lg text-orange-500">
+                  <CardTitle className="text-lg text-orange-500 dark:text-orange-400">
                     {ayat.address}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   {/* Arabic Text */}
-                  <div className="text-right p-4 bg-orange-50 rounded-lg border border-orange-100">
+                  <div className="text-right p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-100 dark:border-orange-800">
                     <div 
                       className="text-xl font-arabic text-orange-500 leading-relaxed prose prose-lg max-w-none"
                       dangerouslySetInnerHTML={{
@@ -172,7 +172,7 @@ export default function AyatsPage() {
                   
                   {/* Urdu Translation */}
                   {ayat.translation_urdu && (
-                    <div className="p-4 bg-orange-100 rounded-lg border border-orange-200">
+                    <div className="p-4 bg-orange-100 dark:bg-orange-900/30 rounded-lg border border-orange-200 dark:border-orange-700">
                     <p className="text-sm font-medium text-orange-600 mb-1">Urdu Translation:</p>
                       <div 
                         className="text-orange-600 prose prose-sm max-w-none text-right"
@@ -185,7 +185,7 @@ export default function AyatsPage() {
                   )}
                   
                   {/* Translation */}
-                  <div className="p-4 bg-orange-100 rounded-lg border border-orange-200">
+                  <div className="p-4 bg-orange-100 dark:bg-orange-900/30 rounded-lg border border-orange-200 dark:border-orange-700">
                     <p className="text-sm font-medium text-orange-600 mb-1">Translation:</p>
                     <div 
                       className="text-gray-700 leading-relaxed prose prose-sm max-w-none"
@@ -196,7 +196,7 @@ export default function AyatsPage() {
                   </div>
 
                   {/* Source Information */}
-                  <div className="text-xs text-gray-500 space-y-1 pt-2 border-t border-orange-100">
+                  <div className="text-xs text-gray-500 dark:text-gray-400 space-y-1 pt-2 border-t border-orange-100 dark:border-orange-800">
                     <div><span className="font-medium text-orange-500">Reference:</span> {ayat.address}</div>
                     {ayat.tafseer_eng && (
                         <div><span className="font-medium text-orange-500">Tafseer:</span> Available</div>
@@ -214,7 +214,7 @@ export default function AyatsPage() {
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="flex gap-2 pt-4 border-t border-orange-100">
+                  <div className="flex gap-2 pt-4 border-t border-orange-100 dark:border-orange-800">
                     <Button asChild className="flex-1 bg-orange-400 hover:bg-orange-500 text-white text-sm py-2">
                       <Link href={`/ayats/${ayat.id}/detail`}>
                         View Tafseer

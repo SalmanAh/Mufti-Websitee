@@ -90,12 +90,12 @@ export default function HadithsPage() {
   const categories = ["All", ...new Set(hadiths.map(hadith => hadith.category).filter(Boolean))];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-amber-50">
+    <div className="min-h-screen bg-background">
       <Navigation />
       
       {/* Search and Filter Section */}
       <div className="container mx-auto px-4 py-8">
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-8 border border-orange-100">
+        <div className="bg-card rounded-xl shadow-lg p-6 mb-8 border border-orange-100 dark:border-gray-700">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1">
               <div className="relative">
@@ -140,19 +140,19 @@ export default function HadithsPage() {
             </div>
           ) : filteredHadiths && filteredHadiths.length > 0 ? (
             filteredHadiths.map((hadith) => (
-              <Card key={hadith.id} className="hover:shadow-xl transition-all duration-300 border-orange-100 hover:border-orange-200 bg-white">
+              <Card key={hadith.id} className="hover:shadow-md transition-all duration-200 border border-black dark:border-white bg-card dark:bg-gray-800">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between mb-2">
-                    <Badge variant="outline" className="border-amber-200 text-amber-700 bg-amber-50">
+                    <Badge variant="outline" className="border-amber-200 text-amber-700 bg-amber-50 font-urdu">
                       {hadith.category || 'Hadith'}
                     </Badge>
-                    <span className="text-sm text-gray-500">{hadith.address}</span>
+                    <span className="text-sm text-gray-500 dark:text-gray-400">{hadith.address}</span>
                   </div>
-                  <CardTitle className="text-lg text-orange-500">{hadith.revelation || hadith.address}</CardTitle>
+                  <CardTitle className="text-lg text-orange-500 dark:text-orange-400">{hadith.revelation || hadith.address}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {/* Arabic Text */}
-                  <div className="text-right p-4 bg-orange-50 rounded-lg border border-orange-100">
+                  <div className="text-right p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-100 dark:border-orange-800">
                     <div 
                       className="text-lg font-arabic text-orange-500 leading-relaxed prose prose-lg max-w-none"
                       dangerouslySetInnerHTML={{
@@ -163,9 +163,9 @@ export default function HadithsPage() {
                   
                   {/* Translation */}
                   {hadith.translation_eng && (
-                    <div className="p-4 bg-amber-50 rounded-lg border border-amber-100">
+                    <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-100 dark:border-amber-800">
                       <div 
-                        className="text-gray-700 italic leading-relaxed prose prose-sm max-w-none"
+                        className="text-gray-700 dark:text-gray-300 italic leading-relaxed prose prose-sm max-w-none"
                         dangerouslySetInnerHTML={{
                           __html: `"${hadith.translation_eng}"`
                         }}
@@ -174,17 +174,17 @@ export default function HadithsPage() {
                   )}
                   
                   {/* Source Information */}
-                  <div className="text-sm text-gray-600 space-y-1 mb-4">
-                    <p><span className="font-medium text-orange-500">Reference:</span> {hadith.address}</p>
-            <p><span className="font-medium text-orange-500">Views:</span> {hadith.views || 0}</p>
-            <p><span className="font-medium text-orange-500">Date:</span> {new Date(hadith.created_at).toLocaleDateString()}</p>
+                  <div className="text-sm text-gray-600 dark:text-gray-400 space-y-1 mb-4">
+                    <p><span className="font-medium text-orange-500 dark:text-orange-400">Reference:</span> {hadith.address}</p>
+            <p><span className="font-medium text-orange-500 dark:text-orange-400">Views:</span> {hadith.views || 0}</p>
+            <p><span className="font-medium text-orange-500 dark:text-orange-400">Date:</span> {new Date(hadith.created_at).toLocaleDateString()}</p>
                     {hadith.tafseer_eng && (
-                      <p><span className="font-medium text-orange-500">Tafseer:</span> Available</p>
+                      <p><span className="font-medium text-orange-500 dark:text-orange-400">Tafseer:</span> Available</p>
                     )}
                   </div>
                   
                   {/* Action Buttons */}
-                  <div className="flex gap-2 pt-2 border-t border-orange-100">
+                  <div className="flex gap-2 pt-2 border-t border-orange-100 dark:border-orange-800">
                     <Button asChild className="flex-1 bg-orange-400 hover:bg-orange-500 text-white text-sm py-2">
                       <Link href={`/hadiths/${hadith.id}/detail`}>
                         View Tafseer

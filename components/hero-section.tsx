@@ -209,9 +209,9 @@ export function HeroSection() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-white dark:from-gray-800 dark:via-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-background dark:from-gray-800 dark:via-gray-900 dark:to-gray-800">
       {/* Hero Slideshow */}
-      <div className="relative h-[400px] md:h-[500px] overflow-hidden bg-white dark:from-gray-800 dark:to-gray-700 w-full">
+      <div className="relative h-[400px] md:h-[500px] overflow-hidden bg-background dark:from-gray-800 dark:to-gray-700 w-full">
         
         {currentSlideImages.map((image, index) => (
           <div
@@ -244,12 +244,12 @@ export function HeroSection() {
           ))}
         </div>
       </div>
-<div className="bg-white">
+<div className="bg-background">
   <br />
 </div>
 
       {/* Features Section */}
-      <div className="bg-white dark:from-gray-800 dark:to-gray-700 py-8">
+      <div className="bg-background dark:from-gray-800 dark:to-gray-700 py-8">
         <div className="container mx-auto px-4">
           <div className="mb-6">
             <hr />
@@ -272,7 +272,7 @@ export function HeroSection() {
       <hr className="border-gray-300 dark:border-gray-600" />
 
       {/* Explore More Section */}
-      <div className="bg-white dark:from-gray-800 dark:to-gray-700 py-16">
+      <div className="bg-background dark:from-gray-800 dark:to-gray-700 py-16">
         <div className="container mx-auto px-4">
 
 
@@ -299,7 +299,7 @@ export function HeroSection() {
                     target="_blank" 
                     rel="noopener noreferrer"
                     key={index} 
-                    className="group cursor-pointer block p-4 rounded-lg bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-all duration-200 border border-gray-100 dark:border-gray-700"
+                    className="group cursor-pointer block p-4 rounded-lg bg-card dark:bg-gray-800 shadow-sm hover:shadow-md transition-all duration-200 border border-black dark:border-white"
                   >
                     {/* Video Thumbnail */}
                     <div className="relative aspect-video overflow-hidden rounded-xl bg-gray-900 dark:bg-gray-800 mb-3">
@@ -375,19 +375,19 @@ export function HeroSection() {
             ) : contentData.hadiths.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {contentData.hadiths.map((hadith, index) => (
-                  <Card key={index} className="hover:shadow-xl transition-all duration-300 border-orange-100 hover:border-orange-200 bg-white">
+                  <Card key={index} className="hover:shadow-md transition-all duration-200 border border-black dark:border-white bg-card dark:bg-gray-800">
                     <div className="p-6 space-y-4">
                       <div className="flex items-center justify-between mb-2">
-                        <Badge variant="outline" className="border-orange-200 text-orange-500 bg-orange-50">
+                        <Badge variant="outline" className="border-orange-200 text-orange-500 bg-orange-50 font-urdu">
                           {hadith.category || 'Hadith'}
                         </Badge>
-                        <span className="text-sm text-gray-500">{hadith.address}</span>
+                        <span className="text-sm text-gray-500 dark:text-gray-400">{hadith.address}</span>
                       </div>
                       
                       {/* Arabic Text */}
-                      <div className="text-right p-4 bg-orange-50 rounded-lg border border-orange-100">
+                      <div className="text-right p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-100 dark:border-orange-800">
                         <div 
-                          className="text-lg font-arabic text-orange-500 leading-relaxed"
+                          className="text-lg font-arabic text-orange-500 dark:text-orange-400 leading-relaxed"
                           dangerouslySetInnerHTML={{
                             __html: hadith.arabic_text || ''
                           }}
@@ -396,9 +396,9 @@ export function HeroSection() {
                       
                       {/* Translation */}
                       {hadith.translation_eng && (
-                        <div className="p-4 bg-orange-50 rounded-lg border border-orange-100">
+                        <div className="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-100 dark:border-orange-800">
                           <div 
-                            className="text-gray-700 italic leading-relaxed text-sm"
+                            className="text-gray-700 dark:text-gray-300 italic leading-relaxed text-sm"
                             dangerouslySetInnerHTML={{
                               __html: `"${hadith.translation_eng}"`
                             }}
@@ -407,12 +407,12 @@ export function HeroSection() {
                       )}
                       
                       {/* Source Information */}
-                       <div className="text-sm text-gray-600 space-y-1 mb-4">
-                         <p><span className="font-medium text-orange-500">Reference:</span> {hadith.address}</p>
-        <p><span className="font-medium text-orange-500">Views:</span> {hadith.views || 0}</p>
-        <p><span className="font-medium text-orange-500">Date:</span> {new Date(hadith.created_at).toLocaleDateString()}</p>
+                       <div className="text-sm text-gray-600 dark:text-gray-400 space-y-1 mb-4">
+                         <p><span className="font-medium text-orange-500 dark:text-orange-400">Reference:</span> {hadith.address}</p>
+        <p><span className="font-medium text-orange-500 dark:text-orange-400">Views:</span> {hadith.views || 0}</p>
+        <p><span className="font-medium text-orange-500 dark:text-orange-400">Date:</span> {new Date(hadith.created_at).toLocaleDateString()}</p>
                   {hadith.tafseer && (
-                    <p><span className="font-medium text-orange-500">Tafseer:</span> Available</p>
+                    <p><span className="font-medium text-orange-500 dark:text-orange-400">Tafseer:</span> Available</p>
                   )}
                        </div>
                        
@@ -463,14 +463,14 @@ export function HeroSection() {
             ) : contentData.ayats.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {contentData.ayats.map((ayat, index) => (
-                  <Card key={index} className="hover:shadow-xl transition-all duration-300 border-orange-100 hover:border-orange-200 bg-white">
+                  <Card key={index} className="hover:shadow-md transition-all duration-200 border border-black dark:border-white bg-card dark:bg-gray-800">
                     <div className="p-6 space-y-4">
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
-                          <Badge variant="outline" className="border-orange-200 text-orange-500 bg-orange-50">
+                          <Badge variant="outline" className="border-orange-200 text-orange-500 bg-orange-50 font-urdu">
                             {ayat.category || 'Ayat'}
                           </Badge>
-                          <Badge variant="outline" className="border-orange-200 text-orange-500 bg-orange-50">
+                          <Badge variant="outline" className="border-orange-200 text-orange-500 bg-orange-50 font-urdu">
                             {ayat.revelation || 'Quran'}
                           </Badge>
                         </div>
@@ -478,14 +478,14 @@ export function HeroSection() {
                           <Heart className="h-4 w-4" />
                         </Button>
                       </div>
-                      <h4 className="text-lg text-orange-600">
+                      <h4 className="text-lg text-orange-600 dark:text-orange-400">
                         {ayat.address}
                       </h4>
                       
                       {/* Arabic Text */}
-                      <div className="text-right p-6 bg-orange-50 rounded-lg border border-orange-100">
+                      <div className="text-right p-6 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-100 dark:border-orange-800">
                         <div 
-                          className="text-2xl font-arabic text-orange-500 leading-relaxed"
+                          className="text-2xl font-arabic text-orange-500 dark:text-orange-400 leading-relaxed"
                           dangerouslySetInnerHTML={{
                             __html: ayat.arabic_text || ''
                           }}
@@ -493,10 +493,10 @@ export function HeroSection() {
                       </div>
                       
                       {/* Translation */}
-                      <div className="p-4 bg-orange-50 rounded-lg border border-orange-100">
-                  <p className="text-sm font-medium text-orange-500 mb-1">Translation:</p>
+                      <div className="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-100 dark:border-orange-800">
+                  <p className="text-sm font-medium text-orange-500 dark:text-orange-400 mb-1">Translation:</p>
                         <div 
-                          className="text-gray-700 leading-relaxed text-sm"
+                          className="text-gray-700 dark:text-gray-300 leading-relaxed text-sm"
                           dangerouslySetInnerHTML={{
                             __html: `"${ayat.translation_eng}"`
                           }}
@@ -504,7 +504,7 @@ export function HeroSection() {
                       </div>
 
                       {/* Source Information */}
-                       <div className="text-xs text-gray-500 space-y-1 pt-2 border-t border-orange-200">
+                       <div className="text-xs text-gray-500 dark:text-gray-400 space-y-1 pt-2 border-t border-orange-200 dark:border-orange-800">
                          <div>Reference: {ayat.address}</div>
                          {ayat.tafseer_eng && (
                            <div>Tafseer: Available</div>
@@ -568,9 +568,9 @@ export function HeroSection() {
             ) : contentData.articles.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {contentData.articles.map((article, index) => (
-                  <Card key={index} className="hover:shadow-xl transition-all duration-300 border-orange-100 hover:border-orange-200 bg-white overflow-hidden">
+                  <Card key={index} className="hover:shadow-md transition-all duration-200 border border-black dark:border-white bg-card dark:bg-gray-800 overflow-hidden">
                     {/* Thumbnail */}
-                    <div className="aspect-[16/9] bg-gray-100 relative overflow-hidden">
+                    <div className="aspect-[16/9] bg-gray-100 dark:bg-gray-700 relative overflow-hidden">
                       {article.thumbnail_url ? (
                         <Image
                           src={article.thumbnail_url}
@@ -579,28 +579,28 @@ export function HeroSection() {
                           className="object-cover hover:scale-105 transition-transform duration-300"
                         />
                       ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
+                        <div className="w-full h-full bg-gradient-to-br from-orange-100 to-orange-200 dark:from-orange-900/30 dark:to-orange-800/30 flex items-center justify-center">
                           <FileText className="h-12 w-12 text-orange-400" />
                         </div>
                       )}
                     </div>
                     <div className="p-6 space-y-4">
                       <div className="flex items-center justify-between mb-2">
-                        <Badge variant="outline" className="border-orange-200 text-orange-500 bg-orange-50">
+                        <Badge variant="outline" className="border-orange-200 text-orange-500 bg-orange-50 font-urdu">
                           {article.category || 'Article'}
                         </Badge>
                       </div>
-                      <h3 className="text-lg font-semibold text-orange-500 line-clamp-2">
+                      <h3 className="text-lg font-semibold text-orange-500 dark:text-orange-400 line-clamp-2">
                         {article.title}
                       </h3>
-                      <p className="text-sm text-gray-600 mt-1">
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                         By {article.author || 'Unknown Author'}
                       </p>
                       
                       {/* Content Preview */}
-                      <div className="p-4 bg-orange-50 rounded-lg border border-orange-100">
+                      <div className="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-100 dark:border-orange-800">
                         <div 
-                          className="text-gray-700 text-sm leading-relaxed line-clamp-4"
+                          className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed line-clamp-4"
                           dangerouslySetInnerHTML={{
                             __html: article.content || ''
                           }}
@@ -608,7 +608,7 @@ export function HeroSection() {
                       </div>
                       
                       {/* Article Stats */}
-                       <div className="flex items-center justify-between text-sm text-gray-500 pt-2 border-t border-orange-100">
+                       <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 pt-2 border-t border-orange-100 dark:border-orange-800">
                          <div className="flex items-center gap-4">
                            <span className="flex items-center gap-1">
                              <Eye className="h-3 w-3" />
@@ -635,9 +635,9 @@ export function HeroSection() {
               </div>
             ) : (
               <div className="text-center py-12">
-                <FileText className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                <h4 className="text-xl font-semibold text-gray-600 mb-2">No Articles Available</h4>
-                <p className="text-gray-500">Articles will appear here once they are added to the database.</p>
+                <FileText className="h-16 w-16 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
+                <h4 className="text-xl font-semibold text-gray-600 dark:text-gray-300 mb-2">No Articles Available</h4>
+                <p className="text-gray-500 dark:text-gray-400">Articles will appear here once they are added to the database.</p>
               </div>
             )}
             <div className="text-center mt-8">
@@ -667,9 +667,9 @@ export function HeroSection() {
             ) : contentData.books.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {contentData.books.map((book, index) => (
-                  <Card key={index} className="hover:shadow-xl transition-all duration-300 border-orange-100 hover:border-orange-200 bg-white overflow-hidden">
+                  <Card key={index} className="hover:shadow-md transition-all duration-200 border border-black dark:border-white bg-card dark:bg-gray-800 overflow-hidden">
                     {/* Thumbnail */}
-                    <div className="aspect-[16/9] bg-gray-100 relative overflow-hidden">
+                    <div className="aspect-[16/9] bg-gray-100 dark:bg-gray-700 relative overflow-hidden">
                       {book.thumbnail_url ? (
                         <Image
                           src={book.thumbnail_url}
@@ -678,7 +678,7 @@ export function HeroSection() {
                           className="object-cover hover:scale-105 transition-transform duration-300"
                         />
                       ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
+                        <div className="w-full h-full bg-gradient-to-br from-orange-100 to-orange-200 dark:from-orange-900/30 dark:to-orange-800/30 flex items-center justify-center">
                           <BookOpen className="h-16 w-16 text-orange-400" />
                         </div>
                       )}
@@ -687,7 +687,7 @@ export function HeroSection() {
                       {/* Header with badges */}
                       <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-2">
-                          <Badge variant="outline" className="border-orange-200 text-orange-500 bg-orange-50">
+                          <Badge variant="outline" className="border-orange-200 text-orange-500 bg-orange-50 font-urdu">
                             {book.category || 'E-Book'}
                           </Badge>
                           {book.featured && (
@@ -700,18 +700,18 @@ export function HeroSection() {
                       
                       {/* Book Title */}
                       <div>
-                        <h3 className="text-lg font-semibold text-orange-500 line-clamp-2 mb-2">
+                        <h3 className="text-lg font-semibold text-orange-500 dark:text-orange-400 line-clamp-2 mb-2">
                           {book.title}
                         </h3>
-                        <p className="text-sm text-gray-600 mb-3">
+                        <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
                           By {book.author || 'Unknown Author'}
                         </p>
                       </div>
                       
                       {/* Description */}
-                      <div className="p-4 bg-orange-50 rounded-lg border border-orange-100">
+                      <div className="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-100 dark:border-orange-800">
                         <div 
-                          className="text-gray-700 text-sm leading-relaxed line-clamp-3"
+                          className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed line-clamp-3"
                           dangerouslySetInnerHTML={{
                             __html: book.description || ''
                           }}
@@ -739,7 +739,7 @@ export function HeroSection() {
                               <ChevronDown className={`h-4 w-4 transition-transform ${openDropdowns[`book-${index}`] ? 'rotate-180' : ''}`} />
                             </Button>
                             {openDropdowns[`book-${index}`] && (
-                              <div className="absolute bottom-full left-0 right-0 mb-1 bg-white border border-gray-200 rounded-lg shadow-lg z-[999]">
+                              <div className="absolute bottom-full left-0 right-0 mb-1 bg-card dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow-lg z-[999]">
                                 {book.pdf_url1 && (
                                   <button
                                     onClick={(e) => {
@@ -747,10 +747,10 @@ export function HeroSection() {
                                       window.open(book.pdf_url1, '_blank');
                                       setOpenDropdowns(prev => ({ ...prev, [`book-${index}`]: false }));
                                     }}
-                                    className="w-full px-4 py-3 text-left hover:bg-gray-100 hover:shadow-sm cursor-pointer flex items-center gap-2 border-b border-gray-100 last:border-b-0 transition-all duration-200"
+                                    className="w-full px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700 hover:shadow-sm cursor-pointer flex items-center gap-2 border-b border-gray-100 dark:border-gray-600 last:border-b-0 transition-all duration-200"
                                   >
                                     <Download className="h-4 w-4 text-orange-500" />
-                                    <span className="font-medium">{book.title} - Part 2</span>
+                                    <span className="font-medium text-gray-900 dark:text-gray-100">{book.title} - Part 2</span>
                                   </button>
                                 )}
                                 {book.pdf_url && (
@@ -760,10 +760,10 @@ export function HeroSection() {
                                       window.open(book.pdf_url, '_blank');
                                       setOpenDropdowns(prev => ({ ...prev, [`book-${index}`]: false }));
                                     }}
-                                    className="w-full px-4 py-3 text-left hover:bg-gray-100 hover:shadow-sm cursor-pointer flex items-center gap-2 border-b border-gray-100 last:border-b-0 transition-all duration-200"
+                                    className="w-full px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700 hover:shadow-sm cursor-pointer flex items-center gap-2 border-b border-gray-100 dark:border-gray-600 last:border-b-0 transition-all duration-200"
                                   >
                                     <Download className="h-4 w-4 text-orange-500" />
-                                    <span className="font-medium">{book.title} - Part 1</span>
+                                    <span className="font-medium text-gray-900 dark:text-gray-100">{book.title} - Part 1</span>
                                   </button>
                                 )}
                               </div>
@@ -802,7 +802,7 @@ export function HeroSection() {
 
  
         {/* Footer */}
-       <footer className="bg-orange-500 dark:bg-gray-800 text-white py-12">
+       <footer className="bg-orange-600 dark:bg-gray-950 text-white py-12">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="col-span-1 md:col-span-2">
@@ -841,7 +841,7 @@ export function HeroSection() {
             </div>
           </div>
           
-          <div className="border-t border-orange-300 mt-8 pt-8 text-center">
+          <div className="border-t border-orange-400 dark:border-gray-800 mt-8 pt-8 text-center">
           <p className="text-orange-100">
               © 2024 Islamic Scholar Platform. All rights reserved. | Spreading knowledge with wisdom and compassion.
             </p>
