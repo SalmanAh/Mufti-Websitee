@@ -835,7 +835,7 @@ export function HeroSection() {
               <li><Link href="/bio" className="hover:text-white transition-colors">About Scholar</Link></li>
               <li><Link href="/chat" className="hover:text-white transition-colors">Live Chat</Link></li>
               <li><a href="mailto:info@islamicscholar.com" className="hover:text-white transition-colors">info@islamicscholar.com</a></li>
-              <li><a href="tel:+15551234567" className="hover:text-white transition-colors">+1 (555) 123-4567</a></li>
+              <li><a href="tel:+92 302 4620110" className="hover:text-white transition-colors">+92 302 4620110</a></li>
               <li><span className="text-orange-100">123 Islamic Center St.<br />Knowledge City, KC 12345</span></li>
             </ul>
             </div>
