@@ -5,7 +5,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ArrowRight, BookOpen, Video, FileText, MessageCircle, Heart, Mail, Phone, MapPin, MessageSquare, Play, Eye, Download, Share2, Calendar } from "lucide-react"
+import { ArrowRight, BookOpen, Video, FileText, MessageCircle, Heart, Mail, Phone, MapPin, MessageSquare, Play, Eye, Download, Share2, Calendar, ChevronDown } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import Image from "next/image"
@@ -78,6 +78,7 @@ export function HeroSection() {
     books: []
   })
   const [loading, setLoading] = useState(true)
+  const [openDropdowns, setOpenDropdowns] = useState<{[key: string]: boolean}>({})
 
   // Check if screen is mobile size
   useEffect(() => {
@@ -89,6 +90,19 @@ export function HeroSection() {
     window.addEventListener('resize', checkScreenSize)
     
     return () => window.removeEventListener('resize', checkScreenSize)
+  }, [])
+
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element
+      if (!target.closest('.dropdown-container')) {
+        setOpenDropdowns({})
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
   // Get current slide images based on screen size
@@ -704,42 +718,57 @@ export function HeroSection() {
                         />
                       </div>
                       
-                      {/* Book Details */}
-                      <div className="space-y-2 text-sm text-gray-600">
-                        <div className="flex items-center justify-between">
-                          <span className="font-medium text-orange-500">Language:</span>
-                          <span>{book.language || 'Not specified'}</span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="font-medium text-orange-500">Pages:</span>
-                          <span>{book.pages || 'N/A'}</span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="font-medium text-orange-500">Downloads:</span>
-                          <span className="flex items-center gap-1">
-                            <Download className="h-3 w-3" />
-                            {book.downloads || 0}
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="font-medium text-orange-500">Added:</span>
-                          <span>{new Date(book.created_at).toLocaleDateString()}</span>
-                        </div>
-                      </div>
+
                       
                       {/* Action Buttons */}
                       <div className="flex gap-3 pt-4">
-                        {book.pdf_url && (
-                          <Button 
-                            onClick={(e) => {
-                              e.preventDefault();
-                              window.open(book.pdf_url, '_blank');
-                            }}
-                            className="w-full bg-orange-400 hover:bg-orange-500 text-white"
-                          >
-                            <Download className="h-4 w-4 mr-2" />
-                            View PDF
-                          </Button>
+                        {(book.pdf_url || book.pdf_url1) && (
+                          <div className="relative w-full dropdown-container">
+                            <Button 
+                              onClick={() => {
+                                const dropdownKey = `book-${index}`;
+                                setOpenDropdowns(prev => ({
+                                  ...prev,
+                                  [dropdownKey]: !prev[dropdownKey]
+                                }));
+                              }}
+                              className="w-full bg-orange-400 hover:bg-orange-500 text-white flex items-center justify-center gap-2"
+                            >
+                              <Download className="h-4 w-4" />
+                              View PDF
+                              <ChevronDown className={`h-4 w-4 transition-transform ${openDropdowns[`book-${index}`] ? 'rotate-180' : ''}`} />
+                            </Button>
+                            {openDropdowns[`book-${index}`] && (
+                              <div className="absolute bottom-full left-0 right-0 mb-1 bg-white border border-gray-200 rounded-lg shadow-lg z-[999]">
+                                {book.pdf_url1 && (
+                                  <button
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      window.open(book.pdf_url1, '_blank');
+                                      setOpenDropdowns(prev => ({ ...prev, [`book-${index}`]: false }));
+                                    }}
+                                    className="w-full px-4 py-3 text-left hover:bg-gray-100 hover:shadow-sm cursor-pointer flex items-center gap-2 border-b border-gray-100 last:border-b-0 transition-all duration-200"
+                                  >
+                                    <Download className="h-4 w-4 text-orange-500" />
+                                    <span className="font-medium">{book.title} - Part 2</span>
+                                  </button>
+                                )}
+                                {book.pdf_url && (
+                                  <button
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      window.open(book.pdf_url, '_blank');
+                                      setOpenDropdowns(prev => ({ ...prev, [`book-${index}`]: false }));
+                                    }}
+                                    className="w-full px-4 py-3 text-left hover:bg-gray-100 hover:shadow-sm cursor-pointer flex items-center gap-2 border-b border-gray-100 last:border-b-0 transition-all duration-200"
+                                  >
+                                    <Download className="h-4 w-4 text-orange-500" />
+                                    <span className="font-medium">{book.title} - Part 1</span>
+                                  </button>
+                                )}
+                              </div>
+                            )}
+                          </div>
                         )}
                       </div>
                     </div>

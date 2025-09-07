@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, use } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -12,10 +12,11 @@ import Link from "next/link"
 import { createClient } from "@/lib/supabase/client"
 
 interface EditBookPageProps {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
 export default function EditBookPage({ params }: EditBookPageProps) {
+  const resolvedParams = use(params)
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingData, setIsLoadingData] = useState(true)
@@ -23,9 +24,11 @@ export default function EditBookPage({ params }: EditBookPageProps) {
     title: "",
     author: "",
     pdf_url: "",
+    pdf_url1: "",
     thumbnail_url: ""
   })
   const [pdfFile, setPdfFile] = useState<File | null>(null)
+  const [pdfFile1, setPdfFile1] = useState<File | null>(null)
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null)
   const [uploadProgress, setUploadProgress] = useState(0)
   const [isUploading, setIsUploading] = useState(false)
@@ -38,7 +41,7 @@ export default function EditBookPage({ params }: EditBookPageProps) {
         const { data, error } = await supabase
           .from('books')
           .select('*')
-          .eq('id', params.id)
+          .eq('id', resolvedParams.id)
           .single()
 
         if (error) {
@@ -53,6 +56,7 @@ export default function EditBookPage({ params }: EditBookPageProps) {
             title: data.title || '',
             author: data.author || '',
             pdf_url: data.pdf_url || '',
+            pdf_url1: data.pdf_url1 || '',
             thumbnail_url: data.thumbnail_url || ''
           })
         }
@@ -66,7 +70,7 @@ export default function EditBookPage({ params }: EditBookPageProps) {
     }
 
     fetchBook()
-  }, [params.id, router, supabase])
+  }, [resolvedParams.id, router, supabase])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -84,6 +88,17 @@ export default function EditBookPage({ params }: EditBookPageProps) {
         return
       }
       setPdfFile(file)
+    }
+  }
+
+  const handleFile1Change = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      if (file.type !== 'application/pdf') {
+        toast.error('Please select a PDF file')
+        return
+      }
+      setPdfFile1(file)
     }
   }
 
@@ -155,11 +170,17 @@ export default function EditBookPage({ params }: EditBookPageProps) {
     
     try {
       let pdfUrl = formData.pdf_url
+      let pdfUrl1 = formData.pdf_url1
       let thumbnailUrl = formData.thumbnail_url
       
       // If a new PDF file is selected, upload it
       if (pdfFile) {
         pdfUrl = await uploadPdf(pdfFile)
+      }
+
+      // If a new second PDF file is selected, upload it
+      if (pdfFile1) {
+        pdfUrl1 = await uploadPdf(pdfFile1)
       }
 
       if (thumbnailFile) {
@@ -174,9 +195,10 @@ export default function EditBookPage({ params }: EditBookPageProps) {
           title: formData.title,
           author: formData.author,
           pdf_url: pdfUrl,
+          pdf_url1: pdfUrl1,
           thumbnail_url: thumbnailUrl
         })
-        .eq('id', params.id)
+        .eq('id', resolvedParams.id)
         .select()
       
       if (error) throw error
@@ -301,7 +323,7 @@ export default function EditBookPage({ params }: EditBookPageProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="pdf">PDF File</Label>
+              <Label htmlFor="pdf">PDF File (Part 1)</Label>
               <div className="space-y-2">
                 {formData.pdf_url && (
                   <p className="text-sm text-muted-foreground">
@@ -326,6 +348,26 @@ export default function EditBookPage({ params }: EditBookPageProps) {
                   ></div>
                 </div>
               )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="pdf1">PDF File (Part 2)</Label>
+              <div className="space-y-2">
+                {formData.pdf_url1 && (
+                  <p className="text-sm text-muted-foreground">
+                    Current file: <a href={formData.pdf_url1} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">View PDF</a>
+                  </p>
+                )}
+                <Input
+                  id="pdf1"
+                  type="file"
+                  accept=".pdf"
+                  onChange={handleFile1Change}
+                />
+                <p className="text-sm text-muted-foreground">
+                  {pdfFile1 ? 'New file selected. ' : ''}Leave empty to keep current PDF file.
+                </p>
+              </div>
             </div>
 
             <div className="flex gap-4">

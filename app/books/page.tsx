@@ -1,7 +1,7 @@
 'use client'
 
 import { Navigation } from "@/components/navigation"
-import { BookOpen, Download, Star, Calendar, User, Search, Filter } from "lucide-react"
+import { BookOpen, Download, Star, Calendar, User, Search, Filter, ChevronDown } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -18,6 +18,7 @@ interface BookData {
   description?: string;
   cover_image?: string;
   pdf_url?: string;
+  pdf_url1?: string;
   author_id: string;
   category_id: string;
   published: boolean;
@@ -40,6 +41,7 @@ export default function BooksPage() {
   const [selectedCategory, setSelectedCategory] = useState('All')
   const [searchQuery, setSearchQuery] = useState('')
   const [loading, setLoading] = useState(true)
+  const [openDropdowns, setOpenDropdowns] = useState<{[key: string]: boolean}>({})
   const supabase = createClient()
 
   useEffect(() => {
@@ -49,6 +51,19 @@ export default function BooksPage() {
   useEffect(() => {
     filterBooks()
   }, [books, selectedCategory, searchQuery])
+
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element
+      if (!target.closest('.dropdown-container')) {
+        setOpenDropdowns({})
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   const fetchBooks = async () => {
     const { data: books, error } = await supabase
@@ -140,7 +155,7 @@ export default function BooksPage() {
               <p className="text-muted-foreground text-lg">Please wait while we fetch the latest Islamic books.</p>
             </div>
           ) : filteredBooks && filteredBooks.length > 0 ? (
-            filteredBooks.map((book) => (
+            filteredBooks.map((book, index) => (
               <Card key={book.id} className="group hover:shadow-2xl hover:shadow-orange-200/10 transition-all duration-500 overflow-hidden border-0 bg-gradient-to-br from-white to-gray-50/50 dark:from-gray-900 dark:to-gray-800/50 hover:-translate-y-2">
                 {/* Thumbnail */}
                 <div className="aspect-[16/9] bg-gray-100 relative overflow-hidden">
@@ -217,17 +232,53 @@ export default function BooksPage() {
 
                   {/* Action Buttons */}
                   <div className="flex gap-3 pt-4">
-                    {book.pdf_url && (
-                      <Button 
-                        onClick={(e) => {
-                          e.preventDefault();
-                          window.open(book.pdf_url, '_blank');
-                        }}
-                        className="w-full bg-orange-400 hover:bg-orange-500 text-white"
-                      >
-                        <Download className="h-4 w-4 mr-2" />
-                        View PDF
-                      </Button>
+                    {(book.pdf_url || book.pdf_url1) && (
+                      <div className="relative w-full dropdown-container">
+                        <Button 
+                          onClick={() => {
+                            const dropdownKey = `book-${index}`;
+                            setOpenDropdowns(prev => ({
+                              ...prev,
+                              [dropdownKey]: !prev[dropdownKey]
+                            }));
+                          }}
+                          className="w-full bg-orange-400 hover:bg-orange-500 text-white flex items-center justify-center gap-2"
+                        >
+                          <Download className="h-4 w-4" />
+                          View PDF
+                          <ChevronDown className={`h-4 w-4 transition-transform ${openDropdowns[`book-${index}`] ? 'rotate-180' : ''}`} />
+                        </Button>
+                        {openDropdowns[`book-${index}`] && (
+                            <div className="absolute bottom-full left-0 right-0 mb-1 bg-white border border-gray-200 rounded-lg shadow-lg z-[999]">
+                              {book.pdf_url1 && (
+                                <button
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    window.open(book.pdf_url1, '_blank');
+                                    setOpenDropdowns(prev => ({ ...prev, [`book-${index}`]: false }));
+                                  }}
+                                  className="w-full px-4 py-3 text-left hover:bg-gray-100 hover:shadow-sm cursor-pointer flex items-center gap-2 border-b border-gray-100 last:border-b-0 transition-all duration-200"
+                                >
+                                  <Download className="h-4 w-4 text-orange-500" />
+                                  <span className="font-medium">{book.title} - Part 2</span>
+                                </button>
+                              )}
+                              {book.pdf_url && (
+                                <button
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    window.open(book.pdf_url, '_blank');
+                                    setOpenDropdowns(prev => ({ ...prev, [`book-${index}`]: false }));
+                                  }}
+                                  className="w-full px-4 py-3 text-left hover:bg-gray-100 hover:shadow-sm cursor-pointer flex items-center gap-2 border-b border-gray-100 last:border-b-0 transition-all duration-200"
+                                >
+                                  <Download className="h-4 w-4 text-orange-500" />
+                                  <span className="font-medium">{book.title} - Part 1</span>
+                                </button>
+                              )}
+                            </div>
+                          )}
+                      </div>
                     )}
                   </div>
                 </CardContent>

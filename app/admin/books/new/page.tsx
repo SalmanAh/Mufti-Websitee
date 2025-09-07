@@ -20,6 +20,7 @@ export default function NewBookPage() {
     description: ""
   })
   const [pdfFile, setPdfFile] = useState<File | null>(null)
+  const [pdfFile1, setPdfFile1] = useState<File | null>(null)
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null)
   const [isUploading, setIsUploading] = useState(false)
 
@@ -35,6 +36,15 @@ export default function NewBookPage() {
     const file = e.target.files?.[0]
     if (file && file.type === 'application/pdf') {
       setPdfFile(file)
+    } else {
+      toast.error('Please select a valid PDF file')
+    }
+  }
+
+  const handleFile1Change = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file && file.type === 'application/pdf') {
+      setPdfFile1(file)
     } else {
       toast.error('Please select a valid PDF file')
     }
@@ -118,6 +128,12 @@ export default function NewBookPage() {
       // Upload PDF file to Supabase storage
       const pdfUrl = await uploadPdfToSupabase(pdfFile)
       
+      // Upload second PDF file if provided
+      let pdfUrl1 = ''
+      if (pdfFile1) {
+        pdfUrl1 = await uploadPdfToSupabase(pdfFile1)
+      }
+      
       // Upload thumbnail if provided
       let thumbnailUrl = ''
       if (thumbnailFile) {
@@ -131,6 +147,7 @@ export default function NewBookPage() {
         .insert([{
           title: formData.title,
           pdf_url: pdfUrl,
+          pdf_url1: pdfUrl1,
           description: formData.description,
           thumbnail_url: thumbnailUrl
         }])
@@ -146,11 +163,14 @@ export default function NewBookPage() {
         description: ""
       })
       setPdfFile(null)
+      setPdfFile1(null)
       setThumbnailFile(null)
       
       // Reset file inputs
       const pdfFileInput = document.getElementById('pdf-file') as HTMLInputElement
       if (pdfFileInput) pdfFileInput.value = ''
+      const pdfFile1Input = document.getElementById('pdf-file1') as HTMLInputElement
+      if (pdfFile1Input) pdfFile1Input.value = ''
       const thumbnailInput = document.getElementById('thumbnail') as HTMLInputElement
       if (thumbnailInput) thumbnailInput.value = ''
       
@@ -200,7 +220,7 @@ export default function NewBookPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="pdf-file">PDF File</Label>
+              <Label htmlFor="pdf-file">PDF File (Part 1) *</Label>
               <Input
                 id="pdf-file"
                 type="file"
@@ -211,6 +231,22 @@ export default function NewBookPage() {
               {pdfFile && (
                 <p className="text-sm text-muted-foreground">
                   Selected: {pdfFile.name} ({(pdfFile.size / 1024 / 1024).toFixed(2)} MB)
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="pdf-file1">PDF File (Part 2)</Label>
+              <Input
+                id="pdf-file1"
+                type="file"
+                accept=".pdf"
+                onChange={handleFile1Change}
+                className="cursor-pointer"
+              />
+              {pdfFile1 && (
+                <p className="text-sm text-muted-foreground">
+                  Selected: {pdfFile1.name} ({(pdfFile1.size / 1024 / 1024).toFixed(2)} MB)
                 </p>
               )}
             </div>
