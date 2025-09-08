@@ -227,7 +227,7 @@ export default function EditAyatPage({ params }: EditAyatPageProps) {
                 placeholder="Enter Arabic text of the ayat"
                 rows={4}
                 dir="rtl"
-                className="text-right"
+                className="text-right font-arabic urdu-text"
                 required
               />
             </div>

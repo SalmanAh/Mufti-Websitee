@@ -188,7 +188,7 @@ export default function BooksPage() {
 
                   {/* Title and Author */}
                   <div>
-                    <h3 className="font-bold text-xl line-clamp-2 group-hover:text-indigo-600 transition-colors mb-3">
+                    <h3 className="font-bold text-xl line-clamp-2 group-hover:text-indigo-600 transition-colors mb-3 font-arabic urdu-text">
                       {book.title}
                     </h3>
                     <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
@@ -198,7 +198,7 @@ export default function BooksPage() {
                   </div>
 
                   {/* Description */}
-                  <p className="text-sm text-muted-foreground line-clamp-4 leading-relaxed">
+                  <p className="text-sm text-muted-foreground line-clamp-4 leading-relaxed font-arabic urdu-text">
                     {book.description || 'A comprehensive Islamic book covering important religious topics and teachings.'}
                   </p>
 

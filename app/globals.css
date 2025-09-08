@@ -22,6 +22,13 @@
   font-family: 'Jameel Noori Nastaleeq', serif;
 }
 
+/* Arabic font utility class */
+.font-arabic {
+  font-family: 'Jameel Noori Nastaleeq', serif;
+  direction: rtl;
+  text-align: right;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 /* Typography styles for prose content */

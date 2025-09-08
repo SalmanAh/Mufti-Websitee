@@ -57,7 +57,7 @@ export default async function AyatDetailPage({ params }: AyatDetailProps) {
                 <BookOpen className="h-8 w-8 text-amber-200" />
               </div>
               <div>
-                <h1 className="text-3xl md:text-4xl font-bold mb-2">
+                <h1 className="text-3xl md:text-4xl font-bold mb-2 font-arabic urdu-text">
                   {ayat.address}
                 </h1>
                 <div className="flex items-center gap-4 text-amber-200">
@@ -98,11 +98,11 @@ export default async function AyatDetailPage({ params }: AyatDetailProps) {
               <CardContent>
                 <div className="text-right p-6 bg-amber-50 rounded-lg border border-amber-100">
                   <div 
-                    className="text-3xl font-arabic text-amber-800 leading-relaxed prose prose-2xl max-w-none"
-                    dangerouslySetInnerHTML={{
-                      __html: ayat.arabic_text || ''
-                    }}
-                  />
+                  className="text-3xl font-arabic urdu-text text-amber-800 leading-relaxed prose prose-2xl max-w-none"
+                  dangerouslySetInnerHTML={{
+                    __html: ayat.arabic_text || ''
+                  }}
+                />
                 </div>
               </CardContent>
             </Card>
@@ -143,8 +143,7 @@ export default async function AyatDetailPage({ params }: AyatDetailProps) {
                 <CardContent>
                   <div className="p-6 bg-purple-50 rounded-lg border border-purple-100">
                     <div 
-                      className="text-lg text-gray-700 leading-relaxed prose prose-lg max-w-none text-right"
-                      style={{fontFamily: 'Noto Nastaliq Urdu, serif'}}
+                      className="text-lg text-gray-700 leading-relaxed prose prose-lg max-w-none text-right font-arabic urdu-text"
                       dangerouslySetInnerHTML={{
                         __html: `"${ayat.translation_urdu}"`
                       }}
@@ -166,7 +165,7 @@ export default async function AyatDetailPage({ params }: AyatDetailProps) {
                 <CardContent>
                   <div className="p-6 bg-teal-50 rounded-lg border border-teal-100">
                     <div 
-                      className="text-lg text-gray-700 leading-relaxed prose prose-lg max-w-none text-right"
+                      className="text-lg text-gray-700 leading-relaxed prose prose-lg max-w-none text-right font-arabic urdu-text"
                       dangerouslySetInnerHTML={{
                         __html: ayat.tafseer_urdu
                       }}

@@ -139,18 +139,18 @@ export default function ArticlesPage() {
                 </div>
                 <CardContent className="p-6 flex flex-col h-full">
                   {/* Title */}
-                  <h3 className="font-semibold text-gray-900 dark:text-white text-lg leading-tight mb-3 line-clamp-2">
+                  <h3 className="font-semibold text-gray-900 dark:text-white text-lg leading-tight mb-3 line-clamp-2 font-arabic urdu-text">
                     {article.title}
                   </h3>
                   
                   {/* Author */}
                   <div className="flex items-center text-gray-600 dark:text-gray-300 text-sm mb-3">
                     <User className="h-4 w-4 mr-1" />
-                    <span>{article.author}</span>
+                    <span className="font-arabic urdu-text">{article.author}</span>
                   </div>
                   
                   {/* Content Preview */}
-                  <p className="text-gray-600 dark:text-gray-300 text-sm line-clamp-3 mb-4 flex-grow">
+                  <p className="text-gray-600 dark:text-gray-300 text-sm line-clamp-3 mb-4 flex-grow font-arabic urdu-text">
                     {article.content?.replace(/<[^>]*>/g, '').substring(0, 150)}...
                   </p>
                   

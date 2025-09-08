@@ -57,7 +57,7 @@ export default async function HadithDetailPage({ params }: HadithDetailProps) {
                 <BookOpen className="h-8 w-8 text-emerald-200" />
               </div>
               <div>
-                <h1 className="text-3xl md:text-4xl font-bold mb-2">
+                <h1 className="text-3xl md:text-4xl font-bold mb-2 font-arabic urdu-text">
                   {hadith.revelation || hadith.address}
                 </h1>
                 <div className="flex items-center gap-4 text-emerald-200">
@@ -95,11 +95,11 @@ export default async function HadithDetailPage({ params }: HadithDetailProps) {
               <CardContent>
                 <div className="text-right p-6 bg-green-50 rounded-lg border border-green-100">
                   <div 
-                    className="text-2xl font-arabic text-green-800 leading-relaxed prose prose-2xl max-w-none"
-                    dangerouslySetInnerHTML={{
-                      __html: hadith.arabic_text || ''
-                    }}
-                  />
+                  className="text-2xl font-arabic urdu-text text-green-800 leading-relaxed prose prose-2xl max-w-none"
+                  dangerouslySetInnerHTML={{
+                    __html: hadith.arabic_text || ''
+                  }}
+                />
                 </div>
               </CardContent>
             </Card>
@@ -138,7 +138,7 @@ export default async function HadithDetailPage({ params }: HadithDetailProps) {
                 <CardContent>
                   <div className="p-6 bg-blue-50 rounded-lg border border-blue-100">
                     <div 
-                      className="text-lg text-gray-700 leading-relaxed prose prose-lg max-w-none text-right"
+                      className="text-lg text-gray-700 leading-relaxed prose prose-lg max-w-none text-right font-arabic urdu-text"
                       dangerouslySetInnerHTML={{
                         __html: hadith.translation_urdu
                       }}
@@ -160,7 +160,7 @@ export default async function HadithDetailPage({ params }: HadithDetailProps) {
                 <CardContent>
                   <div className="p-6 bg-indigo-50 rounded-lg border border-indigo-100">
                     <div 
-                      className="text-lg text-gray-700 leading-relaxed prose prose-lg max-w-none text-right"
+                      className="text-lg text-gray-700 leading-relaxed prose prose-lg max-w-none text-right font-arabic urdu-text"
                       dangerouslySetInnerHTML={{
                         __html: hadith.tafseer_urdu
                       }}

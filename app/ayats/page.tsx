@@ -144,10 +144,10 @@ export default function AyatsPage() {
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
-                      <Badge variant="outline" className="border-green-200 text-green-700 bg-green-50 font-urdu">
+                      <Badge variant="outline" className="border-green-200 text-green-700 bg-green-50 font-urdu font-arabic urdu-text">
                         {ayat.category || 'Ayat'}
                       </Badge>
-                      <Badge variant="outline" className="border-orange-300 text-orange-600 bg-orange-100 font-urdu">
+                      <Badge variant="outline" className="border-orange-300 text-orange-600 bg-orange-100 font-urdu font-arabic urdu-text">
                         {ayat.revelation || 'Quran'}
                       </Badge>
                     </div>
@@ -155,7 +155,7 @@ export default function AyatsPage() {
                       <Heart className="h-4 w-4" />
                     </Button>
                   </div>
-                  <CardTitle className="text-lg text-orange-500 dark:text-orange-400">
+                  <CardTitle className="text-lg text-orange-500 dark:text-orange-400 font-arabic urdu-text">
                     {ayat.address}
                   </CardTitle>
                 </CardHeader>
@@ -163,11 +163,11 @@ export default function AyatsPage() {
                   {/* Arabic Text */}
                   <div className="text-right p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-100 dark:border-orange-800">
                     <div 
-                      className="text-xl font-arabic text-orange-500 leading-relaxed prose prose-lg max-w-none"
-                      dangerouslySetInnerHTML={{
-                        __html: ayat.arabic_text || ''
-                      }}
-                    />
+                          className="text-xl font-arabic urdu-text text-orange-500 leading-relaxed prose prose-lg max-w-none"
+                          dangerouslySetInnerHTML={{
+                            __html: ayat.arabic_text || ''
+                          }}
+                        />
                   </div>
                   
                   {/* Urdu Translation */}
@@ -175,8 +175,7 @@ export default function AyatsPage() {
                     <div className="p-4 bg-orange-100 dark:bg-orange-900/30 rounded-lg border border-orange-200 dark:border-orange-700">
                     <p className="text-sm font-medium text-orange-600 mb-1">Urdu Translation:</p>
                       <div 
-                        className="text-orange-600 prose prose-sm max-w-none text-right"
-                        style={{fontFamily: 'Noto Nastaliq Urdu, serif'}}
+                        className="text-orange-600 prose prose-sm max-w-none text-right font-arabic urdu-text"
                         dangerouslySetInnerHTML={{
                           __html: `"${ayat.translation_urdu}"`
                         }}

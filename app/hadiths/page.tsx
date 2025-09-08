@@ -143,22 +143,22 @@ export default function HadithsPage() {
               <Card key={hadith.id} className="hover:shadow-md transition-all duration-200 border border-black dark:border-white bg-card dark:bg-gray-800">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between mb-2">
-                    <Badge variant="outline" className="border-amber-200 text-amber-700 bg-amber-50 font-urdu">
+                    <Badge variant="outline" className="border-amber-200 text-amber-700 bg-amber-50 font-urdu font-arabic urdu-text">
                       {hadith.category || 'Hadith'}
                     </Badge>
-                    <span className="text-sm text-gray-500 dark:text-gray-400">{hadith.address}</span>
+                    <span className="text-sm text-gray-500 dark:text-gray-400 font-arabic urdu-text">{hadith.address}</span>
                   </div>
-                  <CardTitle className="text-lg text-orange-500 dark:text-orange-400">{hadith.revelation || hadith.address}</CardTitle>
+                  <CardTitle className="text-lg text-orange-500 dark:text-orange-400 font-arabic urdu-text">{hadith.revelation || hadith.address}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {/* Arabic Text */}
                   <div className="text-right p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-100 dark:border-orange-800">
                     <div 
-                      className="text-lg font-arabic text-orange-500 leading-relaxed prose prose-lg max-w-none"
-                      dangerouslySetInnerHTML={{
-                        __html: hadith.arabic_text || ''
-                      }}
-                    />
+                          className="text-lg font-arabic urdu-text text-orange-500 leading-relaxed prose prose-lg max-w-none"
+                          dangerouslySetInnerHTML={{
+                            __html: hadith.arabic_text || ''
+                          }}
+                        />
                   </div>
                   
                   {/* Translation */}

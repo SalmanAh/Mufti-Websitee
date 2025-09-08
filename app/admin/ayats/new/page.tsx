@@ -151,7 +151,7 @@ export default function NewAyatPage() {
                 placeholder="Enter Arabic text of the ayat"
                 rows={4}
                 dir="rtl"
-                className="text-right"
+                className="text-right font-arabic urdu-text"
                 required
               />
             </div>

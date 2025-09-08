@@ -227,7 +227,7 @@ export default function EditHadithPage({ params }: EditHadithPageProps) {
                 placeholder="Enter Arabic text of the hadith"
                 rows={4}
                 dir="rtl"
-                className="text-right"
+                className="text-right font-arabic urdu-text"
                 required
               />
             </div>

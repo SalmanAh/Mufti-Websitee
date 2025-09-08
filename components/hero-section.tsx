@@ -378,16 +378,16 @@ export function HeroSection() {
                   <Card key={index} className="hover:shadow-md transition-all duration-200 border border-black dark:border-white bg-card dark:bg-gray-800">
                     <div className="p-6 space-y-4">
                       <div className="flex items-center justify-between mb-2">
-                        <Badge variant="outline" className="border-orange-200 text-orange-500 bg-orange-50 font-urdu">
+                        <Badge variant="outline" className="border-orange-200 text-orange-500 bg-orange-50 font-arabic urdu-text">
                           {hadith.category || 'Hadith'}
                         </Badge>
-                        <span className="text-sm text-gray-500 dark:text-gray-400">{hadith.address}</span>
+                        <span className="text-sm text-gray-500 dark:text-gray-400 font-arabic urdu-text">{hadith.address}</span>
                       </div>
                       
                       {/* Arabic Text */}
                       <div className="text-right p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-100 dark:border-orange-800">
                         <div 
-                          className="text-lg font-arabic text-orange-500 dark:text-orange-400 leading-relaxed"
+                          className="text-lg font-arabic urdu-text text-orange-500 dark:text-orange-400 leading-relaxed"
                           dangerouslySetInnerHTML={{
                             __html: hadith.arabic_text || ''
                           }}
@@ -467,10 +467,10 @@ export function HeroSection() {
                     <div className="p-6 space-y-4">
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
-                          <Badge variant="outline" className="border-orange-200 text-orange-500 bg-orange-50 font-urdu">
+                          <Badge variant="outline" className="border-orange-200 text-orange-500 bg-orange-50 font-arabic urdu-text">
                             {ayat.category || 'Ayat'}
                           </Badge>
-                          <Badge variant="outline" className="border-orange-200 text-orange-500 bg-orange-50 font-urdu">
+                          <Badge variant="outline" className="border-orange-200 text-orange-500 bg-orange-50 font-arabic urdu-text">
                             {ayat.revelation || 'Quran'}
                           </Badge>
                         </div>
@@ -478,14 +478,14 @@ export function HeroSection() {
                           <Heart className="h-4 w-4" />
                         </Button>
                       </div>
-                      <h4 className="text-lg text-orange-600 dark:text-orange-400">
+                      <h4 className="text-lg text-orange-600 dark:text-orange-400 font-arabic urdu-text">
                         {ayat.address}
                       </h4>
                       
                       {/* Arabic Text */}
                       <div className="text-right p-6 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-100 dark:border-orange-800">
                         <div 
-                          className="text-2xl font-arabic text-orange-500 dark:text-orange-400 leading-relaxed"
+                          className="text-2xl font-arabic urdu-text text-orange-500 dark:text-orange-400 leading-relaxed"
                           dangerouslySetInnerHTML={{
                             __html: ayat.arabic_text || ''
                           }}
@@ -586,11 +586,11 @@ export function HeroSection() {
                     </div>
                     <div className="p-6 space-y-4">
                       <div className="flex items-center justify-between mb-2">
-                        <Badge variant="outline" className="border-orange-200 text-orange-500 bg-orange-50 font-urdu">
+                        <Badge variant="outline" className="border-orange-200 text-orange-500 bg-orange-50 font-arabic urdu-text">
                           {article.category || 'Article'}
                         </Badge>
                       </div>
-                      <h3 className="text-lg font-semibold text-orange-500 dark:text-orange-400 line-clamp-2">
+                      <h3 className="text-lg font-semibold text-orange-500 dark:text-orange-400 line-clamp-2 font-arabic urdu-text">
                         {article.title}
                       </h3>
                       <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
@@ -600,7 +600,7 @@ export function HeroSection() {
                       {/* Content Preview */}
                       <div className="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-100 dark:border-orange-800">
                         <div 
-                          className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed line-clamp-4"
+                          className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed line-clamp-4 font-arabic urdu-text"
                           dangerouslySetInnerHTML={{
                             __html: article.content || ''
                           }}
@@ -687,7 +687,7 @@ export function HeroSection() {
                       {/* Header with badges */}
                       <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-2">
-                          <Badge variant="outline" className="border-orange-200 text-orange-500 bg-orange-50 font-urdu">
+                          <Badge variant="outline" className="border-orange-200 text-orange-500 bg-orange-50 font-arabic urdu-text">
                             {book.category || 'E-Book'}
                           </Badge>
                           {book.featured && (
@@ -700,7 +700,7 @@ export function HeroSection() {
                       
                       {/* Book Title */}
                       <div>
-                        <h3 className="text-lg font-semibold text-orange-500 dark:text-orange-400 line-clamp-2 mb-2">
+                        <h3 className="text-lg font-semibold text-orange-500 dark:text-orange-400 line-clamp-2 mb-2 font-arabic urdu-text">
                           {book.title}
                         </h3>
                         <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
@@ -711,7 +711,7 @@ export function HeroSection() {
                       {/* Description */}
                       <div className="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-100 dark:border-orange-800">
                         <div 
-                          className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed line-clamp-3"
+                          className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed line-clamp-3 font-arabic urdu-text"
                           dangerouslySetInnerHTML={{
                             __html: book.description || ''
                           }}
