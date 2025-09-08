@@ -23,6 +23,7 @@ export default function NewBookPage() {
   const [pdfFile1, setPdfFile1] = useState<File | null>(null)
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null)
   const [isUploading, setIsUploading] = useState(false)
+  const [uploadController, setUploadController] = useState<AbortController | null>(null)
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -59,52 +60,96 @@ export default function NewBookPage() {
     }
   }
 
-  const uploadPdfToSupabase = async (file: File): Promise<string> => {
+  const uploadPdfToSupabase = async (file: File, controller?: AbortController): Promise<string> => {
     const supabase = createClient()
     const fileExt = 'pdf'
     const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`
     const filePath = `books/${fileName}`
 
-    const { data, error } = await supabase.storage
-      .from('E-Books')
-      .upload(filePath, file, {
-        cacheControl: '3600',
-        upsert: false
-      })
+    try {
+      const uploadPromise = supabase.storage
+        .from('E-Books')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false
+        })
 
-    if (error) {
-      throw new Error(`Upload failed: ${error.message}`)
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Upload timeout - please try again')), 120000) // 2 minute timeout
+      )
+
+      const cancelPromise = controller ? new Promise((_, reject) => {
+        controller.signal.addEventListener('abort', () => {
+          reject(new Error('Upload cancelled by user'))
+        })
+      }) : Promise.resolve()
+
+      const { data, error } = await Promise.race([
+        uploadPromise,
+        timeoutPromise,
+        cancelPromise
+      ]) as any
+
+      if (error) {
+        console.error('PDF upload error:', error)
+        throw new Error(`PDF upload failed: ${error.message}`)
+      }
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('E-Books')
+        .getPublicUrl(filePath)
+
+      return publicUrl
+    } catch (error) {
+      console.error('PDF upload error:', error)
+      throw error
     }
-
-    const { data: { publicUrl } } = supabase.storage
-      .from('E-Books')
-      .getPublicUrl(filePath)
-
-    return publicUrl
   }
 
-  const uploadThumbnailToSupabase = async (file: File): Promise<string> => {
+  const uploadThumbnailToSupabase = async (file: File, controller?: AbortController): Promise<string> => {
     const supabase = createClient()
     const fileExt = file.name.split('.').pop()
     const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`
     const filePath = `images/${fileName}`
 
-    const { data, error } = await supabase.storage
-      .from('E-Books')
-      .upload(filePath, file, {
-        cacheControl: '3600',
-        upsert: false
-      })
+    try {
+      const uploadPromise = supabase.storage
+        .from('E-Books')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false
+        })
 
-    if (error) {
-      throw new Error(`Upload failed: ${error.message}`)
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Upload timeout - please try again')), 60000) // 1 minute timeout for images
+      )
+
+      const cancelPromise = controller ? new Promise((_, reject) => {
+        controller.signal.addEventListener('abort', () => {
+          reject(new Error('Upload cancelled by user'))
+        })
+      }) : Promise.resolve()
+
+      const { data, error } = await Promise.race([
+        uploadPromise,
+        timeoutPromise,
+        cancelPromise
+      ]) as any
+
+      if (error) {
+        console.error('Thumbnail upload error:', error)
+        throw new Error(`Thumbnail upload failed: ${error.message}`)
+      }
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('E-Books')
+        .getPublicUrl(filePath)
+
+      return publicUrl
+    } catch (error) {
+      console.error('Thumbnail upload error:', error)
+      throw error
     }
-
-    const { data: { publicUrl } } = supabase.storage
-      .from('E-Books')
-      .getPublicUrl(filePath)
-
-    return publicUrl
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -121,24 +166,31 @@ export default function NewBookPage() {
     }
 
     setIsLoading(true)
+    setIsUploading(true)
+    
+    // Create abort controller for cancellation
+    const controller = new AbortController()
+    setUploadController(controller)
     
     try {
-      setIsUploading(true)
-      
       // Upload PDF file to Supabase storage
-      const pdfUrl = await uploadPdfToSupabase(pdfFile)
+      const pdfUrl = await uploadPdfToSupabase(pdfFile, controller)
       
       // Upload second PDF file if provided
       let pdfUrl1 = ''
       if (pdfFile1) {
-        pdfUrl1 = await uploadPdfToSupabase(pdfFile1)
+        pdfUrl1 = await uploadPdfToSupabase(pdfFile1, controller)
       }
       
       // Upload thumbnail if provided
       let thumbnailUrl = ''
       if (thumbnailFile) {
-        thumbnailUrl = await uploadThumbnailToSupabase(thumbnailFile)
+        thumbnailUrl = await uploadThumbnailToSupabase(thumbnailFile, controller)
       }
+      
+      // Stop uploading animation after files are uploaded
+      setIsUploading(false)
+      setUploadController(null)
       
       const supabase = createClient()
       
@@ -153,7 +205,10 @@ export default function NewBookPage() {
         }])
         .select()
       
-      if (error) throw error
+      if (error) {
+        console.error("Database error:", error)
+        throw new Error(`Database error: ${error.message}`)
+      }
       
       toast.success("Book created successfully!")
       
@@ -174,13 +229,19 @@ export default function NewBookPage() {
       const thumbnailInput = document.getElementById('thumbnail') as HTMLInputElement
       if (thumbnailInput) thumbnailInput.value = ''
       
-      router.push("/admin/books")
+      // Navigate to books list after a short delay to ensure user sees success message
+      setTimeout(() => {
+        router.push("/admin/books")
+      }, 1000)
+      
     } catch (error) {
       console.error("Error creating book:", error)
-      toast.error("Failed to create book")
+      const errorMessage = error instanceof Error ? error.message : "Failed to create book"
+      toast.error(errorMessage)
     } finally {
       setIsLoading(false)
       setIsUploading(false)
+      setUploadController(null)
     }
   }
 
@@ -266,13 +327,13 @@ export default function NewBookPage() {
                 </p>
               )}
               {isUploading && (
-                <div className="flex items-center gap-2 text-sm text-blue-600">
+                <div className="flex items-center gap-2 text-sm text-blue-600 bg-blue-50 p-3 rounded-lg border border-blue-200">
                   <div className="flex space-x-1">
                     <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
                     <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
                     <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce"></div>
                   </div>
-                  <span>Uploading files...</span>
+                  <span>Uploading files... Please wait, this may take a few minutes for large files.</span>
                 </div>
               )}
             </div>
@@ -303,11 +364,29 @@ export default function NewBookPage() {
                   </>
                 )}
               </Button>
-              <Link href="/admin/books">
-                <Button type="button" variant="outline">
-                  Cancel
+              {isUploading ? (
+                <Button 
+                  type="button" 
+                  variant="destructive"
+                  onClick={() => {
+                    if (uploadController) {
+                      uploadController.abort()
+                      setUploadController(null)
+                    }
+                    setIsUploading(false)
+                    setIsLoading(false)
+                    toast.info("Upload cancelled")
+                  }}
+                >
+                  Cancel Upload
                 </Button>
-              </Link>
+              ) : (
+                <Link href="/admin/books">
+                  <Button type="button" variant="outline">
+                    Cancel
+                  </Button>
+                </Link>
+              )}
             </div>
           </form>
         </CardContent>
