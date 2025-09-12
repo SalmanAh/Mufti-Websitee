@@ -467,10 +467,10 @@ export function HeroSection() {
                     <div className="p-6 space-y-4">
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
-                          <Badge variant="outline" className="border-orange-200 text-orange-500 bg-orange-50 font-urdu">
+                          <Badge variant="outline" className="border-orange-200 text-orange-500 bg-orange-50 font-arabic urdu-text">
                             {ayat.category || 'Ayat'}
                           </Badge>
-                          <Badge variant="outline" className="border-orange-200 text-orange-500 bg-orange-50 font-urdu">
+                          <Badge variant="outline" className="border-orange-200 text-orange-500 bg-orange-50 font-arabic urdu-text">
                             {ayat.revelation || 'Quran'}
                           </Badge>
                         </div>
@@ -478,7 +478,7 @@ export function HeroSection() {
                           <Heart className="h-4 w-4" />
                         </Button>
                       </div>
-                      <h4 className="text-lg text-orange-600 dark:text-orange-400">
+                      <h4 className="text-lg text-orange-600 dark:text-orange-400 font-arabic urdu-text">
                         {ayat.address}
                       </h4>
                       
@@ -687,7 +687,7 @@ export function HeroSection() {
                       {/* Header with badges */}
                       <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-2">
-                          <Badge variant="outline" className="border-orange-200 text-orange-500 bg-orange-50 font-urdu">
+                          <Badge variant="outline" className="border-orange-200 text-orange-500 bg-orange-50 font-arabic urdu-text">
                             {book.category || 'E-Book'}
                           </Badge>
                           {book.featured && (
@@ -700,7 +700,7 @@ export function HeroSection() {
                       
                       {/* Book Title */}
                       <div>
-                        <h3 className="text-lg font-semibold text-orange-500 dark:text-orange-400 line-clamp-2 mb-2">
+                        <h3 className="text-lg font-semibold text-orange-500 dark:text-orange-400 line-clamp-2 mb-2 font-arabic urdu-text">
                           {book.title}
                         </h3>
                         <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
@@ -711,7 +711,7 @@ export function HeroSection() {
                       {/* Description */}
                       <div className="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-100 dark:border-orange-800">
                         <div 
-                          className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed line-clamp-3"
+                          className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed line-clamp-3 font-arabic urdu-text"
                           dangerouslySetInnerHTML={{
                             __html: book.description || ''
                           }}

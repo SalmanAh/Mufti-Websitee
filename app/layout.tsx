@@ -5,9 +5,14 @@ import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'v0 App',
-  description: 'Created with v0',
-  generator: 'v0.app',
+  title: 'Mufti Munir Shakir',
+  description: 'Islamic Scholar, Mufti, Teacher, and Author - A comprehensive resource for Islamic knowledge and teachings',
+  generator: 'Next.js',
+  icons: {
+    icon: '/Pics/quran.jpg',
+    shortcut: '/Pics/quran.jpg',
+    apple: '/Pics/quran.jpg',
+  },
 }
 
 export default function RootLayout({
