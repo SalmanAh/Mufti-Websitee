@@ -103,7 +103,7 @@ export default function BioPage() {
             </p>
             <p className="text-lg leading-relaxed text-justify">
               <span className="urdu-text">مفتی منیر شاکر کا کہنا تھا کہ نبی اکرم ﷺ کبھی کوئی ایسی بات نہیں فرمائیں گے جو قرآن کی تعلیمات کے خلاف ہو۔
-                لہٰذا اگر کوئی روایت بظاہر قرآن سے متصادم دکھائی دے تو اس کی مزید تحقیق ضروری ہے۔</span>
+               لہٰذا اگر کوئی روایت قران سے متصادم ہو تو اس کی مزید تحقیق ضروری ہے۔</span>
             </p>
           </CardContent>
         </Card>
@@ -190,18 +190,18 @@ export default function BioPage() {
                 کرنا اور دین و ملت کی حفاظت کرنا تھا۔</span>
             </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-3">
-                <h3 className="text-lg font-semibold urdu-text">جہاد کا فلسفہ</h3>
-                <p className="text-muted-foreground">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="bg-card/50 p-6 rounded-lg border space-y-4">
+                <h3 className="text-xl font-semibold urdu-text text-center border-b pb-2">جہاد کا فلسفہ</h3>
+                <p className="text-muted-foreground leading-relaxed text-justify">
                   <span className="urdu-text">ان کا ماننا تھا کہ جہاد ایک دفاعی عمل ہے، جب دین، عزت یا وطن خطرے میں ہوں تو مسلمان پر لازم ہے کہ وہ
                   کھڑا ہو۔</span>
                 </p>
               </div>
 
-              <div className="space-y-3">
-                <h3 className="text-lg font-semibold urdu-text">امن و انصاف</h3>
-                <p className="text-muted-foreground">
+              <div className="bg-card/50 p-6 rounded-lg border space-y-4">
+                <h3 className="text-xl font-semibold urdu-text text-center border-b pb-2">امن و انصاف</h3>
+                <p className="text-muted-foreground leading-relaxed text-justify">
                   <span className="urdu-text">وہ ہمیشہ اس بات پر زور دیتے تھے کہ جہاد کا اصل مقصد ظلم کو ختم کرنا اور انصاف قائم کرنا ہے۔</span>
                 </p>
               </div>
