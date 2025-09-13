@@ -284,7 +284,7 @@ export function HeroSection() {
                 {[1, 2, 3, 4].map((i) => (
                   <Card key={i} className="animate-pulse">
                     <div className="aspect-[16/9] bg-gray-200 dark:bg-gray-700"></div>
-                    <div className="p-6 space-y-4">
+                    <div className="p-4 space-y-3">
                       <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
                       <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
                     </div>
@@ -365,7 +365,7 @@ export function HeroSection() {
                 {[1, 2, 3, 4].map((i) => (
                   <Card key={i} className="animate-pulse">
                     <div className="aspect-[16/9] bg-gray-200 dark:bg-gray-700"></div>
-                    <div className="p-6 space-y-4">
+                    <div className="p-4 space-y-3">
                       <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
                       <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
                     </div>
@@ -376,12 +376,14 @@ export function HeroSection() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {contentData.hadiths.map((hadith, index) => (
                   <Card key={index} className="hover:shadow-md transition-all duration-200 border border-black dark:border-white bg-card dark:bg-gray-800">
-                    <div className="p-6 space-y-4">
+                    <div className="p-4 space-y-3">
                       <div className="flex items-center justify-between mb-2">
-                        <Badge variant="outline" className="border-orange-200 text-orange-500 bg-orange-50 font-arabic urdu-text">
-                          {hadith.category || 'Hadith'}
-                        </Badge>
-                        <span className="text-sm text-gray-500 dark:text-gray-400 font-arabic urdu-text">{hadith.address}</span>
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline" className="border-orange-200 text-orange-500 bg-orange-50 font-arabic urdu-text">
+                            {hadith.category || 'Hadith'}
+                          </Badge>
+                        </div>
+                        <span className="text-base font-bold text-gray-600 dark:text-gray-300 font-arabic urdu-text">{hadith.address}</span>
                       </div>
                       
                       {/* Arabic Text */}
@@ -394,17 +396,7 @@ export function HeroSection() {
                         />
                       </div>
                       
-                      {/* Translation */}
-                      {hadith.translation_eng && (
-                        <div className="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-100 dark:border-orange-800">
-                          <div 
-                            className="text-gray-700 dark:text-gray-300 italic leading-relaxed text-sm"
-                            dangerouslySetInnerHTML={{
-                              __html: `"${hadith.translation_eng}"`
-                            }}
-                          />
-                        </div>
-                      )}
+
                       
                       {/* Source Information */}
                        <div className="text-sm text-gray-600 dark:text-gray-400 space-y-1 mb-4">
@@ -420,7 +412,7 @@ export function HeroSection() {
                        <div className="flex gap-2 pt-2 border-t border-orange-100">
                          <Button asChild className="flex-1 bg-orange-400 hover:bg-orange-500 text-white text-sm py-2">
                            <Link href={`/hadiths/${hadith.id}/detail`}>
-                             View Tafseer
+                             View Tafseer & Tarjuma
                            </Link>
                          </Button>
                        </div>
@@ -453,7 +445,7 @@ export function HeroSection() {
                 {[1, 2, 3, 4].map((i) => (
                   <Card key={i} className="animate-pulse">
                     <div className="aspect-[16/9] bg-gray-200 dark:bg-gray-700"></div>
-                    <div className="p-6 space-y-4">
+                    <div className="p-4 space-y-3">
                       <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
                       <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
                     </div>
@@ -466,42 +458,36 @@ export function HeroSection() {
                   <Card key={index} className="hover:shadow-md transition-all duration-200 border border-black dark:border-white bg-card dark:bg-gray-800">
                     <div className="p-6 space-y-4">
                       <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                          <Badge variant="outline" className="border-orange-200 text-orange-500 bg-orange-50 font-arabic urdu-text">
-                            {ayat.category || 'Ayat'}
-                          </Badge>
-                          <Badge variant="outline" className="border-orange-200 text-orange-500 bg-orange-50 font-arabic urdu-text">
-                            {ayat.revelation || 'Quran'}
-                          </Badge>
-                        </div>
-                        <Button variant="ghost" size="sm" className="text-red-500 hover:text-red-600">
-                          <Heart className="h-4 w-4" />
-                        </Button>
-                      </div>
-                      <h4 className="text-lg text-orange-600 dark:text-orange-400 font-arabic urdu-text">
-                        {ayat.address}
-                      </h4>
+                         <div className="flex items-center gap-2">
+                           <Badge variant="outline" className="border-orange-200 text-orange-500 bg-orange-50 font-arabic urdu-text">
+                             {ayat.category || 'Ayat'}
+                           </Badge>
+                           <Badge variant="outline" className="border-orange-200 text-orange-500 bg-orange-50 font-arabic urdu-text">
+                             {ayat.revelation || 'Quran'}
+                           </Badge>
+                         </div>
+                         <h4 className="text-lg text-orange-600 dark:text-orange-400 font-arabic urdu-text">
+                           {ayat.address}
+                         </h4>
+                       </div>
                       
                       {/* Arabic Text */}
                       <div className="text-right p-6 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-100 dark:border-orange-800">
                         <div 
-                          className="text-2xl font-arabic urdu-text text-orange-500 dark:text-orange-400 leading-relaxed"
+                          className="text-lg font-arabic urdu-text text-black dark:text-black overflow-hidden"
+                          style={{
+                            display: '-webkit-box',
+                            WebkitLineClamp: 3,
+                            WebkitBoxOrient: 'vertical',
+                            lineHeight: '2.2'
+                          }}
                           dangerouslySetInnerHTML={{
                             __html: ayat.arabic_text || ''
                           }}
                         />
                       </div>
                       
-                      {/* Translation */}
-                      <div className="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-100 dark:border-orange-800">
-                  <p className="text-sm font-medium text-orange-500 dark:text-orange-400 mb-1">Translation:</p>
-                        <div 
-                          className="text-gray-700 dark:text-gray-300 leading-relaxed text-sm"
-                          dangerouslySetInnerHTML={{
-                            __html: `"${ayat.translation_eng}"`
-                          }}
-                        />
-                      </div>
+
 
                       {/* Source Information */}
                        <div className="text-xs text-gray-500 dark:text-gray-400 space-y-1 pt-2 border-t border-orange-200 dark:border-orange-800">
@@ -525,7 +511,7 @@ export function HeroSection() {
                        <div className="flex gap-2 pt-2 border-t border-orange-100">
                          <Button asChild className="flex-1 bg-orange-400 hover:bg-orange-500 text-white text-sm py-2">
                            <Link href={`/ayats/${ayat.id}/detail`}>
-                             View Tafseer
+                             View Tafseer & Tarjuma
                            </Link>
                          </Button>
                        </div>
@@ -584,7 +570,7 @@ export function HeroSection() {
                         </div>
                       )}
                     </div>
-                    <div className="p-6 space-y-4">
+                    <div className="p-4 space-y-3">
                       <div className="flex items-center justify-between mb-2">
                         <Badge variant="outline" className="border-orange-200 text-orange-500 bg-orange-50 font-arabic urdu-text">
                           {article.category || 'Article'}
@@ -597,15 +583,7 @@ export function HeroSection() {
                         By {article.author || 'Unknown Author'}
                       </p>
                       
-                      {/* Content Preview */}
-                      <div className="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-100 dark:border-orange-800">
-                        <div 
-                          className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed line-clamp-4 font-arabic urdu-text"
-                          dangerouslySetInnerHTML={{
-                            __html: article.content || ''
-                          }}
-                        />
-                      </div>
+
                       
                       {/* Article Stats */}
                        <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 pt-2 border-t border-orange-100 dark:border-orange-800">
@@ -707,18 +685,6 @@ export function HeroSection() {
                           By {book.author || 'Unknown Author'}
                         </p>
                       </div>
-                      
-                      {/* Description */}
-                      <div className="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-100 dark:border-orange-800">
-                        <div 
-                          className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed line-clamp-3 font-arabic urdu-text"
-                          dangerouslySetInnerHTML={{
-                            __html: book.description || ''
-                          }}
-                        />
-                      </div>
-                      
-
                       
                       {/* Action Buttons */}
                       <div className="flex gap-3 pt-4">
@@ -832,11 +798,21 @@ export function HeroSection() {
             <div>
               <h4 className="font-semibold mb-4 text-orange-200">Connect</h4>
         <ul className="space-y-2 text-orange-100">
-              <li><Link href="/bio" className="hover:text-white transition-colors">About Scholar</Link></li>
+              <li><Link href="/bio" className="hover:text-white transition-colors">About Mufti Munir Shakir</Link></li>
               <li><Link href="/chat" className="hover:text-white transition-colors">Live Chat</Link></li>
-              <li><a href="mailto:info@islamicscholar.com" className="hover:text-white transition-colors">info@islamicscholar.com</a></li>
+              <li><a href="mailto:info@islamicscholar.com" className="hover:text-white transition-colors">elitekhan221@gmail.com</a></li>
               <li><a href="tel:+92 302 4620110" className="hover:text-white transition-colors">+92 302 4620110</a></li>
-              <li><span className="text-orange-100">123 Islamic Center St.<br />Knowledge City, KC 12345</span></li>
+              <li><span className="text-orange-100" style={{
+                fontFamily: "'Jameel Noori Nastaleeq', 'Amiri', 'Scheherazade New', serif",
+                direction: "rtl",
+                textAlign: "right",
+                lineHeight: "1.8",
+                wordSpacing: "0.1em",
+                letterSpacing: "0.02em",
+                fontFeatureSettings: "'liga' 1, 'dlig' 1, 'calt' 1",
+                WebkitFontSmoothing: "antialiased",
+                MozOsxFontSmoothing: "grayscale"
+              }}>مسجد ندائے قرآن توحيد آباد ارمڑ بالا نزد شگہ قلعہ ڈاکخانہ ارمڑپایان ضلع و تحصیل پشاور</span></li>
             </ul>
             </div>
           </div>

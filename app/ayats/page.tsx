@@ -151,13 +151,10 @@ export default function AyatsPage() {
                         {ayat.revelation || 'Quran'}
                       </Badge>
                     </div>
-                    <Button variant="ghost" size="sm" className="text-red-500 hover:text-red-600">
-                      <Heart className="h-4 w-4" />
-                    </Button>
+                    <CardTitle className="text-lg text-orange-500 dark:text-orange-400 font-arabic urdu-text">
+                      {ayat.address}
+                    </CardTitle>
                   </div>
-                  <CardTitle className="text-lg text-orange-500 dark:text-orange-400 font-arabic urdu-text">
-                    {ayat.address}
-                  </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   {/* Arabic Text */}
@@ -170,29 +167,6 @@ export default function AyatsPage() {
                         />
                   </div>
                   
-                  {/* Urdu Translation */}
-                  {ayat.translation_urdu && (
-                    <div className="p-4 bg-orange-100 dark:bg-orange-900/30 rounded-lg border border-orange-200 dark:border-orange-700">
-                    <p className="text-sm font-medium text-orange-600 mb-1">Urdu Translation:</p>
-                      <div 
-                        className="text-orange-600 prose prose-sm max-w-none text-right font-arabic urdu-text"
-                        dangerouslySetInnerHTML={{
-                          __html: `"${ayat.translation_urdu}"`
-                        }}
-                      />
-                    </div>
-                  )}
-                  
-                  {/* Translation */}
-                  <div className="p-4 bg-orange-100 dark:bg-orange-900/30 rounded-lg border border-orange-200 dark:border-orange-700">
-                    <p className="text-sm font-medium text-orange-600 mb-1">Translation:</p>
-                    <div 
-                      className="text-gray-700 leading-relaxed prose prose-sm max-w-none"
-                      dangerouslySetInnerHTML={{
-                        __html: `"${ayat.translation_eng}"`
-                      }}
-                    />
-                  </div>
 
                   {/* Source Information */}
                   <div className="text-xs text-gray-500 dark:text-gray-400 space-y-1 pt-2 border-t border-orange-100 dark:border-orange-800">
@@ -216,7 +190,7 @@ export default function AyatsPage() {
                   <div className="flex gap-2 pt-4 border-t border-orange-100 dark:border-orange-800">
                     <Button asChild className="flex-1 bg-orange-400 hover:bg-orange-500 text-white text-sm py-2">
                       <Link href={`/ayats/${ayat.id}/detail`}>
-                        View Tafseer
+                        View Tafseer & Tarjuma
                       </Link>
                     </Button>
                   </div>

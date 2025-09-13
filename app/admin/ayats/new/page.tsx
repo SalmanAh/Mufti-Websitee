@@ -148,10 +148,10 @@ export default function NewAyatPage() {
                 name="arabic_text"
                 value={formData.arabic_text}
                 onChange={handleInputChange}
-                placeholder="Enter Arabic text of the ayat"
-                rows={4}
+                placeholder="أدخل النص العربي للآية"
+                rows={6}
                 dir="rtl"
-                className="text-right font-arabic urdu-text"
+                className="arabic-input"
                 required
               />
             </div>

@@ -10,23 +10,148 @@
   font-display: swap;
 }
 
+/* Amiri font for Arabic text */
+@font-face {
+  font-family: 'Amiri';
+  src: url('../styles/Amiri/Amiri-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Amiri';
+  src: url('../styles/Amiri/Amiri-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Amiri';
+  src: url('../styles/Amiri/Amiri-Italic.ttf') format('truetype');
+  font-weight: normal;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Amiri';
+  src: url('../styles/Amiri/Amiri-BoldItalic.ttf') format('truetype');
+  font-weight: bold;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Scheherazade New font for Arabic text */
+@font-face {
+  font-family: 'Scheherazade New';
+  src: url('../styles/Scheherazade_New/ScheherazadeNew-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Scheherazade New';
+  src: url('../styles/Scheherazade_New/ScheherazadeNew-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Scheherazade New';
+  src: url('../styles/Scheherazade_New/ScheherazadeNew-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Scheherazade New';
+  src: url('../styles/Scheherazade_New/ScheherazadeNew-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* Urdu text styling */
 .urdu-text {
-  font-family: 'Jameel Noori Nastaleeq', serif;
+  font-family: 'Jameel Noori Nastaleeq', 'Amiri', 'Scheherazade New', serif;
   direction: rtl;
   text-align: right;
+  line-height: 1.8;
+  word-spacing: 0.1em;
+  letter-spacing: 0.02em;
 }
 
 /* Urdu font utility class */
 .font-urdu {
-  font-family: 'Jameel Noori Nastaleeq', serif;
-}
-
-/* Arabic font utility class */
-.font-arabic {
-  font-family: 'Jameel Noori Nastaleeq', serif;
+  font-family: 'Jameel Noori Nastaleeq', 'Amiri', 'Scheherazade New', serif !important;
   direction: rtl;
   text-align: right;
+  line-height: 1.8;
+  word-spacing: 0.1em;
+  letter-spacing: 0.02em;
+  font-feature-settings: "liga" 1, "dlig" 1, "calt" 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Arabic font utility classes */
+.font-arabic {
+  font-family: 'Amiri', 'Scheherazade New', 'Jameel Noori Nastaleeq', serif;
+  direction: rtl;
+  text-align: right;
+  line-height: 1.8;
+  word-spacing: 0.1em;
+  letter-spacing: 0.02em;
+  font-feature-settings: "liga" 1, "dlig" 1, "calt" 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.font-amiri {
+  font-family: 'Amiri', serif;
+}
+
+.font-scheherazade {
+  font-family: 'Scheherazade New', serif;
+}
+
+/* Enhanced Arabic text input styling */
+.arabic-input {
+  font-family: 'Amiri', 'Scheherazade New', 'Jameel Noori Nastaleeq', serif;
+  direction: rtl;
+  text-align: right;
+  line-height: 2.2;
+  font-size: 1.25rem;
+  padding: 1rem;
+  word-spacing: 0.15em;
+  letter-spacing: 0.05em;
+  font-feature-settings: "liga" 1, "dlig" 1, "calt" 1, "kern" 1, "mark" 1, "mkmk" 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  resize: vertical;
+  min-height: 160px;
+  font-weight: 400;
+  text-rendering: optimizeLegibility;
+  unicode-bidi: bidi-override;
+  writing-mode: horizontal-tb;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  color: #000000;
+}
+
+.arabic-input:focus {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.arabic-input::placeholder {
+  color: var(--muted-foreground);
+  opacity: 0.7;
 }
 
 @custom-variant dark (&:is(.dark *));
@@ -62,6 +187,26 @@
 
 .prose li {
   @apply mb-2;
+}
+
+/* Override unwanted background colors in rich text content */
+.prose * {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* Ensure text colors remain readable */
+.prose span, .prose div, .prose p {
+  color: inherit !important;
+}
+
+/* Preserve intentional styling for specific elements */
+.prose code {
+  @apply bg-muted px-1 py-0.5 rounded text-sm;
+}
+
+.prose blockquote {
+  @apply border-l-4 border-primary pl-4 italic;
 }
 
 /* Line clamp utilities */

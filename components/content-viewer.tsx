@@ -141,11 +141,11 @@ export function ContentViewer({ content, type }: ContentViewerProps) {
 
               {/* Action Buttons */}
               <div className="flex flex-wrap gap-3 pt-2">
-                <Button variant="outline" size="sm" className="border-emerald-200 text-emerald-700 hover:bg-emerald-50">
+                <Button variant="outline" size="sm" className="border-emerald-200 text-emerald-700 hover:bg-emerald-50 hover:text-emerald-700">
                   <BookmarkPlus className="h-4 w-4 mr-2" />
                   Save Article
                 </Button>
-                <Button variant="outline" size="sm" className="border-emerald-200 text-emerald-700 hover:bg-emerald-50">
+                <Button variant="outline" size="sm" className="border-emerald-200 text-emerald-700 hover:bg-emerald-50 hover:text-emerald-700">
                   <Share2 className="h-4 w-4 mr-2" />
                   Share
                 </Button>

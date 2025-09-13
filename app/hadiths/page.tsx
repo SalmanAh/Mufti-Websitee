@@ -143,10 +143,12 @@ export default function HadithsPage() {
               <Card key={hadith.id} className="hover:shadow-md transition-all duration-200 border border-black dark:border-white bg-card dark:bg-gray-800">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between mb-2">
-                    <Badge variant="outline" className="border-amber-200 text-amber-700 bg-amber-50 font-urdu font-arabic urdu-text">
-                      {hadith.category || 'Hadith'}
-                    </Badge>
-                    <span className="text-sm text-gray-500 dark:text-gray-400 font-arabic urdu-text">{hadith.address}</span>
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline" className="border-amber-200 text-amber-700 bg-amber-50 font-urdu font-arabic urdu-text">
+                        {hadith.category || 'Hadith'}
+                      </Badge>
+                    </div>
+                    <span className="text-base font-bold text-gray-600 dark:text-gray-300 font-arabic urdu-text">{hadith.address}</span>
                   </div>
                   <CardTitle className="text-lg text-orange-500 dark:text-orange-400 font-arabic urdu-text">{hadith.revelation || hadith.address}</CardTitle>
                 </CardHeader>
@@ -161,17 +163,7 @@ export default function HadithsPage() {
                         />
                   </div>
                   
-                  {/* Translation */}
-                  {hadith.translation_eng && (
-                    <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-100 dark:border-amber-800">
-                      <div 
-                        className="text-gray-700 dark:text-gray-300 italic leading-relaxed prose prose-sm max-w-none"
-                        dangerouslySetInnerHTML={{
-                          __html: `"${hadith.translation_eng}"`
-                        }}
-                      />
-                    </div>
-                  )}
+
                   
                   {/* Source Information */}
                   <div className="text-sm text-gray-600 dark:text-gray-400 space-y-1 mb-4">
@@ -187,7 +179,7 @@ export default function HadithsPage() {
                   <div className="flex gap-2 pt-2 border-t border-orange-100 dark:border-orange-800">
                     <Button asChild className="flex-1 bg-orange-400 hover:bg-orange-500 text-white text-sm py-2">
                       <Link href={`/hadiths/${hadith.id}/detail`}>
-                        View Tafseer
+                        View Tafseer & Tarjuma
                       </Link>
                     </Button>
                   </div>

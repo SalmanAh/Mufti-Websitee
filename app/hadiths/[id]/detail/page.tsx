@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { BookOpen, Eye, Calendar, Share2, Download, Bookmark } from "lucide-react"
+import { BookOpen, Eye, Calendar } from "lucide-react"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
@@ -84,83 +84,86 @@ export default async function HadithDetailPage({ params }: HadithDetailProps) {
         <div className="max-w-4xl mx-auto">
           <div className="grid gap-8">
             
-            {/* Arabic Text */}
-            <Card className="border-green-200">
-              <CardHeader>
-                <CardTitle className="text-green-800 flex items-center gap-2">
-                  <BookOpen className="h-5 w-5" />
-                  Arabic Text
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-right p-6 bg-green-50 rounded-lg border border-green-100">
-                  <div 
-                  className="text-2xl font-arabic urdu-text text-green-800 leading-relaxed prose prose-2xl max-w-none"
-                  dangerouslySetInnerHTML={{
-                    __html: hadith.arabic_text || ''
-                  }}
-                />
-                </div>
-              </CardContent>
-            </Card>
+            {/* Arabic Text and Urdu Translation Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Urdu Translation - Left Side */}
+              {hadith.translation_urdu && (
+                <Card className="border-blue-200 order-2 lg:order-1">
+                  <CardHeader>
+                    <CardTitle className="text-blue-800 flex items-center gap-2">
+                      <BookOpen className="h-5 w-5" />
+                      Urdu Translation
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="p-6 bg-blue-50 rounded-lg border border-blue-100">
+                      <div 
+                        className="text-3xl text-gray-700 leading-relaxed prose prose-3xl max-w-none text-right"
+                        style={{
+                          fontFamily: "'Jameel Noori Nastaleeq', 'Amiri', 'Scheherazade New', serif",
+                          direction: "rtl",
+                          textAlign: "right" as const,
+                          lineHeight: "1.8",
+                          wordSpacing: "0.1em",
+                          letterSpacing: "0.02em",
+                          fontFeatureSettings: "'liga' 1, 'dlig' 1, 'calt' 1",
+                          WebkitFontSmoothing: "antialiased" as const,
+                          MozOsxFontSmoothing: "grayscale" as const
+                        }}
+                        dangerouslySetInnerHTML={{
+                          __html: hadith.translation_urdu
+                        }}
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
 
-            {/* English Translation */}
-            {hadith.translation_eng && (
-              <Card className="border-amber-200">
+              {/* Arabic Text - Right Side */}
+              <Card className="border-green-200 order-1 lg:order-2">
                 <CardHeader>
-                  <CardTitle className="text-amber-800 flex items-center gap-2">
+                  <CardTitle className="text-green-800 flex items-center gap-2">
                     <BookOpen className="h-5 w-5" />
-                    English Translation
+                    Arabic Text
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="p-6 bg-amber-50 rounded-lg border border-amber-100">
+                  <div className="text-right p-6 bg-green-50 rounded-lg border border-green-100">
                     <div 
-                      className="text-lg text-gray-700 italic leading-relaxed prose prose-lg max-w-none"
-                      dangerouslySetInnerHTML={{
-                        __html: `"${hadith.translation_eng}"`
-                      }}
-                    />
+                    className="text-2xl font-arabic urdu-text text-green-800 leading-relaxed prose prose-2xl max-w-none"
+                    dangerouslySetInnerHTML={{
+                      __html: hadith.arabic_text || ''
+                    }}
+                  />
                   </div>
                 </CardContent>
               </Card>
-            )}
-
-            {/* Urdu Translation */}
-            {hadith.translation_urdu && (
-              <Card className="border-blue-200">
-                <CardHeader>
-                  <CardTitle className="text-blue-800 flex items-center gap-2">
-                    <BookOpen className="h-5 w-5" />
-                    Urdu Translation
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="p-6 bg-blue-50 rounded-lg border border-blue-100">
-                    <div 
-                      className="text-lg text-gray-700 leading-relaxed prose prose-lg max-w-none text-right font-arabic urdu-text"
-                      dangerouslySetInnerHTML={{
-                        __html: hadith.translation_urdu
-                      }}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+            </div>
 
             {/* Urdu Tafseer */}
             {hadith.tafseer_urdu && (
-              <Card className="border-indigo-200">
+              <Card className="border-blue-200">
                 <CardHeader>
-                  <CardTitle className="text-indigo-800 flex items-center gap-2">
+                  <CardTitle className="text-blue-800 flex items-center gap-2">
                     <BookOpen className="h-5 w-5" />
                     Tafseer (Urdu)
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="p-6 bg-indigo-50 rounded-lg border border-indigo-100">
+                  <div className="p-6 bg-blue-50 rounded-lg border border-blue-100">
                     <div 
-                      className="text-lg text-gray-700 leading-relaxed prose prose-lg max-w-none text-right font-arabic urdu-text"
+                      className="text-3xl text-gray-700 leading-relaxed prose prose-3xl max-w-none text-right"
+                      style={{
+                        fontFamily: "'Jameel Noori Nastaleeq', 'Amiri', 'Scheherazade New', serif",
+                        direction: "rtl",
+                        textAlign: "right" as const,
+                        lineHeight: "1.8",
+                        wordSpacing: "0.1em",
+                        letterSpacing: "0.02em",
+                        fontFeatureSettings: "'liga' 1, 'dlig' 1, 'calt' 1",
+                        WebkitFontSmoothing: "antialiased" as const,
+                        MozOsxFontSmoothing: "grayscale" as const
+                      }}
                       dangerouslySetInnerHTML={{
                         __html: hadith.tafseer_urdu
                       }}
@@ -170,27 +173,7 @@ export default async function HadithDetailPage({ params }: HadithDetailProps) {
               </Card>
             )}
 
-            {/* English Tafseer */}
-            {hadith.tafseer_eng && (
-              <Card className="border-purple-200">
-                <CardHeader>
-                  <CardTitle className="text-purple-800 flex items-center gap-2">
-                    <BookOpen className="h-5 w-5" />
-                    Tafseer (English)
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="p-6 bg-purple-50 rounded-lg border border-purple-100">
-                    <div 
-                      className="text-lg text-gray-700 leading-relaxed prose prose-lg max-w-none"
-                      dangerouslySetInnerHTML={{
-                        __html: hadith.tafseer_eng
-                      }}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+
 
             {/* Metadata */}
             <Card className="border-gray-200">
@@ -222,25 +205,11 @@ export default async function HadithDetailPage({ params }: HadithDetailProps) {
               </CardContent>
             </Card>
 
-            {/* Action Buttons */}
-            <div className="flex flex-wrap gap-4 justify-center">
-              <Button className="bg-green-600 hover:bg-green-700 text-white">
-                <Bookmark className="h-4 w-4 mr-2" />
-                Save Hadith
-              </Button>
-              <Button variant="outline" className="border-green-200 text-green-700 hover:bg-green-50">
-                <Share2 className="h-4 w-4 mr-2" />
-                Share
-              </Button>
-              <Button variant="outline" className="border-green-200 text-green-700 hover:bg-green-50">
-                <Download className="h-4 w-4 mr-2" />
-                Download PDF
-              </Button>
-            </div>
+
 
             {/* Back to Hadiths */}
             <div className="text-center">
-              <Button asChild variant="outline" className="border-green-200 text-green-700 hover:bg-green-50">
+              <Button asChild variant="outline" className="border-green-200 text-green-700 hover:bg-green-50 hover:text-green-700">
                 <Link href="/hadiths">
                   ← Back to Hadiths
                 </Link>

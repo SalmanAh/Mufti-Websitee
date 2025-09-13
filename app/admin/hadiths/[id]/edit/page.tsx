@@ -224,10 +224,10 @@ export default function EditHadithPage({ params }: EditHadithPageProps) {
                 name="arabic_text"
                 value={formData.arabic_text}
                 onChange={handleInputChange}
-                placeholder="Enter Arabic text of the hadith"
-                rows={4}
+                placeholder="أدخل النص العربي للحديث"
+                rows={6}
                 dir="rtl"
-                className="text-right font-arabic urdu-text"
+                className="arabic-input"
                 required
               />
             </div>

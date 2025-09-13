@@ -73,7 +73,13 @@ export function ContentTable({ data, type, onDelete, onTogglePublished }: Conten
       case "Category":
         return item.category || "N/A"
       case "Arabic Text":
-        return <span className="truncate max-w-xs font-arabic urdu-text" dir="rtl">{item.arabic_text}</span>
+        return (
+          <div className="max-w-xs overflow-hidden" dir="rtl">
+            <span className="font-arabic text-sm truncate text-black" title={item.arabic_text}>
+              {item.arabic_text}
+            </span>
+          </div>
+        )
       case "Translation (EN)":
         return <span className="truncate max-w-xs">{item.translation_eng}</span>
       case "Created":
