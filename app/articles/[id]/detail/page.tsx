@@ -68,7 +68,7 @@ export default async function ArticleDetailPage({ params }: PageProps) {
                 </Badge>
               </div>
               
-              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-white via-emerald-100 to-teal-100 bg-clip-text text-transparent drop-shadow-lg leading-tight font-arabic urdu-text">
+              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-white via-emerald-100 to-teal-100 bg-clip-text text-transparent drop-shadow-lg leading-tight font-urdu">
                 {article.title}
               </h1>
               
@@ -108,7 +108,7 @@ export default async function ArticleDetailPage({ params }: PageProps) {
               {/* Article Content */}
               <div className="prose prose-2xl prose-emerald max-w-none">
                 <div 
-                  className="text-gray-800 leading-relaxed text-2xl font-arabic urdu-text"
+                  className="text-gray-800 leading-relaxed text-2xl font-urdu"
                   dangerouslySetInnerHTML={{ __html: article.content }}
                 />
               </div>

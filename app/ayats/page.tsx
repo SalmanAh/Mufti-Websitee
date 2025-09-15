@@ -160,7 +160,13 @@ export default function AyatsPage() {
                   {/* Arabic Text */}
                   <div className="text-right p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-100 dark:border-orange-800">
                     <div 
-                          className="text-xl font-arabic urdu-text text-orange-500 leading-relaxed prose prose-lg max-w-none"
+                          className="text-xl font-arabic urdu-text text-orange-500 leading-relaxed prose prose-lg max-w-none line-clamp-3"
+                          style={{
+                            display: '-webkit-box',
+                            WebkitLineClamp: 3,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden'
+                          }}
                           dangerouslySetInnerHTML={{
                             __html: ayat.arabic_text || ''
                           }}

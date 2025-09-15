@@ -152,7 +152,7 @@ export default async function HadithDetailPage({ params }: HadithDetailProps) {
                 <CardContent>
                   <div className="p-6 bg-blue-50 rounded-lg border border-blue-100">
                     <div 
-                      className="text-3xl text-gray-700 leading-relaxed prose prose-3xl max-w-none text-right"
+                      className="text-4xl text-gray-700 leading-relaxed prose prose-4xl max-w-none text-right"
                       style={{
                         fontFamily: "'Jameel Noori Nastaleeq', 'Amiri', 'Scheherazade New', serif",
                         direction: "rtl",

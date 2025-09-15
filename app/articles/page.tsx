@@ -137,25 +137,25 @@ export default function ArticlesPage() {
                     </div>
                   )}
                 </div>
-                <CardContent className="p-6 flex flex-col h-full">
+                <CardContent className="p-4 flex flex-col h-full">
                   {/* Title */}
-                  <h3 className="font-semibold text-gray-900 dark:text-white text-lg leading-tight mb-3 line-clamp-2 font-arabic urdu-text">
+                  <h3 className="font-semibold text-gray-900 dark:text-white text-xl leading-tight mb-2 line-clamp-2 font-urdu">
                     {article.title}
                   </h3>
                   
                   {/* Author */}
-                  <div className="flex items-center text-gray-600 dark:text-gray-300 text-sm mb-3">
+                  <div className="flex items-center text-gray-600 dark:text-gray-300 text-base mb-2">
                     <User className="h-4 w-4 mr-1" />
-                    <span className="font-arabic urdu-text">{article.author}</span>
+                    <span className="font-urdu">{article.author}</span>
                   </div>
                   
                   {/* Content Preview */}
-                  <p className="text-gray-600 dark:text-gray-300 text-sm line-clamp-3 mb-4 flex-grow font-arabic urdu-text">
+                  <p className="text-gray-600 dark:text-gray-300 text-base line-clamp-3 mb-3 flex-grow font-urdu">
                     {article.content?.replace(/<[^>]*>/g, '').substring(0, 150)}...
                   </p>
                   
                   {/* Views and Date */}
-                  <div className="flex items-center justify-between text-gray-500 dark:text-gray-400 text-sm mb-4">
+                  <div className="flex items-center justify-between text-gray-500 dark:text-gray-400 text-sm mb-3">
                     <div className="flex items-center">
                       <Eye className="h-4 w-4 mr-1" />
                       <span>{(article.views || 0).toLocaleString()} views</span>

@@ -111,7 +111,7 @@ export function HeroSection() {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % currentSlideImages.length)
-    }, 5000)
+    }, 7000)
     return () => clearInterval(timer)
   }, [currentSlideImages.length])
 
@@ -225,7 +225,8 @@ export function HeroSection() {
               <img 
                 src={image.src} 
                 alt={image.title}
-                className="w-full h-full object-fill md:object-contain"
+                className="w-full h-full object-fill md:object-contain cursor-pointer"
+                onClick={() => window.location.href = '/bio'}
               />
             </div>
           </div>
@@ -389,7 +390,13 @@ export function HeroSection() {
                       {/* Arabic Text */}
                       <div className="text-right p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-100 dark:border-orange-800">
                         <div 
-                          className="text-lg font-arabic urdu-text text-orange-500 dark:text-orange-400 leading-relaxed"
+                          className="text-lg font-arabic urdu-text text-orange-500 dark:text-orange-400 leading-relaxed line-clamp-3"
+                          style={{
+                            display: '-webkit-box',
+                            WebkitLineClamp: 3,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden'
+                          }}
                           dangerouslySetInnerHTML={{
                             __html: hadith.arabic_text || ''
                           }}
@@ -570,16 +577,16 @@ export function HeroSection() {
                         </div>
                       )}
                     </div>
-                    <div className="p-4 space-y-3">
-                      <div className="flex items-center justify-between mb-2">
-                        <Badge variant="outline" className="border-orange-200 text-orange-500 bg-orange-50 font-arabic urdu-text">
+                    <div className="p-3 space-y-2">
+                      <div className="flex items-center justify-between mb-1">
+                        <Badge variant="outline" className="border-orange-200 text-orange-500 bg-orange-50 font-urdu">
                           {article.category || 'Article'}
                         </Badge>
                       </div>
-                      <h3 className="text-lg font-semibold text-orange-500 dark:text-orange-400 line-clamp-2 font-arabic urdu-text">
+                      <h3 className="text-xl font-semibold text-orange-500 dark:text-orange-400 line-clamp-2 font-urdu">
                         {article.title}
                       </h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                      <p className="text-base text-gray-600 dark:text-gray-400 mt-1 font-urdu">
                         By {article.author || 'Unknown Author'}
                       </p>
                       
@@ -802,7 +809,7 @@ export function HeroSection() {
               <li><Link href="/chat" className="hover:text-white transition-colors">Live Chat</Link></li>
               <li><a href="mailto:info@islamicscholar.com" className="hover:text-white transition-colors">elitekhan221@gmail.com</a></li>
               <li><a href="tel:+92 302 4620110" className="hover:text-white transition-colors">+92 302 4620110</a></li>
-              <li><span className="text-orange-100" style={{
+              <li><span className="text-orange-100 text-xl" style={{
                 fontFamily: "'Jameel Noori Nastaleeq', 'Amiri', 'Scheherazade New', serif",
                 direction: "rtl",
                 textAlign: "right",
@@ -812,7 +819,8 @@ export function HeroSection() {
                 fontFeatureSettings: "'liga' 1, 'dlig' 1, 'calt' 1",
                 WebkitFontSmoothing: "antialiased",
                 MozOsxFontSmoothing: "grayscale"
-              }}>مسجد ندائے قرآن توحيد آباد ارمڑ بالا نزد شگہ قلعہ ڈاکخانہ ارمڑپایان ضلع و تحصیل پشاور</span></li>
+              }}>اُرمڑ بالا نزدِ شگئے قلعہ مسجد ندائے قرآن ڈاکخانہ ارمڑ پایان ضلع و تحصیل پشاور
+</span></li>
             </ul>
             </div>
           </div>
