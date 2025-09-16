@@ -810,7 +810,7 @@ export function HeroSection() {
               <li><a href="mailto:info@islamicscholar.com" className="hover:text-white transition-colors">elitekhan221@gmail.com</a></li>
               <li><a href="tel:+92 302 4620110" className="hover:text-white transition-colors">+92 302 4620110</a></li>
               <li><span className="text-orange-100 text-xl" style={{
-                fontFamily: "'Jameel Noori Nastaleeq', 'Amiri', 'Scheherazade New', serif",
+                fontFamily: "'Al Majeed Quranic Font', 'Jameel Noori Nastaleeq', 'Amiri', 'Scheherazade New', serif",
                 direction: "rtl",
                 textAlign: "right",
                 lineHeight: "1.8",

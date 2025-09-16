@@ -100,7 +100,7 @@ export default async function HadithDetailPage({ params }: HadithDetailProps) {
                       <div 
                         className="text-3xl text-gray-700 leading-relaxed prose prose-3xl max-w-none text-right"
                         style={{
-                          fontFamily: "'Jameel Noori Nastaleeq', 'Amiri', 'Scheherazade New', serif",
+                          fontFamily: "'Al Majeed Quranic Font', 'Jameel Noori Nastaleeq', 'Amiri', 'Scheherazade New', serif",
                           direction: "rtl",
                           textAlign: "right" as const,
                           lineHeight: "1.8",
@@ -154,7 +154,7 @@ export default async function HadithDetailPage({ params }: HadithDetailProps) {
                     <div 
                       className="text-4xl text-gray-700 leading-relaxed prose prose-4xl max-w-none text-right"
                       style={{
-                        fontFamily: "'Jameel Noori Nastaleeq', 'Amiri', 'Scheherazade New', serif",
+                        fontFamily: "'Al Majeed Quranic Font', 'Jameel Noori Nastaleeq', 'Amiri', 'Scheherazade New', serif",
                         direction: "rtl",
                         textAlign: "right" as const,
                         lineHeight: "1.8",
