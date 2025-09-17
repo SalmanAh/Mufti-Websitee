@@ -134,11 +134,11 @@
   font-family: 'Al Majeed Quranic Font', 'Amiri', 'Scheherazade New', 'Jameel Noori Nastaleeq', serif;
   direction: rtl;
   text-align: right;
-  line-height: 2.2;
+  line-height: 1.8;
   font-size: 1.25rem;
   padding: 1rem;
-  word-spacing: 0.15em;
-  letter-spacing: 0.05em;
+  word-spacing: 0.1em;
+  letter-spacing: 0.02em;
   font-feature-settings: "liga" 1, "dlig" 1, "calt" 1, "kern" 1, "mark" 1, "mkmk" 1;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -146,10 +146,13 @@
   min-height: 160px;
   font-weight: 400;
   text-rendering: optimizeLegibility;
-  unicode-bidi: bidi-override;
+  unicode-bidi: plaintext;
   writing-mode: horizontal-tb;
-  white-space: pre-wrap;
-  overflow-wrap: break-word;
+  white-space: pre-line;
+  word-wrap: normal;
+  overflow-wrap: normal;
+  word-break: keep-all;
+  hyphens: none;
   color: #000000;
 }
 

@@ -148,6 +148,23 @@ export default function NewHadithPage() {
                 name="arabic_text"
                 value={formData.arabic_text}
                 onChange={handleInputChange}
+                onPaste={(e) => {
+                  e.preventDefault();
+                  const paste = e.clipboardData.getData('text');
+                  // Clean up the pasted text by removing extra whitespace and line breaks
+                  const cleanedText = paste
+                    .replace(/\s+/g, ' ')  // Replace multiple spaces with single space
+                    .replace(/\n+/g, ' ')  // Replace line breaks with spaces
+                    .trim();
+                  
+                  const target = e.target as HTMLTextAreaElement;
+                  const start = target.selectionStart;
+                  const end = target.selectionEnd;
+                  const currentValue = formData.arabic_text;
+                  const newValue = currentValue.substring(0, start) + cleanedText + currentValue.substring(end);
+                  
+                  setFormData(prev => ({ ...prev, arabic_text: newValue }));
+                }}
                 placeholder="أدخل النص العربي للحديث"
                 rows={6}
                 dir="rtl"
