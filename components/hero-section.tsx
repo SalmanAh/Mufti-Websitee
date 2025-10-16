@@ -833,17 +833,7 @@ export function HeroSection() {
         </div>
       </footer>
 
-      {/* Floating Chat Button */}
-      <Link href="/chat">
-        <div className="fixed bottom-6 right-6 z-50">
-          <Button 
-            size="lg" 
-            className="rounded-full w-14 h-14 bg-orange-400 hover:bg-orange-500 shadow-lg hover:shadow-xl transition-all duration-300 group"
-          >
-            <MessageSquare className="h-6 w-6 text-white group-hover:scale-110 transition-transform" />
-          </Button>
-        </div>
-      </Link>
+      {/* Floating Chat Button removed on request */}
     </div>
   )
 }
