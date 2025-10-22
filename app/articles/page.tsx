@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
 import Image from "next/image"
+import { htmlToPlainText } from "@/lib/utils"
 
 interface Article {
   id: string
@@ -59,7 +60,7 @@ export default function ArticlesPage() {
       const filtered = articles.filter(article => 
         article.title?.toLowerCase().includes(query) ||
         article.author?.toLowerCase().includes(query) ||
-        article.content?.toLowerCase().includes(query)
+        htmlToPlainText(article.content || '').toLowerCase().includes(query)
       )
       setFilteredArticles(filtered)
     } else {
@@ -151,7 +152,7 @@ export default function ArticlesPage() {
                   
                   {/* Content Preview */}
                   <p className="text-gray-600 dark:text-gray-300 text-base line-clamp-3 mb-3 flex-grow font-urdu">
-                    {article.content?.replace(/<[^>]*>/g, '').substring(0, 150)}...
+                    {htmlToPlainText(article.content || '', 150)}
                   </p>
                   
                   {/* Views and Date */}
