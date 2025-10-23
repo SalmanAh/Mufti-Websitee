@@ -305,7 +305,7 @@ export function HeroSection() {
                     {/* Video Thumbnail */}
                     <div className="relative aspect-video overflow-hidden rounded-xl bg-gray-900 dark:bg-gray-800 mb-3">
                       <Image
-                        src={getYouTubeThumbnail(video.youtube_link) || "/placeholder.svg"}
+                        src={video.thumbnail || getYouTubeThumbnail(video.youtube_link) || "/placeholder.svg"}
                         alt={video.title}
                         width={400}
                         height={225}

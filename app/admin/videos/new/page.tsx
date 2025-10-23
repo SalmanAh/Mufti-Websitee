@@ -20,6 +20,8 @@ export default function NewVideoPage() {
     youtube_link: "",
     description: ""
   })
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null)
+  const [isUploading, setIsUploading] = useState(false)
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -27,6 +29,42 @@ export default function NewVideoPage() {
       ...prev,
       [name]: value
     }))
+  }
+
+  const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file && file.type.startsWith('image/')) {
+      setThumbnailFile(file)
+    } else {
+      toast.error('Please select a valid image file')
+    }
+  }
+
+  const uploadThumbnailToSupabase = async (file: File): Promise<string> => {
+    try {
+      const supabase = createClient()
+      const fileExt = file.name.split('.').pop()
+      const fileName = `${Date.now()}.${fileExt}`
+      const filePath = `video-thumbnails/${fileName}`
+
+      const { data, error } = await supabase.storage
+        .from('E-Books')
+        .upload(filePath, file)
+
+      if (error) {
+        console.error('Supabase upload error:', error)
+        throw error
+      }
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('E-Books')
+        .getPublicUrl(filePath)
+
+      return publicUrl
+    } catch (error) {
+      console.error('Upload error:', error)
+      throw error
+    }
   }
 
   const validateYouTubeLink = (url: string) => {
@@ -51,14 +89,23 @@ export default function NewVideoPage() {
     
     try {
       const supabase = createClient()
+
+      let thumbnailUrl = ''
+      if (thumbnailFile) {
+        setIsUploading(true)
+        thumbnailUrl = await uploadThumbnailToSupabase(thumbnailFile)
+      }
       
       const { data, error } = await supabase
         .from('videos')
-        .insert([{
-          title: formData.title,
-          youtube_link: formData.youtube_link,
-          description: formData.description
-        }])
+        .insert([
+          {
+            title: formData.title,
+            youtube_link: formData.youtube_link,
+            description: formData.description,
+            thumbnail: thumbnailUrl || null
+          }
+        ])
         .select()
       
       if (error) throw error
@@ -70,6 +117,7 @@ export default function NewVideoPage() {
       toast.error("Failed to create video")
     } finally {
       setIsLoading(false)
+      setIsUploading(false)
     }
   }
 
@@ -125,6 +173,32 @@ export default function NewVideoPage() {
             </div>
 
             <div className="space-y-2">
+              <Label htmlFor="thumbnail">Thumbnail Image (optional)</Label>
+              <Input
+                id="thumbnail"
+                type="file"
+                accept="image/*"
+                onChange={handleThumbnailChange}
+                className="cursor-pointer"
+              />
+              {thumbnailFile && (
+                <p className="text-sm text-muted-foreground">
+                  Selected: {thumbnailFile.name} ({(thumbnailFile.size / 1024 / 1024).toFixed(2)} MB)
+                </p>
+              )}
+              {isUploading && (
+                <div className="flex items-center gap-2 text-sm text-blue-600">
+                  <div className="flex space-x-1">
+                    <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                    <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                    <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce"></div>
+                  </div>
+                  <span>Uploading thumbnail...</span>
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-2">
               <Label htmlFor="description">Description</Label>
               <Textarea
                 id="description"
@@ -137,9 +211,18 @@ export default function NewVideoPage() {
             </div>
 
             <div className="flex gap-4">
-              <Button type="submit" disabled={isLoading}>
-                <Save className="h-4 w-4 mr-2" />
-                {isLoading ? "Creating..." : "Create Video"}
+              <Button type="submit" disabled={isLoading || isUploading}>
+                {isLoading || isUploading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    {isUploading ? 'Uploading...' : 'Creating...'}
+                  </>
+                ) : (
+                  <>
+                    <Save className="h-4 w-4 mr-2" />
+                    Create Video
+                  </>
+                )}
               </Button>
               <Link href="/admin/videos">
                 <Button type="button" variant="outline">

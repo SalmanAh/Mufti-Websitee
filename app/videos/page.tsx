@@ -16,6 +16,7 @@ interface VideoData {
   youtube_link: string;
   views: number;
   created_at: string;
+  thumbnail?: string;
 }
 
 
@@ -81,7 +82,7 @@ export default async function VideosPage() {
         {/* Videos Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {videos && videos.length > 0 ? (
-            videos.map((video) => (
+            videos.map((video: VideoData) => (
               <Link 
                  href={video.youtube_link || '#'} 
                  target="_blank" 
@@ -92,7 +93,7 @@ export default async function VideosPage() {
                 {/* Video Thumbnail */}
                 <div className="relative aspect-video overflow-hidden rounded-xl bg-gray-900 dark:bg-gray-800 mb-3">
                   <Image
-                     src={getYouTubeThumbnail(video.youtube_link) || "/placeholder.svg"}
+                     src={video.thumbnail || getYouTubeThumbnail(video.youtube_link) || "/placeholder.svg"}
                      alt={video.title}
                      width={400}
                      height={225}

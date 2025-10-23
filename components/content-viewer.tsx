@@ -43,7 +43,7 @@ export function ContentViewer({ content, type }: ContentViewerProps) {
     return `${minutes}m`
   }
 
-  const imageUrl = content.featured_image || content.thumbnail_url || content.cover_image
+  const imageUrl = content.featured_image || content.thumbnail || content.thumbnail_url || content.cover_image
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
@@ -75,7 +75,7 @@ export function ContentViewer({ content, type }: ContentViewerProps) {
                 allowFullScreen
               />
             ) : (
-              <video controls className="w-full h-full" poster={getYouTubeThumbnail(content.youtube_link || content.video_url || '') || content.thumbnail_url}>
+              <video controls className="w-full h-full" poster={getYouTubeThumbnail(content.youtube_link || content.video_url || '') || content.thumbnail || content.thumbnail_url}>
                 <source src={content.video_url} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
